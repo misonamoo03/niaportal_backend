@@ -1,0 +1,46 @@
+#local, dev, prod 공통 설정
+spring:
+  profiles:
+    active: local #profiles 선언하여 적용할 profile을 선택한다.
+
+--- #local 환경
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:mariadb://localhost:3306/test?characterEncoding=UTF-8
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      username: root
+      password: root
+logging: # ROOT 레벨 전체 로깅 레벨 결정
+  level:
+    root: info
+mybatis:
+  type-aliases-package: com.misonamoo.niaportal.mapper
+  mapper-locations: mybatis/mapper/*.xml
+
+--- #dev 환경
+spring:
+  profiles: dev
+  datasource: #TODO: dev용으로 변경 필요
+  url:
+  hikari:
+    username:
+    password:
+logging:
+  level:
+    root: info
+
+--- #prod 환경
+spring:
+  profiles: prod
+  datasource: #TODO : prod용으로 변경 필요
+    url:
+    hikari:
+      username:
+      password:
+server:
+  port: 9090
+logging:
+  level:
+    root: error

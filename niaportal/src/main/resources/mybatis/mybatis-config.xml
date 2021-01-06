@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <settings>
+        <setting name="cacheEnabled" value="false"/>
+    </settings>
     <!-- 별명 -->
     <typeAliases>
+        <typeAlias alias="boardVO" type="com.misonamoo.niaportal.vo.BoardVO" />
         <typeAlias alias="hashMap" type="java.util.HashMap" />
-        <typeAlias alias="map" type="java.util.Map" />
     </typeAliases>
-    <mappers>
-        <mapper resource="SampleMapper.xml"/>
-    </mappers>
 </configuration>

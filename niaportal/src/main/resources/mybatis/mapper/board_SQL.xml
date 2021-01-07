@@ -10,17 +10,21 @@
     </resultMap>
 
     <select id="getBoardList" resultMap="boardMap">
-        select * from POSTER_BOARD
+        select * from bizmiso.POSTER_BOARD
+    </select>
+
+    <select id="getBoardTest" parameterType="boardVO" resultType="boardVO">
+            select BOARD_NO as boardNo from bizmiso.POSTER_BOARD where BOARD_NO = #{boardNo}
     </select>
 
     <select id="getBoard" parameterType="boardVO" resultMap="boardMap">
-        select * from POSTER_BOARD where BOARD_NO = #{boardNo}
+        select * from bizmiso.POSTER_BOARD where BOARD_NO = #{boardNo}
     </select>
 
     <insert id="insertBoard" parameterType="boardVO" useGeneratedKeys="true" keyProperty="boardNo">
-        insert into POSTER_BOARD (BOARD_TITLE, BOARD_CONTENT, BOARD_REGIST_DATE) values(#{boardTitle},#{boardContent},sysdate())
+        insert into bizmiso.POSTER_BOARD (BOARD_TITLE, BOARD_CONTENT, BOARD_REGIST_DATE) values(#{boardTitle},#{boardContent},sysdate())
     </insert>
     <delete id="deleteBoard" parameterType="Long">
-        delete from POSTER_BOARD where BOARD_NO = #{boardNo}
+        delete from bizmiso.POSTER_BOARD where BOARD_NO = #{boardNo}
     </delete>
 </mapper>

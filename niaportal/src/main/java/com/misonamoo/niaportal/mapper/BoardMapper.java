@@ -9,10 +9,11 @@ import java.util.List;
 @Repository
 @Mapper
 public interface BoardMapper {
+
     /**
      * 게시물 전체 조회
-     * @param vo - 게시물 정보가 담긴 BoardVO
-     * @return
+     * @param
+     * @return java.util.List
      * @exception Exception
      */
     List<BoardVO> getBoardList();
@@ -20,7 +21,7 @@ public interface BoardMapper {
     /**
      * 게시물 상세 조회
      * @param vo - 게시물 정보가 담긴 BoardVO
-     * @return
+     * @return Object
      * @exception
      */
     BoardVO getBoard(BoardVO vo);
@@ -33,9 +34,11 @@ public interface BoardMapper {
     int insertBoard(BoardVO vo);
 
     /**
-     *
+     * 게시물 삭제
      * @param no - 게시물 번호
      * @return
      */
     int deleteBoard(Long no);
+
+    BoardVO getBoardTest(BoardVO vo);
 }

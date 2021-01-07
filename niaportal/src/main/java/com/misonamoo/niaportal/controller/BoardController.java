@@ -24,12 +24,19 @@ public class BoardController {
         return boardService.getBoardList();
     }
 
+    @GetMapping("/test")
+    public BoardVO getBoardTest(BoardVO vo) {
+        log.info("========sampleVO========" + vo);
+        BoardVO result = boardService.getBoardTest(vo);
+        log.info("========sampleVO========" + result);
+        return vo;
+    }
     // 게시물 상세 조회
     @GetMapping("/detail")
     public BoardVO getBoard(BoardVO boardVO) throws Exception {
         BoardVO result = boardService.getBoard(boardVO);
         log.info("========sampleVO========" + result);
-        return boardVO;
+        return result;
     }
 
     // 게시물 추가
@@ -41,9 +48,10 @@ public class BoardController {
     // 게시물 변경
 
     // 게시물 삭제
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public int deleteBoard(@RequestParam(value = "no") Long boardNo) {
         int cnt = boardService.deleteBoard(boardNo);
+
         return cnt;
     }
 }

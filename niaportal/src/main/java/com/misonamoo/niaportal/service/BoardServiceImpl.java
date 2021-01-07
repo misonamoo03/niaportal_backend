@@ -33,4 +33,9 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.deleteBoard(no);
     }
 
+    @Override
+    public BoardVO getBoardTest(BoardVO vo) {
+        return boardMapper.getBoardTest(vo);
+    }
+
 }

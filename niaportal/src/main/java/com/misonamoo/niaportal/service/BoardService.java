@@ -9,4 +9,6 @@ public interface BoardService {
     BoardVO getBoard(BoardVO vo) throws Exception;
     int insertBoard(BoardVO vo);
     int deleteBoard(Long no);
+
+    BoardVO getBoardTest(BoardVO vo);
 }

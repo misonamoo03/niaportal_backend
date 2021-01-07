@@ -6,6 +6,7 @@
     </settings>
     <!-- 별명 -->
     <typeAliases>
+        <typeAlias alias="userVO" type="com.misonamoo.niaportal.vo.UserVO" />
         <typeAlias alias="boardVO" type="com.misonamoo.niaportal.vo.BoardVO" />
         <typeAlias alias="hashMap" type="java.util.HashMap" />
     </typeAliases>

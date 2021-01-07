@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.misonamoo.niaportal.mapper.UserMapper">
+
+<!--    <resultMap id="userMap" type="userVO">-->
+<!--        <result property="id" column="USER_ID"/>-->
+<!--        <result property="pw" column="USER_PASSWORD"/>-->
+<!--    </resultMap>-->
+
+    <select id="login" parameterType="userVO" resultType="userVO">
+		SELECT USER_ID as id,
+				USER_PASSWORD as pw
+		FROM
+			SPO_USER
+		WHERE USER_ID = #{id}
+		AND USER_PASSWORD = #{pw}
+	</select>
+
+    <select id="findId" parameterType="userVO" resultType="String">
+		SELECT USER_ID FROM SPO_USER WHERE USER_NAME = #{name} AND USER_EMAIL = #{email}
+	</select>
+</mapper>

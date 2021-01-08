@@ -27,4 +27,13 @@ public interface UserMapper {
      * @throws Exception
      */
     public String findId(UserVO VO) throws Exception;
+
+    /**
+     * 비밀번호 재설정
+     *
+     * @param VO - 회원 정보가 담긴 UserVO
+     * @return
+     * @throws Exception
+     */
+    public int setPw(UserVO VO);
 }

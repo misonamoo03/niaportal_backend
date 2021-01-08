@@ -13,6 +13,7 @@ import java.util.Date;
 public class UserVO {
     private String id;
     private String pw;
+    private String pw_re;
     private String name;
     private String phone;
     private String email;

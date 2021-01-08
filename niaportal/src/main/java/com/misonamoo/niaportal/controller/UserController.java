@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -23,46 +24,36 @@ public class UserController {
     UserService userService;
 
     // 로그인
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public UserVO login(@ModelAttribute UserVO vo, HttpServletRequest req, RedirectAttributes rttr) throws Exception {
-        HttpSession session = req.getSession();
-        UserVO result = userService.login(vo);
-        log.info("=========UserVO========== " + result);
-        if (result == null) {
-            session.setAttribute("User", null);
-            rttr.addFlashAttribute("msg", false);
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public UserVO login(@RequestBody Map<String, Object> params, HttpServletRequest req, RedirectAttributes rttr, HttpServletResponse response) throws Exception {
+        UserVO vo = new UserVO();
+        vo.setId(params.get("ruserId").toString());
+        vo.setPw(params.get("ruserPw").toString());
+        UserVO login = userService.login(vo);
+        if (login == null) {
+            //rttr.addFlashAttribute("msg", false);
         } else {
-            session.setAttribute("User", result);
+            Cookie loginCookie = new Cookie("id", login.getId());
+            loginCookie.setPath("/");
+            loginCookie.setMaxAge(-1);
+            response.addCookie(loginCookie);
         }
-        log.info("=========UserVO========== " + result);
-        return result;
+        return vo;
     }
 
-
-
-    //로그인 되어 있는지 체크
-    @ResponseBody
-    @RequestMapping(value = "/loginChk", method = RequestMethod.GET)
-    public Map loginChk(HttpServletRequest req, RedirectAttributes rttr) throws Exception {
-        Map<String, String> result = new HashMap<String, String>();
-        HttpSession session = req.getSession();
-        String id = "";
-        String loginYN = "N";
-        if (session != null && session.getAttribute("User") != null) {
-            id = ((UserVO) session.getAttribute("User")).getId();
-            loginYN = "Y";
-        }
-        result.put("id", id);
-        result.put("loginYN", loginYN);
-        return result;
-    }
-
-    // 로그아웃
+    //로그아웃
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(HttpSession session) throws Exception {
-        session.invalidate();
+    public String logout2(HttpServletResponse response, HttpServletRequest request) throws Exception {
+        Cookie[] cookies = request.getCookies(); // 모든 쿠키의 정보를 cookies에 저장
+        if (cookies != null) { // 쿠키가 한개라도 있으면 실행
+            for (int i = 0; i < cookies.length; i++) {
+                cookies[i].setMaxAge(0); // 유효시간을 0으로 설정
+                response.addCookie(cookies[i]); // 응답 헤더에 추가
+            }
+        }
         return "redirect:/";
     }
+
 
     //아이디 찾기
     @RequestMapping(value = "/findId", method = RequestMethod.GET)
@@ -71,5 +62,15 @@ public class UserController {
         return result;
     }
 
+    //비밀번호 재설정
+    @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
+    public String setPw(@ModelAttribute UserVO vo) throws Exception {
+        int result = userService.setPw(vo);
+        String pass = "fail";
+        if (result != 0) {
+            pass = "success";
+        }
+        return pass;
+    }
 
 }

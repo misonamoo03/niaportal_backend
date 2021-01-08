@@ -20,4 +20,9 @@ public class UserServiceImpl implements UserService {
     public String findId(UserVO vo) throws Exception {
         return userMapper.findId(vo);
     }
+
+    @Override
+    public int setPw(UserVO vo) {
+        return userMapper.setPw(vo);
+    }
 }

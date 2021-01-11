@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class UserVO {
+public class User {
     private String id;
     private String pw;
     private String pw_re;

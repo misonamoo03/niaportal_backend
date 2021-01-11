@@ -1,14 +1,13 @@
 package com.misonamoo.niaportal.controller;
 
 import com.misonamoo.niaportal.service.UserService;
-import com.misonamoo.niaportal.vo.UserVO;
+import com.misonamoo.niaportal.vo.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -29,11 +28,11 @@ public class UserController {
 
     // 로그인
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public UserVO login(@RequestBody Map<String, Object> params, HttpServletResponse response) throws Exception {
-        UserVO vo = new UserVO();
+    public User login(@RequestBody Map<String, Object> params, HttpServletResponse response) throws Exception {
+        User vo = new User();
         vo.setId(params.get("ruserId").toString());
         vo.setPw(params.get("ruserPw").toString());
-        UserVO login = userService.login(vo);
+        User login = userService.login(vo);
         if (login == null) {
         } else {
             Cookie loginCookie = new Cookie("id", login.getId());
@@ -60,7 +59,7 @@ public class UserController {
 
     //아이디 찾기
     @RequestMapping(value = "/findId", method = RequestMethod.GET)
-    public String findId(@ModelAttribute UserVO vo) throws Exception {
+    public String findId(@ModelAttribute User vo) throws Exception {
         String result = userService.findId(vo);
         return result;
     }
@@ -86,7 +85,7 @@ public class UserController {
     }
     //비밀번호 재설정
     @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
-    public String setPw(@ModelAttribute UserVO vo) throws Exception {
+    public String setPw(@ModelAttribute User vo) throws Exception {
         int result = userService.setPw(vo);
         String pass = "fail";
         if (result != 0) {

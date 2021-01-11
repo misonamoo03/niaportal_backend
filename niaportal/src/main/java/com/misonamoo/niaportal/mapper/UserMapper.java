@@ -1,7 +1,7 @@
 package com.misonamoo.niaportal.mapper;
 
 import com.misonamoo.niaportal.vo.BoardVO;
-import com.misonamoo.niaportal.vo.UserVO;
+import com.misonamoo.niaportal.vo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +17,7 @@ public interface UserMapper {
      * @return
      * @throws Exception
      */
-    public UserVO login(UserVO VO);
+    public User login(User VO);
 
     /**
      * 아이디 찾기
@@ -26,7 +26,7 @@ public interface UserMapper {
      * @return
      * @throws Exception
      */
-    public String findId(UserVO VO) throws Exception;
+    public String findId(User VO) throws Exception;
 
     /**
      * 비밀번호 재설정
@@ -35,5 +35,5 @@ public interface UserMapper {
      * @return
      * @throws Exception
      */
-    public int setPw(UserVO VO);
+    public int setPw(User VO);
 }

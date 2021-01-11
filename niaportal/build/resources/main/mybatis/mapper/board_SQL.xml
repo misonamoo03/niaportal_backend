@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.misonamoo.niaportal.mapper.BoardMapper">
+
+    <resultMap id="boardMap" type="boardVO">
+        <result property="boardNo" column="BOARD_NO" />
+        <result property="boardTitle" column="BOARD_TITLE" />
+        <result property="boardContent" column="BOARD_CONTENT" />
+        <result property="boardRegistDate" column="BOARD_REGIST_DATE" />
+    </resultMap>
+
+    <select id="getBoardList" resultMap="boardMap">
+        select * from POSTER_BOARD
+    </select>
+
+    <select id="getBoard" parameterType="boardVO" resultMap="boardMap">
+        select * from POSTER_BOARD where BOARD_NO = #{boardNo}
+    </select>
+
+    <insert id="insertBoard" parameterType="boardVO" useGeneratedKeys="true" keyProperty="boardNo">
+        insert into POSTER_BOARD (BOARD_TITLE, BOARD_CONTENT, BOARD_REGIST_DATE) values(#{boardTitle},#{boardContent},sysdate())
+    </insert>
+    <delete id="deleteBoard" parameterType="Long">
+        delete from POSTER_BOARD where BOARD_NO = #{boardNo}
+    </delete>
+</mapper>

@@ -5,13 +5,17 @@ import com.misonamoo.niaportal.vo.UserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 @RestController
@@ -25,13 +29,12 @@ public class UserController {
 
     // 로그인
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public UserVO login(@RequestBody Map<String, Object> params, HttpServletRequest req, RedirectAttributes rttr, HttpServletResponse response) throws Exception {
+    public UserVO login(@RequestBody Map<String, Object> params, HttpServletResponse response) throws Exception {
         UserVO vo = new UserVO();
         vo.setId(params.get("ruserId").toString());
         vo.setPw(params.get("ruserPw").toString());
         UserVO login = userService.login(vo);
         if (login == null) {
-            //rttr.addFlashAttribute("msg", false);
         } else {
             Cookie loginCookie = new Cookie("id", login.getId());
             loginCookie.setPath("/");
@@ -61,7 +64,26 @@ public class UserController {
         String result = userService.findId(vo);
         return result;
     }
+    @Autowired
+    private JavaMailSender javaMailSender;
 
+    @GetMapping("/mailSend")
+    public String index() throws MessagingException, UnsupportedEncodingException {
+
+        String to = ""; //받는 사람
+        String from = ""; //보내는 사람
+        String subject = "제목!!"; //제목
+        String body = "내용@@"; //내용
+//        StringBuilder body = new StringBuilder();
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
+        mimeMessageHelper.setFrom(from, "진호");
+        mimeMessageHelper.setTo(to);
+        mimeMessageHelper.setSubject(subject);
+        mimeMessageHelper.setText(body, true);
+        javaMailSender.send(message);
+        return "성공";
+    }
     //비밀번호 재설정
     @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
     public String setPw(@ModelAttribute UserVO vo) throws Exception {

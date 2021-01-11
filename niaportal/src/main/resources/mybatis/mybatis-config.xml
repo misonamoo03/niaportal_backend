@@ -4,10 +4,11 @@
     <settings>
         <setting name="cacheEnabled" value="false"/>
     </settings>
-    <!-- 별명 -->
+
     <typeAliases>
+        <typeAlias alias="Board" type="com.misonamoo.niaportal.domain.Board" />
+        <typeAlias alias="BoardParameter" type="com.misonamoo.niaportal.domain.BoardParameter" />
         <typeAlias alias="userVO" type="com.misonamoo.niaportal.vo.UserVO" />
-        <typeAlias alias="boardVO" type="com.misonamoo.niaportal.vo.BoardVO" />
         <typeAlias alias="hashMap" type="java.util.HashMap" />
     </typeAliases>
 </configuration>

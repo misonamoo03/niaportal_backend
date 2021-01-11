@@ -1,41 +1,30 @@
 package com.misonamoo.niaportal.mapper;
 
-import com.misonamoo.niaportal.vo.BoardVO;
+import com.misonamoo.niaportal.domain.Board;
+import com.misonamoo.niaportal.domain.BoardParameter;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * 게시판 Mapper
+ * @author Yohan
+ */
 @Repository
 @Mapper
 public interface BoardMapper {
-    /**
-     * 게시물 전체 조회
-     * @param vo - 게시물 정보가 담긴 BoardVO
-     * @return
-     * @exception Exception
-     */
-    List<BoardVO> getBoardList();
 
-    /**
-     * 게시물 상세 조회
-     * @param vo - 게시물 정보가 담긴 BoardVO
-     * @return
-     * @exception
-     */
-    BoardVO getBoard(BoardVO vo);
+    List<Board> getBoardList();
 
-    /**
-     * 게시물 추가
-     * @param vo - 게시물 정보가 담긴 BoardVO
-     * @return
-     */
-    int insertBoard(BoardVO vo);
+    Board getBoard(Long boardSeq);
 
-    /**
-     *
-     * @param no - 게시물 번호
-     * @return
-     */
-    int deleteBoard(Long no);
+    Long saveBoard(BoardParameter param);
+
+    Long updateBoard(BoardParameter param);
+
+    void deleteBoard(Long boardNo);
+
+
+
 }

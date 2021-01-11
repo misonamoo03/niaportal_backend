@@ -1,6 +1,5 @@
 package com.misonamoo.niaportal.service;
 
-import com.misonamoo.niaportal.vo.BoardVO;
 import com.misonamoo.niaportal.vo.User;
 
 import java.util.List;

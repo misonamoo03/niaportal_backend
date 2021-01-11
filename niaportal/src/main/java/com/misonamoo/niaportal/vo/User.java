@@ -11,12 +11,14 @@ import java.util.Date;
 @Setter
 @ToString
 public class User {
-    private String id;
-    private String pw;
-    private String pw_re;
-    private String name;
-    private String phone;
+    private int userNo;
     private String email;
-    private Date userRegistDate;
-    private Date UserUpdateDate;
+    private String password;
+    private String userName;
+    private String tel;
+    private String agency;
+    private String companyTypeCode;
+    private String dwConfirmYN;
+    private Date regDate;
+    private Date updDate;
 }

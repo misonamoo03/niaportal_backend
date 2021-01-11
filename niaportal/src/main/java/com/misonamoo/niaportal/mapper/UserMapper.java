@@ -1,6 +1,5 @@
 package com.misonamoo.niaportal.mapper;
 
-import com.misonamoo.niaportal.vo.BoardVO;
 import com.misonamoo.niaportal.vo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

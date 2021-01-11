@@ -14,7 +14,7 @@
 
     <!-- 아이디 찾기 -->
     <select id="findId" parameterType="userVO" resultType="String">
-		SELECT USER_ID FROM SPO_USER WHERE USER_NAME = #{name} AND USER_EMAIL = #{email}
+		SELECT USER_ID as id FROM SPO_USER WHERE USER_NAME = #{name} AND USER_EMAIL = #{email}
 	</select>
 
     <!-- 비밀번호 재설정 -->

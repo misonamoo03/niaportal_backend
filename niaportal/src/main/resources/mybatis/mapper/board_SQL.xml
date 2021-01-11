@@ -2,29 +2,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.misonamoo.niaportal.mapper.BoardMapper">
 
-    <resultMap id="boardMap" type="boardVO">
-        <result property="boardNo" column="BOARD_NO" />
+    <resultMap id="BoardMap" type="Board">
+        <result property="boardSeq" column="BOARD_SEQ" />
         <result property="boardTitle" column="BOARD_TITLE" />
         <result property="boardContent" column="BOARD_CONTENT" />
         <result property="boardRegistDate" column="BOARD_REGIST_DATE" />
     </resultMap>
 
-    <select id="getBoardList" resultMap="boardMap">
-        select * from bizmiso.POSTER_BOARD
+    <select id="getBoardList" resultMap="BoardMap">
+            SELECT *
+              FROM bizmiso.POSTER_BOARD
     </select>
 
-    <select id="getBoardTest" parameterType="boardVO" resultType="boardVO">
-            select BOARD_NO as boardNo from bizmiso.POSTER_BOARD where BOARD_NO = #{boardNo}
+<!--    <select id="getBoard" parameterType="BOARDVO" resultType="com.misonamoo.niaportal.domain.Board">
+        select BOARD_SEQ as boardSeq
+              ,BOARD_TITLE as boardTitle
+              ,BOARD_CONTENT as boardContent
+              ,BOARD_REGIST_DATE as boardRegistDate
+         from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}
+    </select>-->
+
+    <select id="getBoard" parameterType="Board" resultMap="BoardMap">
+        select * from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}
     </select>
 
-    <select id="getBoard" parameterType="boardVO" resultMap="boardMap">
-        select * from bizmiso.POSTER_BOARD where BOARD_NO = #{boardNo}
-    </select>
-
-    <insert id="insertBoard" parameterType="boardVO" useGeneratedKeys="true" keyProperty="boardNo">
-        insert into bizmiso.POSTER_BOARD (BOARD_TITLE, BOARD_CONTENT, BOARD_REGIST_DATE) values(#{boardTitle},#{boardContent},sysdate())
+    <insert id="saveBoard" parameterType="BoardParameter">
+        <selectKey resultType="Long" keyProperty="boardSeq" order="BEFORE">
+            select MAX(BOARD_SEQ) + 1 as SEQUENCE_NUMBER FROM bizmiso.POSTER_BOARD
+        </selectKey>
+        insert into bizmiso.POSTER_BOARD values(#{boardSeq},#{boardTitle},#{boardContent},sysdate())
     </insert>
+
+    <update id="updateBoard" parameterType="BoardParameter">
+        UPDATE bizmiso.POSTER_BOARD
+        <trim prefix="SET" suffixOverrides=",">
+            <if test='boardTitle != null and boardTitle != "null" and boardTitle != ""'>
+                BOARD_TITLE = #{boardTitle},
+            </if>
+            <if test='boardContent != null and boardContent != "null" and boardContent != ""'>
+                BOARD_CONTENT = #{boardContent},
+            </if>
+        </trim>
+        WHERE BOARD_SEQ = #{boardSeq}
+    </update>
+
     <delete id="deleteBoard" parameterType="Long">
-        delete from bizmiso.POSTER_BOARD where BOARD_NO = #{boardNo}
+        delete from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}
     </delete>
+
 </mapper>

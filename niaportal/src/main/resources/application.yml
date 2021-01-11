@@ -1,9 +1,11 @@
 #local, dev, prod 공통 설정
+#profiles 선언하여 적용할 profile을 선택한다.
 spring:
   profiles:
-    active: local #profiles 선언하여 적용할 profile을 선택한다.
+    active: local
 
---- #local 환경
+---
+#local 환경
 spring:
   profiles: local
   datasource:
@@ -12,16 +14,19 @@ spring:
     username: bizmiso
     password: Miso@7531
 
+# Mybatis
 mybatis:
   type-aliases-package: com.misonamoo.niaportal.domain
   mapper-locations: classpath:mybatis/mapper/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
   map-underscore-to-camel-case: true
-logging: # ROOT 레벨 전체 로깅 레벨 결정
-  level:
-    root: info
 
---- #dev 환경
+# Logback 위치 지정
+logging:
+  config: classpath:logback-default.xml
+
+---
+#dev 환경
 spring:
   profiles: dev
   datasource: #TODO: dev용으로 변경 필요
@@ -29,11 +34,9 @@ spring:
   hikari:
     username:
     password:
-logging:
-  level:
-    root: info
 
---- #prod 환경
+---
+#prod 환경
 spring:
   profiles: prod
   datasource: #TODO : prod용으로 변경 필요
@@ -43,6 +46,3 @@ spring:
       password:
 server:
   port: 9090
-logging:
-  level:
-    root: error

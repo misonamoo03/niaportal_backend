@@ -6,7 +6,8 @@
     </settings>
 
     <typeAliases>
-        <typeAlias alias="boardVO" type="com.misonamoo.niaportal.vo.BoardVO" />
+        <typeAlias alias="Board" type="com.misonamoo.niaportal.domain.Board" />
+        <typeAlias alias="BoardParameter" type="com.misonamoo.niaportal.domain.BoardParameter" />
         <typeAlias alias="hashMap" type="java.util.HashMap" />
     </typeAliases>
 </configuration>

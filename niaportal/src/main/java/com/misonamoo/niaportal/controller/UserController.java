@@ -48,10 +48,48 @@ public class UserController {
     public Map<String, String> delete(@ModelAttribute User user) throws Exception {
         Map<String, String> ret = new HashMap();
         ret.put("code", "200");
+        //쿠키정보를 체크해서 회원인지를 확인한다. user.email과 쿠키에 있는 이메일이 같은지 확인하다.
         int emailCnt = userService.dupEmail(user);
         if (emailCnt > 0) {
             //회원탈퇴처리
             userService.delete(user);
+            //회원탈퇴가 제대로 처리 되면 쿠키를 삭제한다.
+        } else {
+            ret.put("code", "101");
+            ret.put("message", "회원정보 없음");
+        }
+        return ret;
+    }
+
+    //회원탈퇴
+    @PostMapping(value = "/withdraw")
+    public Map<String, String> withdraw(@ModelAttribute User user) throws Exception {
+        Map<String, String> ret = new HashMap();
+        ret.put("code", "200");
+        //쿠키정보를 체크해서 회원인지를 확인한다. user.email과 쿠키에 있는 이메일이 같은지 확인하다.
+        int emailCnt = userService.dupEmail(user);
+        if (emailCnt > 0) {
+            //회원탈퇴처리
+            userService.withdraw(user);
+            //회원탈퇴가 제대로 처리 되면 쿠키를 삭제한다.
+        } else {
+            ret.put("code", "101");
+            ret.put("message", "회원정보 없음");
+        }
+        return ret;
+    }
+
+    //회원 정보 수정
+    @PostMapping(value = "/edit")
+    public Map<String, String> edit(@RequestBody User user) throws Exception {
+        Map<String, String> ret = new HashMap();
+        ret.put("code", "200");
+        ret.put("message", "조회 정상");
+        int emailCnt = userService.checkEmailPass(user);
+        if (emailCnt > 0) {
+            //회원정보 수정처리
+            userService.edit(user);
+            //회원수정이 제대로 처리 되면 쿠키를 삭제한다.
         } else {
             ret.put("code", "101");
             ret.put("message", "회원정보 없음");

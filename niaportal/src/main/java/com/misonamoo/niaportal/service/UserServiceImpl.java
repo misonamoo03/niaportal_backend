@@ -36,5 +36,20 @@ public class UserServiceImpl implements UserService {
         userMapper.delete(user);
     }
 
+    @Override
+    public void withdraw(User user) {
+        userMapper.withdraw(user);
+    }
+
+    @Override
+    public void edit(User user) {
+        userMapper.edit(user);
+    }
+
+    @Override
+    public int checkEmailPass(User user) {
+        return userMapper.checkEmailPass(user);
+    }
+
 
 }

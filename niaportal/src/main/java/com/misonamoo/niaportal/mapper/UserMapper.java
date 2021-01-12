@@ -31,4 +31,10 @@ public interface UserMapper {
     public void regist(User user);
 
     public void delete(User user);
+
+    public void withdraw(User user);
+
+    public void edit(User user);
+
+    public int checkEmailPass(User user);
 }

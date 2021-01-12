@@ -13,12 +13,20 @@ import java.util.Date;
 public class User {
     private int userNo;
     private String email;
+    private String userGbCode;
     private String password;
     private String userName;
     private String tel;
     private String agency;
     private String companyTypeCode;
-    private String dwConfirmYN;
+    private String dwConfirmYn;
+    private String delYn;
     private Date regDate;
     private Date updDate;
+
+    public User() {
+        userGbCode = "CD002001";
+        dwConfirmYn = "N";
+        delYn = "N";
+    }
 }

@@ -61,10 +61,10 @@ public class UserController {
 
     // 로그인
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public User login(@RequestBody Map<String, Object> params, HttpServletResponse response) throws Exception {
+    public User login(@ModelAttribute User params, HttpServletResponse response) throws Exception {
         User vo = new User();
-        vo.setEmail(params.get("email").toString());
-        vo.setPassword(params.get("password").toString());
+        vo.setEmail(params.getEmail());
+        vo.setPassword(params.getPassword());
         User login = userService.login(vo);
         if (login == null) {
         } else {

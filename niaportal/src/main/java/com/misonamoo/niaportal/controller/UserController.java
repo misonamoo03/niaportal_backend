@@ -106,9 +106,16 @@ public class UserController {
         User login = userService.login(vo);
         if (login == null) {
         } else {
-            Cookie loginCookie = new Cookie("id", login.getEmail());
+            Cookie loginCookie = new Cookie("email", login.getEmail());
             loginCookie.setPath("/");
             loginCookie.setMaxAge(-1);
+            String userChk = "N";
+//            if(login.getSuper == "S") {userChk = "Y";}
+//            슈퍼유저 체크
+//            Cookie superCookie = new Cookie("super", userChk);
+//            superCookie.setPath("/");
+//            superCookie.setMaxAge(-1);
+//          response.addCookie(superCookie);
             response.addCookie(loginCookie);
         }
         return vo;
@@ -116,7 +123,7 @@ public class UserController {
 
     //로그아웃
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout2(HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public String logout(HttpServletResponse response, HttpServletRequest request) throws Exception {
         Cookie[] cookies = request.getCookies(); // 모든 쿠키의 정보를 cookies에 저장
         if (cookies != null) { // 쿠키가 한개라도 있으면 실행
             for (int i = 0; i < cookies.length; i++) {

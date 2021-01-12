@@ -71,6 +71,13 @@ public class UserController {
             Cookie loginCookie = new Cookie("id", login.getEmail());
             loginCookie.setPath("/");
             loginCookie.setMaxAge(-1);
+            String userChk = "N";
+//            if(login.getSuper == "S") {userChk = "Y";}
+//            슈퍼유저 체크
+//            Cookie superCookie = new Cookie("super", userChk);
+//            superCookie.setPath("/");
+//            superCookie.setMaxAge(-1);
+//          response.addCookie(superCookie);
             response.addCookie(loginCookie);
         }
         return vo;

@@ -15,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -26,8 +27,40 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    //회원가입
+    @PostMapping(value = "/register")
+    public Map<String, String> register(@RequestBody User user) throws Exception {
+        Map<String,String> ret = new HashMap();
+        ret.put("code", "200");
+        int emailCnt = userService.dupEmail(user);
+        if(emailCnt == 0) {
+            // 회원가입처리
+            userService.regist(user);
+        } else {
+            ret.put("code", "102");
+            ret.put("message", "중복된 ID");
+        }
+        return ret;
+    }
+
+    //회원삭제
+    @PostMapping(value = "/delete")
+    public Map<String, String> delete(@ModelAttribute User user) throws Exception {
+        Map<String,String> ret = new HashMap();
+        ret.put("code", "200");
+        int emailCnt = userService.dupEmail(user);
+        if(emailCnt > 0) {
+            //회원탈퇴처리
+            userService.delete(user);
+        } else {
+            ret.put("code", "101");
+            ret.put("message", "회원정보 없음");
+        }
+        return ret;
+    }
+
     // 로그인
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/login", method = RequestMethod.POST)
     public User login(@RequestBody Map<String, Object> params, HttpServletResponse response) throws Exception {
         User vo = new User();
         vo.setId(params.get("ruserId").toString());
@@ -93,5 +126,5 @@ public class UserController {
         }
         return pass;
     }
-
+*/
 }

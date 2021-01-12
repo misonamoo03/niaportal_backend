@@ -25,4 +25,21 @@ public class UserServiceImpl implements UserService {
     public int setPw(User vo) {
         return userMapper.setPw(vo);
     }
+
+    @Override
+    public int dupEmail(User user) {
+        return userMapper.dupEmail(user);
+    }
+
+    @Override
+    public void regist(User user) {
+        userMapper.regist(user);
+    }
+
+    @Override
+    public void delete(User user) {
+        userMapper.delete(user);
+    }
+
+
 }

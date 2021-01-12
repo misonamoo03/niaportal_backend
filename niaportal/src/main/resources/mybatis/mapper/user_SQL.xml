@@ -17,10 +17,50 @@
 		SELECT USER_ID as id FROM SPO_USER WHERE USER_NAME = #{name} AND USER_EMAIL = #{email}
 	</select>
 
+
     <!-- 비밀번호 재설정 -->
     <update id="setPw">
  	update SPO_USER set
 	   USER_PASSWORD = #{pw}
  	where USER_ID = #{id}
  	</update>
+
+	<!-- 이메일 중복 체크 -->
+	<select id="dupEmail" parameterType="userVO" resultType="int">
+		select count(*)
+		from AI_USER
+		where EMAIL= #{email};
+	</select>
+
+	<insert id="regist" parameterType="userVO">
+		INSERT INTO bizmiso.AI_USER (
+			USER_NO,
+			EMAIL,
+			 PASSWORD,
+			 USER_NAME,
+			 TEL,
+			 AGENCY,
+			 COMPANY_TYPE_CODE,
+			 DW_CONFIRM_YN,
+			 REG_DATE,
+			 UPD_DATE)
+		VALUES (
+			ai_get_seq('userNo'),
+			#{email},
+			#{password},
+			#{userName},
+			#{tel},
+			#{agency},
+			#{companyTypeCode},
+			'N',
+			NOW(),
+			NOW()
+		);
+	</insert>
+
+	<!-- 회원 탈퇴 -->
+	<delete id="delete" parameterType="userVO">
+		DELETE FROM bizmiso.AI_USER
+		WHERE email = #{email};
+	</delete>
 </mapper>

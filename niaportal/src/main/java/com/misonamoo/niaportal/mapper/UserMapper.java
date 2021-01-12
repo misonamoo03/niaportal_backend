@@ -35,4 +35,10 @@ public interface UserMapper {
      * @throws Exception
      */
     public int setPw(User VO);
+
+    public int dupEmail(User user);
+
+    public void regist(User user);
+
+    public void delete(User user);
 }

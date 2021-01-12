@@ -1,6 +1,5 @@
 package com.misonamoo.niaportal.domain;
 
-import com.misonamoo.niaportal.common.vo.CommonVO;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,7 +9,7 @@ import java.util.Date;
  * @author Yohan
  */
 @Data
-public class Board extends CommonVO {
+public class Board {
 
     private Long boardSeq;
     private String boardTitle;

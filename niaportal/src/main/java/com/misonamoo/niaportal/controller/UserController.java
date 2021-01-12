@@ -1,7 +1,7 @@
 package com.misonamoo.niaportal.controller;
 
 import com.misonamoo.niaportal.service.UserService;
-import com.misonamoo.niaportal.vo.User;
+import com.misonamoo.niaportal.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +63,7 @@ public class UserController {
         String result = userService.findId(vo);
         return result;
     }
+
     @Autowired
     private JavaMailSender javaMailSender;
 

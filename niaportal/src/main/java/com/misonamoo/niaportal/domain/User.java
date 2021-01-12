@@ -1,4 +1,4 @@
-package com.misonamoo.niaportal.vo;
+package com.misonamoo.niaportal.domain;
 
 import lombok.Data;
 import lombok.Getter;

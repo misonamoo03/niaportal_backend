@@ -1,8 +1,7 @@
 package com.misonamoo.niaportal.service;
 
-import com.misonamoo.niaportal.vo.User;
+import com.misonamoo.niaportal.domain.User;
 
-import java.util.List;
 
 public interface UserService {
     public User login(User vo);

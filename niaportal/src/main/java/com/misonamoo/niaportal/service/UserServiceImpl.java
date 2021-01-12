@@ -1,7 +1,7 @@
 package com.misonamoo.niaportal.service;
 
 import com.misonamoo.niaportal.mapper.UserMapper;
-import com.misonamoo.niaportal.vo.User;
+import com.misonamoo.niaportal.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

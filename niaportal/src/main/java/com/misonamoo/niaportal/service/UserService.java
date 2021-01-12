@@ -5,10 +5,14 @@ import com.misonamoo.niaportal.domain.User;
 
 public interface UserService {
     public User login(User vo);
+
     public int setPw(User vo);
+
     public int dupEmail(User user);
 
     public void regist(User user);
 
     public void delete(User user);
+
+    public int findUserNo(User user);
 }

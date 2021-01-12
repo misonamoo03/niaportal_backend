@@ -58,4 +58,8 @@
 		DELETE FROM bizmiso.AI_USER
 		WHERE email = #{email};
 	</delete>
+
+    <select id="findUserNo" parameterType="user" resultType="int">
+		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}
+	</select>
 </mapper>

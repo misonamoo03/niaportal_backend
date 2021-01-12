@@ -17,11 +17,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String findId(User vo) throws Exception {
-        return userMapper.findId(vo);
-    }
-
-    @Override
     public int setPw(User vo) {
         return userMapper.setPw(vo);
     }

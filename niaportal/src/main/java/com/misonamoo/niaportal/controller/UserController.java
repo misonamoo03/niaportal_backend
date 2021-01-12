@@ -30,10 +30,10 @@ public class UserController {
     //회원가입
     @PostMapping(value = "/register")
     public Map<String, String> register(@RequestBody User user) throws Exception {
-        Map<String,String> ret = new HashMap();
+        Map<String, String> ret = new HashMap();
         ret.put("code", "200");
         int emailCnt = userService.dupEmail(user);
-        if(emailCnt == 0) {
+        if (emailCnt == 0) {
             // 회원가입처리
             userService.regist(user);
         } else {
@@ -46,10 +46,10 @@ public class UserController {
     //회원삭제
     @PostMapping(value = "/delete")
     public Map<String, String> delete(@ModelAttribute User user) throws Exception {
-        Map<String,String> ret = new HashMap();
+        Map<String, String> ret = new HashMap();
         ret.put("code", "200");
         int emailCnt = userService.dupEmail(user);
-        if(emailCnt > 0) {
+        if (emailCnt > 0) {
             //회원탈퇴처리
             userService.delete(user);
         } else {
@@ -60,15 +60,15 @@ public class UserController {
     }
 
     // 로그인
-    /*@RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public User login(@RequestBody Map<String, Object> params, HttpServletResponse response) throws Exception {
         User vo = new User();
-        vo.setId(params.get("ruserId").toString());
-        vo.setPw(params.get("ruserPw").toString());
+        vo.setEmail(params.get("email").toString());
+        vo.setPassword(params.get("password").toString());
         User login = userService.login(vo);
         if (login == null) {
         } else {
-            Cookie loginCookie = new Cookie("id", login.getId());
+            Cookie loginCookie = new Cookie("id", login.getEmail());
             loginCookie.setPath("/");
             loginCookie.setMaxAge(-1);
             response.addCookie(loginCookie);
@@ -87,14 +87,6 @@ public class UserController {
             }
         }
         return "redirect:/";
-    }
-
-
-    //아이디 찾기
-    @RequestMapping(value = "/findId", method = RequestMethod.GET)
-    public String findId(@ModelAttribute User vo) throws Exception {
-        String result = userService.findId(vo);
-        return result;
     }
 
     @Autowired
@@ -117,6 +109,7 @@ public class UserController {
         javaMailSender.send(message);
         return "성공";
     }
+
     //비밀번호 재설정
     @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
     public String setPw(@ModelAttribute User vo) throws Exception {
@@ -127,5 +120,4 @@ public class UserController {
         }
         return pass;
     }
-*/
 }

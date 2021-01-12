@@ -18,15 +18,6 @@ public interface UserMapper {
     public User login(User VO);
 
     /**
-     * 아이디 찾기
-     *
-     * @param VO - 회원 정보가 담긴 UserVO
-     * @return
-     * @throws Exception
-     */
-    public String findId(User VO) throws Exception;
-
-    /**
      * 비밀번호 재설정
      *
      * @param VO - 회원 정보가 담긴 UserVO

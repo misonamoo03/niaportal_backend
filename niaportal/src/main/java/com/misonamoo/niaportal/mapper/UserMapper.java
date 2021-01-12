@@ -1,7 +1,7 @@
 package com.misonamoo.niaportal.mapper;
 
 
-import com.misonamoo.niaportal.domain.User;ㄴㄴ
+import com.misonamoo.niaportal.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

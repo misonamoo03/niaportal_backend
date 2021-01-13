@@ -151,7 +151,7 @@ public class UserController {
         //        StringBuilder body = new StringBuilder();
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
-        mimeMessageHelper.setFrom(from, "진호");
+        mimeMessageHelper.setFrom(from, "수신자명");
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(body, true);

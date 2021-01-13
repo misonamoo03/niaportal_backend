@@ -1,5 +1,6 @@
 package com.misonamoo.niaportal.controller;
 
+import com.misonamoo.niaportal.common.SHA256Util;
 import com.misonamoo.niaportal.domain.PwSec;
 import com.misonamoo.niaportal.domain.User;
 import com.misonamoo.niaportal.service.PwSecService;
@@ -7,6 +8,7 @@ import com.misonamoo.niaportal.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
@@ -101,43 +103,43 @@ public class UserController {
         return ret;
     }
 
+    @Value("${key}")
+    private String salt;    // 비밀번호 암호화 키
+
     // 로그인
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Map login(@ModelAttribute User params, HttpServletResponse response) throws Exception {
-        Map<String, Object> rst = new HashMap<String,Object>();
+        Map<String, Object> rst = new HashMap<String, Object>();
         User vo = new User();
+        String password = vo.getPassword();
+        password = SHA256Util.getEncrypt(password, salt);
         vo.setEmail(params.getEmail());
-        vo.setPassword(params.getPassword());
-        if(vo.getEmail() == null){
-            rst.put("code",101);
-            rst.put("messsage","아이디 없음");
+        vo.setPassword(password);
+        if (vo.getEmail() == null) {
+            rst.put("code", 101);
+            rst.put("messsage", "아이디 없음");
             return rst;
-        }
-        else if(vo.getPassword() == null){
-            rst.put("code",103);
-            rst.put("messsage","비밀번호 없음");
+        } else if (vo.getPassword() == null) {
+            rst.put("code", 103);
+            rst.put("messsage", "비밀번호 없음");
             return rst;
         }
         User login = userService.login(vo);
+        if (login.getPassword() != vo.getPassword()) {
+            rst.put("code", 104);
+            rst.put("messsage", "비밀번호 불일치");
+            return rst;
+        }
         if (login == null) {
-            rst.put("code",200);
-            rst.put("messsage","로그인 실패");
+            rst.put("code", 200);
+            rst.put("messsage", "로그인 실패");
         } else {
             Cookie loginCookie = new Cookie("email", login.getEmail());
             loginCookie.setPath("/");
             loginCookie.setMaxAge(-1);
-//            String userChk = "N";
-//            if (login.getSuper == "S") {
-//                userChk = "Y";
-//            }
-//            Cookie superCookie = new Cookie("super", userChk);
-//            superCookie.setPath("/");
-//            superCookie.setMaxAge(-1);
-
-//            response.addCookie(superCookie);
             response.addCookie(loginCookie);
-            rst.put("code",200);
-            rst.put("messsage","로그인 성공");
+            rst.put("code", 200);
+            rst.put("messsage", "로그인 성공");
         }
         return rst;
     }
@@ -161,7 +163,18 @@ public class UserController {
 
     //  비밀번호 찾기
     @RequestMapping(value = "/findPw", method = RequestMethod.POST)
-    public PwSec findPw(@ModelAttribute User vo) throws Exception {
+    public Map<String, Object> findPw(@ModelAttribute User vo) throws Exception {
+        Map<String, Object> rst = new HashMap<String, Object>();
+        if (vo.getEmail() == null) {
+            rst.put("code", 101);
+            rst.put("message", "아이디 없음");
+            return rst;
+        }
+        if (vo.getPassword() == null) {
+            rst.put("code", 102);
+            rst.put("message", "비밀번호 없음");
+            return rst;
+        }
         int chkNo = userService.findUserNo(vo);
         PwSec pwSec = new PwSec();
         pwSec.setUserNo(chkNo);
@@ -200,8 +213,8 @@ public class UserController {
         }
 //      메일 발송 부분
         String to = vo.getEmail(); //받는 사람
-        String from = "qjzjsldj@gmail.com"; //보내는 사람
-        String subject = "제목!!"; //제목
+        String from = ""; //보내는 사람
+        String subject = "이 프로젝트의 비밀번호 찾기 메일입니다."; //제목
         String body = "내용@@" + pwSec.getSecCode(); //내용
         //        StringBuilder body = new StringBuilder();
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -211,17 +224,29 @@ public class UserController {
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(body, true);
         javaMailSender.send(message);
-        return pwSec;
+        rst.put("code", 200);
+        rst.put("message", "인증 정상 처리");
+        return rst;
     }
 
     //비밀번호 재설정
     @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
-    public String setPw(@ModelAttribute User user) throws Exception {
-        int result = userService.setPw(user);
-        String pass = "fail";
-        if (result != 0) {
-            pass = "success";
+    public Map<String, Object> setPw(@ModelAttribute User user) throws Exception {
+        Map<String, Object> rst = new HashMap<String, Object>();
+        if (user.getPassword() == null || user.getPassword() == "") {
+            rst.put("code", 100);
+            rst.put("message", "필수값 없음");
+            return rst;
         }
-        return pass;
+        String password = user.getPassword();
+        password = SHA256Util.getEncrypt(password, salt);
+        user.setPassword(password);
+        int result = userService.setPw(user);
+        if (result != 0) {
+            rst.put("code", 200);
+            rst.put("message", "비밀번호 변경 정상 처리");
+            return rst;
+        }
+        return rst;
     }
 }

@@ -28,7 +28,7 @@
 	</select>
 
 	<!-- 회원 등록 -->
-    <insert id="regist" parameterType="user">
+    <insert id="register" parameterType="user">
 		INSERT INTO bizmiso.AI_USER (
 			USER_NO,
 			EMAIL,
@@ -95,4 +95,5 @@
 		FROM AI_USER
 		WHERE EMAIL = #{email} AND PASSWORD = #{password}
 	</select>
+
 </mapper>

@@ -35,7 +35,7 @@ public class UserController {
         int emailCnt = userService.dupEmail(user);
         if (emailCnt == 0) {
             // 회원가입처리
-            userService.regist(user);
+            userService.register(user);
         } else {
             ret.put("code", "102");
             ret.put("message", "중복된 ID");

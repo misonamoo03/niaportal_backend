@@ -103,26 +103,43 @@ public class UserController {
 
     // 로그인
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public User login(@ModelAttribute User params, HttpServletResponse response) throws Exception {
+    public Map login(@ModelAttribute User params, HttpServletResponse response) throws Exception {
+        Map<String, Object> rst = new HashMap<String,Object>();
         User vo = new User();
         vo.setEmail(params.getEmail());
         vo.setPassword(params.getPassword());
+        if(vo.getEmail() == null){
+            rst.put("code",101);
+            rst.put("messsage","아이디 없음");
+            return rst;
+        }
+        else if(vo.getPassword() == null){
+            rst.put("code",103);
+            rst.put("messsage","비밀번호 없음");
+            return rst;
+        }
         User login = userService.login(vo);
         if (login == null) {
+            rst.put("code",200);
+            rst.put("messsage","로그인 실패");
         } else {
             Cookie loginCookie = new Cookie("email", login.getEmail());
             loginCookie.setPath("/");
             loginCookie.setMaxAge(-1);
-            String userChk = "N";
-//            if(login.getSuper == "S") {userChk = "Y";}
-//            슈퍼유저 체크
+//            String userChk = "N";
+//            if (login.getSuper == "S") {
+//                userChk = "Y";
+//            }
 //            Cookie superCookie = new Cookie("super", userChk);
 //            superCookie.setPath("/");
 //            superCookie.setMaxAge(-1);
-//          response.addCookie(superCookie);
+
+//            response.addCookie(superCookie);
             response.addCookie(loginCookie);
+            rst.put("code",200);
+            rst.put("messsage","로그인 성공");
         }
-        return vo;
+        return rst;
     }
 
     //로그아웃
@@ -142,7 +159,7 @@ public class UserController {
     private JavaMailSender javaMailSender;
 
 
-//  비밀번호 찾기
+    //  비밀번호 찾기
     @RequestMapping(value = "/findPw", method = RequestMethod.POST)
     public PwSec findPw(@ModelAttribute User vo) throws Exception {
         int chkNo = userService.findUserNo(vo);
@@ -183,7 +200,7 @@ public class UserController {
         }
 //      메일 발송 부분
         String to = vo.getEmail(); //받는 사람
-        String from = ""; //보내는 사람
+        String from = "qjzjsldj@gmail.com"; //보내는 사람
         String subject = "제목!!"; //제목
         String body = "내용@@" + pwSec.getSecCode(); //내용
         //        StringBuilder body = new StringBuilder();

@@ -17,8 +17,11 @@ public class UserServiceImpl implements UserService {
     private String salt;    // 비밀번호 암호화 키
 
     @Override
-    public User login(User userVO) {
-        return userMapper.login(userVO);
+    public User login(User user) {
+        String password = user.getPassword();
+        password = SHA256Util.getEncrypt(password, salt);
+        user.setPassword(password);
+        return userMapper.login(user);
     }
 
     @Override
@@ -60,6 +63,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.checkEmailPass(user);
     }
 
+    @Override
     public int findUserNo(User user) {
         return userMapper.findUserNo(user);
     }

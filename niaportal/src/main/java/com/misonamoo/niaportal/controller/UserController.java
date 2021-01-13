@@ -103,23 +103,7 @@ public class UserController {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    /*    @GetMapping("/mailSend")
-        public String index() throws MessagingException, UnsupportedEncodingException {
 
-            String to = ""; //받는 사람
-            String from = ""; //보내는 사람
-            String subject = "제목!!"; //제목
-            String body = "내용@@"; //내용
-    //        StringBuilder body = new StringBuilder();
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
-            mimeMessageHelper.setFrom(from, "진호");
-            mimeMessageHelper.setTo(to);
-            mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setText(body, true);
-            javaMailSender.send(message);
-            return "성공";
-        }*/
 //  비밀번호 찾기
     @RequestMapping(value = "/findPw", method = RequestMethod.POST)
     public PwSec findPw(@ModelAttribute User vo) throws Exception {
@@ -160,7 +144,7 @@ public class UserController {
             pwSecService.updateCode(pwSec);
         }
 //      메일 발송 부분
-        String to = ""; //받는 사람
+        String to = vo.getEmail(); //받는 사람
         String from = ""; //보내는 사람
         String subject = "제목!!"; //제목
         String body = "내용@@" + pwSec.getSecCode(); //내용

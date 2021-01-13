@@ -1,4 +1,5 @@
-package com.misonamoo.niaportal.vo;
+package com.misonamoo.niaportal.domain;
+
 
 import lombok.Data;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.util.Date;
 @Setter
 @ToString
 public class User {
-    private int userNo
+    private int userNo;
     private String email;
     private String password;
     private String userName;

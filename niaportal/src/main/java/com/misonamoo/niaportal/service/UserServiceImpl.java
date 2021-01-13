@@ -1,7 +1,7 @@
 package com.misonamoo.niaportal.service;
 
 import com.misonamoo.niaportal.mapper.UserMapper;
-import com.misonamoo.niaportal.vo.UserVO;
+import com.misonamoo.niaportal.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +12,33 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
-    public UserVO login(UserVO userVO) {
+    public User login(User userVO) {
         return userMapper.login(userVO);
     }
 
     @Override
-    public String findId(UserVO vo) throws Exception {
-        return userMapper.findId(vo);
+    public int setPw(User vo) {
+        return userMapper.setPw(vo);
     }
 
     @Override
-    public int setPw(UserVO vo) {
-        return userMapper.setPw(vo);
+    public int dupEmail(User user) {
+        return userMapper.dupEmail(user);
     }
+
+    @Override
+    public void regist(User user) {
+        userMapper.regist(user);
+    }
+
+    @Override
+    public void delete(User user) {
+        userMapper.delete(user);
+    }
+
+    @Override
+    public int findUserNo(User user) {
+        return userMapper.findUserNo(user);
+    }
+
 }

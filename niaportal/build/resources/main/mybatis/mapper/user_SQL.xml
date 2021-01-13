@@ -3,24 +3,63 @@
 <mapper namespace="com.misonamoo.niaportal.mapper.UserMapper">
 
     <!-- 로그인 -->
-    <select id="login" parameterType="userVO" resultType="userVO">
-		SELECT USER_ID as id,
-				USER_PASSWORD as pw
+    <select id="login" parameterType="user" resultType="user">
+		SELECT EMAIL as email,
+				PASSWORD as password
 		FROM
-			SPO_USER
-		WHERE USER_ID = #{id}
-		AND USER_PASSWORD = #{pw}
+			AI_USER
+		WHERE EMAIL = #{email}
+		AND PASSWORD = #{password}
 	</select>
 
-    <!-- 아이디 찾기 -->
-    <select id="findId" parameterType="userVO" resultType="String">
-		SELECT USER_ID as id FROM SPO_USER WHERE USER_NAME = #{name} AND USER_EMAIL = #{email}
-	</select>
 
     <!-- 비밀번호 재설정 -->
     <update id="setPw">
- 	update SPO_USER set
-	   USER_PASSWORD = #{pw}
- 	where USER_ID = #{id}
+ 	update AI_USER set
+	   PASSWORD = #{password}
+ 	where EMAIL = #{email}
  	</update>
+
+    <!-- 이메일 중복 체크 -->
+    <select id="dupEmail" parameterType="user" resultType="int">
+		select count(*)
+		from AI_USER
+		where EMAIL= #{email};
+	</select>
+
+    <insert id="regist" parameterType="user">
+		INSERT INTO bizmiso.AI_USER (
+			USER_NO,
+			EMAIL,
+			 PASSWORD,
+			 USER_NAME,
+			 TEL,
+			 AGENCY,
+			 COMPANY_TYPE_CODE,
+			 DW_CONFIRM_YN,
+			 REG_DATE,
+			 UPD_DATE)
+		VALUES (
+			ai_get_seq('userNo'),
+			#{email},
+			#{password},
+			#{userName},
+			#{tel},
+			#{agency},
+			#{companyTypeCode},
+			'N',
+			NOW(),
+			NOW()
+		);
+	</insert>
+
+    <!-- 회원 탈퇴 -->
+    <delete id="delete" parameterType="user">
+		DELETE FROM bizmiso.AI_USER
+		WHERE email = #{email};
+	</delete>
+
+    <select id="findUserNo" parameterType="user" resultType="int">
+		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}
+	</select>
 </mapper>

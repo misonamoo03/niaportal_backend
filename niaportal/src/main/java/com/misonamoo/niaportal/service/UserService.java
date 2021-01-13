@@ -1,12 +1,18 @@
 package com.misonamoo.niaportal.service;
 
-import com.misonamoo.niaportal.vo.BoardVO;
-import com.misonamoo.niaportal.vo.UserVO;
+import com.misonamoo.niaportal.domain.User;
 
-import java.util.List;
 
 public interface UserService {
-    public UserVO login(UserVO vo);
-    public String findId(UserVO vo )throws Exception;
-    public int setPw(UserVO vo);
+    public User login(User vo);
+
+    public int setPw(User vo);
+
+    public int dupEmail(User user);
+
+    public void regist(User user);
+
+    public void delete(User user);
+
+    public int findUserNo(User user);
 }

@@ -5,7 +5,9 @@
     <!-- 로그인 -->
     <select id="login" parameterType="user" resultType="user">
 		SELECT EMAIL as email,
-				PASSWORD as password
+				PASSWORD as password,
+				USER_NAME as userName,
+				USER_NO as userNo
 		FROM
 			AI_USER
 		WHERE EMAIL = #{email}

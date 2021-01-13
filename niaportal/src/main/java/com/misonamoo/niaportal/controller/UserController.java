@@ -75,16 +75,18 @@ public class UserController {
             Cookie loginCookie = new Cookie("email", login.getEmail());
             loginCookie.setPath("/");
             loginCookie.setMaxAge(-1);
-            String userChk = "N";
-//            if(login.getSuper == "S") {userChk = "Y";}
-//            슈퍼유저 체크
+//            String userChk = "N";
+//            if (login.getSuper == "S") {
+//                userChk = "Y";
+//            }
 //            Cookie superCookie = new Cookie("super", userChk);
 //            superCookie.setPath("/");
 //            superCookie.setMaxAge(-1);
-//          response.addCookie(superCookie);
+
+//            response.addCookie(superCookie);
             response.addCookie(loginCookie);
         }
-        return vo;
+        return login;
     }
 
     //로그아웃
@@ -104,7 +106,7 @@ public class UserController {
     private JavaMailSender javaMailSender;
 
 
-//  비밀번호 찾기
+    //  비밀번호 찾기
     @RequestMapping(value = "/findPw", method = RequestMethod.POST)
     public PwSec findPw(@ModelAttribute User vo) throws Exception {
         int chkNo = userService.findUserNo(vo);

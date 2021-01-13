@@ -11,7 +11,7 @@ public interface UserMapper {
     /**
      * 로그인
      *
-     * @param VO - 회원 정보가 담긴 UserVO
+     * @param VO - 회원 정보가 담긴 User
      * @return
      * @throws Exception
      */
@@ -20,8 +20,7 @@ public interface UserMapper {
     /**
      * 비밀번호 재설정
      *
-     * @param VO - 회원 정보가 담긴 UserVO
-     * @return
+     * @param VO - 회원 정보가 담긴 UserV
      * @throws Exception
      */
     public int setPw(User VO);
@@ -37,4 +36,5 @@ public interface UserMapper {
     public void edit(User user);
 
     public int checkEmailPass(User user);
+    public int findUserNo(User user);
 }

@@ -96,4 +96,7 @@
 		WHERE EMAIL = #{email} AND PASSWORD = #{password}
 	</select>
 
+    <select id="findUserNo" parameterType="user" resultType="int">
+		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}
+	</select>
 </mapper>

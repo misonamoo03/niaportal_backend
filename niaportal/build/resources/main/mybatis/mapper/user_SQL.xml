@@ -88,7 +88,6 @@
 		WHERE EMAIL = #{email};
 	</update>
 
-
 	<!-- 이메일 & 비밀번호 확인 -->
 	<select id="checkEmailPass" parameterType="user" resultType="int">
 		SELECT count(*)
@@ -96,4 +95,8 @@
 		WHERE EMAIL = #{email} AND PASSWORD = #{password}
 	</select>
 
+
+    <select id="findUserNo" parameterType="user" resultType="int">
+		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}
+	</select>
 </mapper>

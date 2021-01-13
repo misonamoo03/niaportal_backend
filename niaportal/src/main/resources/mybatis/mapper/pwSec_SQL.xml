@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.misonamoo.niaportal.mapper.PwSecMapper">
+
+    <select id="findCode" parameterType="int" resultType="String">
+		 SELECT SEC_CODE FROM AI_PW_SEC WHERE USER_NO = #{userNo}
+	</select>
+
+    <insert id="setCode" parameterType="pwSec">
+		INSERT INTO AI_PW_SEC(
+			USER_NO,
+			SEC_CODE,
+			START_DT,
+			END_DT
+		) VALUES (
+			#{userNo},
+			#{secCode},
+			NOW(),
+			#{endDt}
+		)
+	</insert>
+
+    <update id="updateCode" parameterType="pwSec">
+		UPDATE AI_PW_SEC SET SEC_CODE = #{secCode}
+		WHERE USER_NO = #{userNo}
+	</update>
+</mapper>

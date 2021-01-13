@@ -1,7 +1,9 @@
 package com.misonamoo.niaportal.controller;
 
-import com.misonamoo.niaportal.service.UserService;
+import com.misonamoo.niaportal.domain.PwSec;
 import com.misonamoo.niaportal.domain.User;
+import com.misonamoo.niaportal.service.PwSecService;
+import com.misonamoo.niaportal.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +11,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/User")
@@ -26,6 +27,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    PwSecService pwSecService;
 
     //회원가입
     @PostMapping(value = "/register")
@@ -137,28 +141,66 @@ public class UserController {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    @GetMapping("/mailSend")
-    public String index() throws MessagingException, UnsupportedEncodingException {
 
-        String to = ""; //받는 사람
+//  비밀번호 찾기
+    @RequestMapping(value = "/findPw", method = RequestMethod.POST)
+    public PwSec findPw(@ModelAttribute User vo) throws Exception {
+        int chkNo = userService.findUserNo(vo);
+        PwSec pwSec = new PwSec();
+        pwSec.setUserNo(chkNo);
+        pwSec.setSecCode(pwSecService.findCode(pwSec.getUserNo()));
+        String codeBuf = "";
+        if (pwSec.getSecCode() == null || pwSec.getSecCode() == "") {
+            Random rnd = new Random(); // 랜덤코드를 씌우기 위해서
+            StringBuffer buf = new StringBuffer();// 보안코드 값을
+            for (int i = 0; i < 8; i++) {
+                // rnd.nextBoolean() 는 랜덤으로 true, false 를 리턴. true일 시 랜덤 한 소문자를, false 일 시 랜덤 한
+                // 숫자를 StringBuffer 에 append 한다.
+                if (rnd.nextBoolean()) {
+                    buf.append((char) ((int) (rnd.nextInt(26)) + 97));
+                } else {
+                    buf.append((rnd.nextInt(10)));
+                }
+                codeBuf = buf.toString();
+            }
+            pwSec.setSecCode(codeBuf);
+            pwSecService.setCode(pwSec);
+        } else {
+            Random rnd = new Random(); // 랜덤코드를 씌우기 위해서
+            StringBuffer buf = new StringBuffer();// 보안코드 값을
+            for (int i = 0; i < 8; i++) {
+                // rnd.nextBoolean() 는 랜덤으로 true, false 를 리턴. true일 시 랜덤 한 소문자를, false 일 시 랜덤 한
+                // 숫자를 StringBuffer 에 append 한다.
+                if (rnd.nextBoolean()) {
+                    buf.append((char) ((int) (rnd.nextInt(26)) + 97));
+                } else {
+                    buf.append((rnd.nextInt(10)));
+                }
+                codeBuf = buf.toString();
+            }
+            pwSec.setSecCode(codeBuf);
+            pwSecService.updateCode(pwSec);
+        }
+//      메일 발송 부분
+        String to = vo.getEmail(); //받는 사람
         String from = ""; //보내는 사람
         String subject = "제목!!"; //제목
-        String body = "내용@@"; //내용
-//        StringBuilder body = new StringBuilder();
+        String body = "내용@@" + pwSec.getSecCode(); //내용
+        //        StringBuilder body = new StringBuilder();
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
-        mimeMessageHelper.setFrom(from, "진호");
+        mimeMessageHelper.setFrom(from, "수신자명");
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(body, true);
         javaMailSender.send(message);
-        return "성공";
+        return pwSec;
     }
 
     //비밀번호 재설정
     @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
-    public String setPw(@ModelAttribute User vo) throws Exception {
-        int result = userService.setPw(vo);
+    public String setPw(@ModelAttribute User user) throws Exception {
+        int result = userService.setPw(user);
         String pass = "fail";
         if (result != 0) {
             pass = "success";

@@ -5,7 +5,9 @@ import com.misonamoo.niaportal.domain.User;
 
 public interface UserService {
     public User login(User vo);
+
     public int setPw(User vo);
+
     public int dupEmail(User user);
 
     public void register(User user);
@@ -13,4 +15,6 @@ public interface UserService {
     public void withdraw(User user);
     public void edit(User user);
     public int checkEmailPass(User user);
+
+    public int findUserNo(User user);
 }

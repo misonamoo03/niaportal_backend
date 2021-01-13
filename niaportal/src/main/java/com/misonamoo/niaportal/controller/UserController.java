@@ -202,7 +202,7 @@ public class UserController {
         }
 //      메일 발송 부분
         String to = vo.getEmail(); //받는 사람
-        String from = "qjzjsldj@gmail.com"; //보내는 사람
+        String from = ""; //보내는 사람
         String subject = "이 프로젝트의 비밀번호 찾기 메일입니다."; //제목
         String body = "내용@@" + pwSec.getSecCode(); //내용
         //        StringBuilder body = new StringBuilder();

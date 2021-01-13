@@ -29,37 +29,74 @@
 		where EMAIL= #{email};
 	</select>
 
-    <insert id="regist" parameterType="user">
+	<!-- 회원 등록 -->
+    <insert id="register" parameterType="user">
 		INSERT INTO bizmiso.AI_USER (
 			USER_NO,
 			EMAIL,
+			USER_GB_CODE,
 			 PASSWORD,
 			 USER_NAME,
 			 TEL,
 			 AGENCY,
 			 COMPANY_TYPE_CODE,
 			 DW_CONFIRM_YN,
+			 DEL_YN,
 			 REG_DATE,
 			 UPD_DATE)
 		VALUES (
 			ai_get_seq('userNo'),
 			#{email},
+			#{userGbCode},
 			#{password},
 			#{userName},
 			#{tel},
 			#{agency},
 			#{companyTypeCode},
-			'N',
+			#{dwConfirmYn},
+			#{delYn},
 			NOW(),
 			NOW()
 		);
 	</insert>
 
-    <!-- 회원 탈퇴 -->
+    <!-- 회원 삭제 -->
     <delete id="delete" parameterType="user">
 		DELETE FROM bizmiso.AI_USER
 		WHERE email = #{email};
 	</delete>
+
+	<!-- 회원 탈퇴 -->
+	<update id="withdraw" parameterType="user">
+		UPDATE bizmiso.AI_USER
+		SET DEL_YN = 'Y'
+		WHERE EMAIL = #{email};
+	</update>
+
+	<!-- 회원 정보 수정 -->
+	<update id="edit" parameterType="user">
+		UPDATE bizmiso.AI_USER
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='tel != null and tel != "null" and tel != ""'>
+				TEL = #{tel},
+			</if>
+			<if test='agency != null and agency != "null" and agency != ""'>
+				agency = #{agency},
+			</if>
+			<if test='companyTypeCode != null and companyTypeCode != "null" and companyTypeCode != ""'>
+				COMPANY_TYPE_CODE = #{companyTypeCode},
+			</if>
+		</trim>
+		WHERE EMAIL = #{email};
+	</update>
+
+
+	<!-- 이메일 & 비밀번호 확인 -->
+	<select id="checkEmailPass" parameterType="user" resultType="int">
+		SELECT count(*)
+		FROM AI_USER
+		WHERE EMAIL = #{email} AND PASSWORD = #{password}
+	</select>
 
     <select id="findUserNo" parameterType="user" resultType="int">
 		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}

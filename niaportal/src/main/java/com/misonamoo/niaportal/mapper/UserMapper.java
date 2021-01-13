@@ -27,9 +27,14 @@ public interface UserMapper {
 
     public int dupEmail(User user);
 
-    public void regist(User user);
+    public void register(User user);
 
     public void delete(User user);
 
+    public void withdraw(User user);
+
+    public void edit(User user);
+
+    public int checkEmailPass(User user);
     public int findUserNo(User user);
 }

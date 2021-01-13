@@ -1,8 +1,10 @@
 package com.misonamoo.niaportal.service;
 
+import com.misonamoo.niaportal.common.SHA256Util;
 import com.misonamoo.niaportal.mapper.UserMapper;
 import com.misonamoo.niaportal.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,6 +12,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Value("${key}")
+    private String salt;    // 비밀번호 암호화 키
 
     @Override
     public User login(User userVO) {
@@ -27,8 +32,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void regist(User user) {
-        userMapper.regist(user);
+    public void register(User user) {
+        String password = user.getPassword();
+        password = SHA256Util.getEncrypt(password, salt);
+
+        user.setPassword(password);
+        userMapper.register(user);
     }
 
     @Override
@@ -37,6 +46,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void withdraw(User user) {
+        userMapper.withdraw(user);
+    }
+
+    @Override
+    public void edit(User user) {
+        userMapper.edit(user);
+    }
+
+    @Override
+    public int checkEmailPass(User user) {
+        return userMapper.checkEmailPass(user);
+
     public int findUserNo(User user) {
         return userMapper.findUserNo(user);
     }

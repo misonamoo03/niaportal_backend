@@ -57,3 +57,7 @@ spring:
       password:
 server:
   port: 9090
+
+---
+#salt 키
+key: Misonamoo

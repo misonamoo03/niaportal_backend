@@ -163,7 +163,18 @@ public class UserController {
 
     //  비밀번호 찾기
     @RequestMapping(value = "/findPw", method = RequestMethod.POST)
-    public PwSec findPw(@ModelAttribute User vo) throws Exception {
+    public Map<String, Object> findPw(@ModelAttribute User vo) throws Exception {
+        Map<String, Object> rst = new HashMap<String, Object>();
+        if (vo.getEmail() == null) {
+            rst.put("code", 101);
+            rst.put("message", "아이디 없음");
+            return rst;
+        }
+        if (vo.getPassword() == null) {
+            rst.put("code", 102);
+            rst.put("message", "비밀번호 없음");
+            return rst;
+        }
         int chkNo = userService.findUserNo(vo);
         PwSec pwSec = new PwSec();
         pwSec.setUserNo(chkNo);
@@ -213,17 +224,19 @@ public class UserController {
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(body, true);
         javaMailSender.send(message);
-        return pwSec;
+        rst.put("code", 200);
+        rst.put("message", "인증 정상 처리");
+        return rst;
     }
 
     //비밀번호 재설정
     @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
     public Map<String, Object> setPw(@ModelAttribute User user) throws Exception {
         Map<String, Object> rst = new HashMap<String, Object>();
-        if (user.getPassword() == null || user.getPassword()=="") {
+        if (user.getPassword() == null || user.getPassword() == "") {
             rst.put("code", 100);
             rst.put("message", "필수값 없음");
-            return  rst;
+            return rst;
         }
         String password = user.getPassword();
         password = SHA256Util.getEncrypt(password, salt);

@@ -18,9 +18,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(User user) {
-        String password = user.getPassword();
-        password = SHA256Util.getEncrypt(password, salt);
-        user.setPassword(password);
         return userMapper.login(user);
     }
 

@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
     public int checkEmailPass(User user) {
         return userMapper.checkEmailPass(user);
     }
+
     @Override
     public int findUserNo(User user) {
         return userMapper.findUserNo(user);

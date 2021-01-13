@@ -218,12 +218,22 @@ public class UserController {
 
     //비밀번호 재설정
     @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
-    public String setPw(@ModelAttribute User user) throws Exception {
-        int result = userService.setPw(user);
-        String pass = "fail";
-        if (result != 0) {
-            pass = "success";
+    public Map<String, Object> setPw(@ModelAttribute User user) throws Exception {
+        Map<String, Object> rst = new HashMap<String, Object>();
+        if (user.getPassword() == null || user.getPassword()=="") {
+            rst.put("code", 100);
+            rst.put("message", "필수값 없음");
+            return  rst;
         }
-        return pass;
+        String password = user.getPassword();
+        password = SHA256Util.getEncrypt(password, salt);
+        user.setPassword(password);
+        int result = userService.setPw(user);
+        if (result != 0) {
+            rst.put("code", 200);
+            rst.put("message", "비밀번호 변경 정상 처리");
+            return rst;
+        }
+        return rst;
     }
 }

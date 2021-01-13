@@ -98,6 +98,7 @@
 		WHERE EMAIL = #{email} AND PASSWORD = #{password}
 	</select>
 
+<!--	이메일로 회원번호 가져오는 쿼리-->
     <select id="findUserNo" parameterType="user" resultType="int">
 		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}
 	</select>

@@ -18,7 +18,6 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -143,12 +142,12 @@ public class UserController {
             isNull(user.getTel()) ||
             isNull(user.getAgency()) ||
             isNull(user.getCompanyTypeCode())) {
-            ret.put("code", "100");
+            ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
             return ret;
         }
-        int emailCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
-        if (emailCnt > 0) {
+        int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
+        if (emailPassCnt > 0) {
             if (user.getEmail().equals(getCookieValue(request,"email"))) {
                 if (isNull(user.getNewPassword())) {
                     //회원정보 수정처리
@@ -160,11 +159,11 @@ public class UserController {
                     userService.edit(user);
                 }
             } else { // 받아온 user의 email과 쿠키에 담겨있는 user의 email정보가 다른 경우
-                ret.put("code", "104");
+                ret.put("code", 104);
                 ret.put("message", "접근권한 없음");
             }
         } else {
-            ret.put("code", "103");
+            ret.put("code", 103);
             ret.put("message", "비밀번호 불일치");
         }
         return ret;
@@ -200,60 +199,55 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Map login(@ModelAttribute User user, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
-        if (user.getEmail() == null) {
-            ret.put("code", 101);
-            ret.put("messsage", "아이디 없음");
+        ret.put("code", 200);
+        ret.put("message", "로그인 정상 처리");
+        if (isNull(user.getEmail()) || isNull(user.getPassword())) {
+            ret.put("code", 100);
+            ret.put("message", "필수 변수값 없음");
             return ret;
-        } else if (user.getPassword() == null) {
+        }
+        int emailCnt = userService.dupEmail(user);  //1이면 아이디 존재, 0이면 아이디 없음
+        if (emailCnt == 0) {
+            ret.put("code", 102);
+            ret.put("message", "아이디 없음");
+            return ret;
+        }
+        int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
+        if (emailPassCnt == 0) {
             ret.put("code", 103);
-            ret.put("messsage", "비밀번호 없음");
+            ret.put("message", "비밀번호 불일치");
             return ret;
         }
-        User vo = new User();
-        String password  = SHA256Util.getEncrypt(user.getPassword(), salt);
-        vo.setEmail(user.getEmail());
-        vo.setPassword(password);
-        User login = userService.login(vo);
-        if (!login.getPassword().equals(vo.getPassword())) {
-            ret.put("code", 104);
-            ret.put("messsage", "비밀번호 불일치");
-            return ret;
-        }
-        if (login == null) {
-            ret.put("code", 200);
-            ret.put("messsage", "로그인 실패");
+        int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
+        if (deletedUser > 0) {
+            ret.put("code", 105);
+            ret.put("message", "탈퇴한 회원 ID");
         } else {
-            Cookie[] loginCookies = new Cookie[4];      // 쿠키 설정
+            // login
+            User login = userService.login(user);
+            Cookie[] loginCookies = new Cookie[4];   // 쿠키 설정
             loginCookies[0] = new Cookie("email", URLEncoder.encode(login.getEmail(), "UTF-8")); //UTF-8로 인코딩
-            loginCookies[1] = new Cookie("userNo", login.getUserNo() + "");
-            loginCookies[2] = new Cookie("userGbCode", login.getUserGbCode());
+            loginCookies[1] = new Cookie("userNo",URLEncoder.encode(login.getUserNo() + "", "UTF-8"));
+            loginCookies[2] = new Cookie("userGbCode", URLEncoder.encode(login.getUserGbCode(), "UTF-8"));
             loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
             for (Cookie c : loginCookies) {
                 c.setPath("/");
                 c.setMaxAge(-1);
                 response.addCookie(c);
             }
-            ret.put("code", 200);
-            ret.put("messsage", "로그인 성공");
         }
         return ret;
     }
 
     //로그아웃
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public Map logout(HttpServletResponse response, HttpServletRequest request) throws Exception {
-        Map<String, Object> rst = new HashMap<String, Object>();
-        Cookie[] cookies = request.getCookies(); // 모든 쿠키의 정보를 cookies에 저장
-        if (cookies != null) { // 쿠키가 한개라도 있으면 실행
-            for (int i = 0; i < cookies.length; i++) {
-                cookies[i].setMaxAge(0); // 쿠키 유효시간을 0으로 설정
-                cookies[i].setPath("/");
-                response.addCookie(cookies[i]); // 응답 헤더에 추가
-                rst.put("message", "로그아웃 정상 처리");
-            }
-        }
-        rst.put("code", "200");
-        return rst;
+    public Map logout(@ModelAttribute User user, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        Map<String, Object> ret = new HashMap();
+        ret.put("code", 200);
+        ret.put("message", "로그아웃 정상 처리");
+        setLogout(request, response);
+
+        return ret;
     }
 
     @Autowired

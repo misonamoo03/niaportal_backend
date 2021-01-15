@@ -31,7 +31,7 @@ public class CommonUtil {
      * @throws UnsupportedEncodingException
      */
     public static String getCookieValue(HttpServletRequest request, String key) throws UnsupportedEncodingException {
-        Cookie[] cookies = request.getCookies();
+        Cookie[] cookies = request.getCookies(); //쿠키 정보를 받아온다.
         String returnValue = null;
         if(cookies != null) {
             for(Cookie c : cookies){

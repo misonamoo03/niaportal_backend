@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.misonamoo.niaportal.mapper.DwReqMapper">
+
+	<!-- 이메일 중복 체크 -->
+	<select id="getDwReqInfo" parameterType="DwReqVO" resultType="DwReqVO">
+		SELECT
+		    B.USER_NO as userNo,
+			B.EMAIL as email,
+			B.USER_NAME as userName,
+			B.TEL as tel,
+			B.AGENCY as agency,
+			B.COMPANY_TYPE_CODE as companyTypeCode,
+			(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = B.COMPANY_TYPE_CODE) AS companyTypeName ,
+			A.REQ_CODE as reqCode,
+			(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.REQ_CODE) AS reqName,
+		    A.REQ_COMMENT as reqComment,
+		    A.CONFIRM_STATE_CODE as confirmStateCode,
+			(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.CONFIRM_STATE_CODE) AS conformStateName,
+			A.CONFIRM_MESSAGE as confirmMessage,
+			A.REG_DATE as regDate,
+		    A.CONFIRM_DATE as confirmDate
+		FROM bizmiso.AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO where A.USER_NO=#{userNo};
+	</select>
+
+	<!-- 회원 등록 -->
+	<insert id="insertReq" parameterType="DwReqVO">
+		INSERT INTO bizmiso.AI_DW_REQ (
+			USER_NO,
+			REQ_CODE,
+			REQ_COMMENT,
+			CONFIRM_STATE_CODE,
+			REG_DATE,
+			UPD_DATE)
+		VALUES (
+			   #{userNo},
+			   #{reqCode},
+			   #{reqComment},
+		        #{confirmStateCode},
+			   NOW(),
+			   NOW()
+		)ON DUPLICATE KEY UPDATE
+
+			<if test='confirmStateCode != null and confirmStateCode != "null" and confirmStateCode != ""'>
+				CONFIRM_STATE_CODE = #{confirmStateCode},
+			</if>
+			<if test='confirmMessage != null and confirmMessage != "null" and confirmMessage != ""'>
+				CONFIRM_MESSAGE= #{confirmMessage},
+			</if>
+			UPD_DATE = NOW();
+		;
+	</insert>
+
+</mapper>

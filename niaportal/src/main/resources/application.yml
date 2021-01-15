@@ -61,3 +61,8 @@ server:
 ---
 #salt 키
 key: Misonamoo
+dwReqCode:
+  dwReq: CD010001 #승인요청
+  dwReqConfirm: CD010002 #승인
+  dwReqFail: CD010003 #승인반려
+  reReq: CD010004 #재승인처리

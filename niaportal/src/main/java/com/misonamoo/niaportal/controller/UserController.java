@@ -47,12 +47,12 @@ public class UserController {
         ret.put("code", 200);
         ret.put("message", "회원가입 정상 처리");
         int emailCnt = userService.dupEmail(user);  // 0이면 이메일 중복 x, 1이면 이메일 중복
-        if (isNotNull(user.getEmail()) ||    // 필수 변수값 없음
-            isNotNull(user.getEmail()) ||
-            isNotNull(user.getEmail())||
-            isNotNull(user.getEmail()) ||
-            isNotNull(user.getEmail()) ||
-            isNotNull(user.getEmail())) {
+        if (isNull(user.getEmail()) ||    // 필수 변수값 없음
+            isNull(user.getPassword()) ||
+            isNull(user.getUserName())||
+            isNull(user.getTel()) ||
+            isNull(user.getAgency()) ||
+            isNull(user.getCompanyTypeCode())) {
 
             ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
@@ -68,41 +68,25 @@ public class UserController {
         return ret;
     }
 
+
     //회원삭제
     @PostMapping(value = "/delete")
     public Map<String, Object> delete(@ModelAttribute User user, HttpServletResponse response, HttpServletRequest request) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("code", 200);
         ret.put("message", "회원삭제 정상 처리");
-        if (CommonUtil.isNotNull(user.getEmail())) {
+        if (CommonUtil.isNull(user.getEmail())) {
             ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
             return ret;
         }
-        String emailCookie = "";
-        //쿠키정보를 체크해서 회원인지를 확인한다. user.email과 쿠키에 있는 이메일이 같은지 확인하다.
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie c : cookies) {
-                if ("email".equals(c.getName())) {
-                    emailCookie = URLDecoder.decode(c.getValue(), "UTF-8");
-                }
-            }
-        }
-
         int emailCnt = userService.dupEmail(user);
         if (emailCnt > 0) {
-            if(user.getEmail().equals(emailCookie)) {
+            if(user.getEmail().equals(getCookieValue(request,"email"))) {
                 //회원삭제처리
                 userService.delete(user);
                 //회원삭제가 제대로 처리 되면 쿠키를 삭제한다.
-                if (cookies != null) { // 쿠키가 한개라도 있으면 실행
-                    for (Cookie c : cookies) {
-                        c.setMaxAge(0); // 유효시간을 0으로 설정
-                        c.setPath("/");
-                        response.addCookie(c); // 응답 헤더에 추가
-                    }
-                }
+                setLogout(request, response);
             }
             else {
                 ret.put("code", 104);
@@ -122,34 +106,18 @@ public class UserController {
         Map<String, Object> ret = new HashMap();
         ret.put("code", 200);
         ret.put("message", "회원탈퇴 정상 처리");
-        if (isNotNull(user.getEmail())) {
+        if (isNull(user.getEmail())) {
             ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
             return ret;
         }
-        String emailCookie = "";
-        //쿠키정보를 체크해서 회원인지를 확인한다. user.email과 쿠키에 있는 이메일이 같은지 확인하다.
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null) {
-            for(Cookie c : cookies){
-                if ("email".equals(c.getName())) {
-                    emailCookie = URLDecoder.decode(c.getValue(), "UTF-8");
-                }
-            }
-        }
         int emailCnt = userService.dupEmail(user);
         if (emailCnt > 0) {
-            if(user.getEmail().equals(emailCookie)) {
+            if(user.getEmail().equals(getCookieValue(request,"email"))) {
                 //회원탈퇴처리
                 userService.withdraw(user);
                 //회원탈퇴가 제대로 처리 되면 쿠키를 삭제한다.
-                if (cookies != null) { // 쿠키가 한개라도 있으면 실행
-                    for (Cookie c : cookies) {
-                        c.setMaxAge(0); // 유효시간을 0으로 설정
-                        c.setPath("/");
-                        response.addCookie(c); // 응답 헤더에 추가
-                    }
-                }
+                setLogout(request, response);
             }
             else {
                 ret.put("code", 104);
@@ -169,30 +137,20 @@ public class UserController {
         Map<String, Object> ret = new HashMap();
         ret.put("code", 200);
         ret.put("message", "회원정보 수정 정상 처리");
-        if(isNotNull(user.getEmail()) ||    // 필수 변수값 없음
-            isNotNull(user.getEmail()) ||
-            isNotNull(user.getEmail()) ||
-            isNotNull(user.getEmail()) ||
-            isNotNull(user.getEmail()) ||
-            isNotNull(user.getEmail())) {
+        if(isNull(user.getEmail()) ||    // 필수 변수값 없음
+            isNull(user.getPassword()) ||
+            isNull(user.getUserName()) ||
+            isNull(user.getTel()) ||
+            isNull(user.getAgency()) ||
+            isNull(user.getCompanyTypeCode())) {
             ret.put("code", "100");
             ret.put("message", "필수 변수값 없음");
             return ret;
         }
-        String emailCookie = "";
-        //쿠키정보를 체크해서 회원인지를 확인한다. user.email과 쿠키에 있는 이메일이 같은지 확인하다.
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null) {
-            for(Cookie c : cookies){
-                if ("email".equals(c.getName())) {
-                    emailCookie = URLDecoder.decode(c.getValue(), "UTF-8");
-                }
-            }
-        }
         int emailCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
         if (emailCnt > 0) {
-            if (user.getEmail().equals(emailCookie)) {
-                if (user.getNewPassword() == null || user.getNewPassword().equals("")) {
+            if (user.getEmail().equals(getCookieValue(request,"email"))) {
+                if (isNull(user.getNewPassword())) {
                     //회원정보 수정처리
                     user.setUpdStyle("ONLYINFO");
                     userService.edit(user);
@@ -218,17 +176,17 @@ public class UserController {
         Map<String, Object> ret = new HashMap();
         ret.put("code", 200);
         ret.put("message", "중복가입 확인 정상 처리");
-        if (isNotNull(user.getEmail())) {
+        if (isNull(user.getEmail())) {
             ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
             return ret;
         }
-        int deletedUser = userService.deletedUser(user); // 1: 삭제된 유저 0: 삭제되지 않은 유저
+        int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
         int emailCnt = userService.dupEmail(user);
         Map<String, Object> rst = new HashMap();
         String memberYn = (emailCnt == 1) ? "Y" : "N";
         rst.put("memberYn", memberYn);
-        if(deletedUser != 0) {
+        if(deletedUser == 0) {
             ret.put("result",  rst);
         } else {
             ret.put("code", 105);

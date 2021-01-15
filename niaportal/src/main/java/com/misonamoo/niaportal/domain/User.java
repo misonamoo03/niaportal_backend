@@ -16,6 +16,7 @@ public class User {
     private String email;
     private String userGbCode;
     private String password;
+    private String newPassword;
     private String userName;
     private String tel;
     private String agency;
@@ -24,10 +25,13 @@ public class User {
     private String delYn;
     private Date regDate;
     private Date updDate;
+    private String updStyle;
 
     public User() {
         userGbCode = "CD002001";
         dwConfirmYn = "N";
         delYn = "N";
     }
+
+
 }

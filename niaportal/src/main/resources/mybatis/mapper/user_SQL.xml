@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.misonamoo.niaportal.mapper.UserMapper">
 
-    <!-- 로그인 -->
-    <select id="login" parameterType="user" resultType="user">
+	<!-- 로그인 -->
+	<select id="login" parameterType="user" resultType="user">
 		SELECT EMAIL as email,
 				PASSWORD as password,
 				USER_NAME as userName,
@@ -15,22 +15,22 @@
 	</select>
 
 
-    <!-- 비밀번호 재설정 -->
-    <update id="setPw">
+	<!-- 비밀번호 재설정 -->
+	<update id="setPw">
  	update AI_USER set
 	   PASSWORD = #{password}
  	where EMAIL = #{email}
  	</update>
 
-    <!-- 이메일 중복 체크 -->
-    <select id="dupEmail" parameterType="user" resultType="int">
+	<!-- 이메일 중복 체크 -->
+	<select id="dupEmail" parameterType="user" resultType="int">
 		select count(*)
 		from AI_USER
 		where EMAIL= #{email};
 	</select>
 
 	<!-- 회원 등록 -->
-    <insert id="register" parameterType="user">
+	<insert id="register" parameterType="user">
 		INSERT INTO bizmiso.AI_USER (
 			USER_NO,
 			EMAIL,
@@ -60,8 +60,8 @@
 		);
 	</insert>
 
-    <!-- 회원 삭제 -->
-    <delete id="delete" parameterType="user">
+	<!-- 회원 삭제 -->
+	<delete id="delete" parameterType="user">
 		DELETE FROM bizmiso.AI_USER
 		WHERE email = #{email};
 	</delete>
@@ -77,19 +77,43 @@
 	<update id="edit" parameterType="user">
 		UPDATE bizmiso.AI_USER
 		<trim prefix="SET" suffixOverrides=",">
+			<if test='updStyle == "WITHPASS" and password != "null" and password != ""'>
+				PASSWORD = #{password},
+			</if>
 			<if test='tel != null and tel != "null" and tel != ""'>
 				TEL = #{tel},
 			</if>
 			<if test='agency != null and agency != "null" and agency != ""'>
-				agency = #{agency},
+				AGENCY = #{agency},
 			</if>
 			<if test='companyTypeCode != null and companyTypeCode != "null" and companyTypeCode != ""'>
 				COMPANY_TYPE_CODE = #{companyTypeCode},
 			</if>
+			UPD_DATE = NOW(),
 		</trim>
 		WHERE EMAIL = #{email};
 	</update>
 
+	<!-- 회원 정보 수정(비밀번호 포함) -->
+	<!--	<update id="editPassword" parameterType="user">-->
+	<!--		UPDATE bizmiso.AI_USER-->
+	<!--		<trim prefix="SET" suffixOverrides=",">-->
+	<!--			<if test='password != null and password != "null" and password != ""'>-->
+	<!--				PASSWORD = #{password},-->
+	<!--			</if>-->
+	<!--			<if test='tel != null and tel != "null" and tel != ""'>-->
+	<!--				TEL = #{tel},-->
+	<!--			</if>-->
+	<!--			<if test='agency != null and agency != "null" and agency != ""'>-->
+	<!--				AGENCY = #{agency},-->
+	<!--			</if>-->
+	<!--			<if test='companyTypeCode != null and companyTypeCode != "null" and companyTypeCode != ""'>-->
+	<!--				COMPANY_TYPE_CODE = #{companyTypeCode},-->
+	<!--			</if>-->
+	<!--			UPD_DATE = NOW(),-->
+	<!--		</trim>-->
+	<!--		WHERE EMAIL = #{email};-->
+	<!--	</update>-->
 
 	<!-- 이메일 & 비밀번호 확인 -->
 	<select id="checkEmailPass" parameterType="user" resultType="int">
@@ -98,8 +122,13 @@
 		WHERE EMAIL = #{email} AND PASSWORD = #{password}
 	</select>
 
-<!--	이메일로 회원번호 가져오는 쿼리-->
-    <select id="findUserNo" parameterType="user" resultType="int">
+	<!--이메일로 회원번호 가져오는 쿼리-->
+	<select id="findUserNo" parameterType="user" resultType="int">
 		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}
+	</select>
+
+	<!-- 회원의 탈퇴 여부 -->
+	<select id="deletedUser" parameterType="user" resultType="int">
+		SELECT count(*) FROM AI_USER WHERE EMAIL = #{email} AND DEL_YN = 'Y'
 	</select>
 </mapper>

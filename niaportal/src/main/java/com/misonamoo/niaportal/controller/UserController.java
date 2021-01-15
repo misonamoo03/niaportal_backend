@@ -69,12 +69,29 @@ public class UserController {
 
     //회원 조회
     @GetMapping(value = "/inquiry")
-    public Map<String, Object> delete(@ModelAttribute User user) throws Exception {
+    public Map<String, Object> delete(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("code", 200);
         ret.put("message", "회원조회 정상 처리");
 
-        
+        if(user.getEmail().equals(getCookieValue(request,"email"))) {
+            User info = userService.inquiry(user);
+            Map<String, Object> rst = new HashMap();
+            rst.put("email", user.getEmail());
+            rst.put("userName", info.getUserName());
+            rst.put("tel", info.getTel());
+            rst.put("agency", info.getAgency());
+            rst.put("CompanyTypeCode", info.getCompanyTypeCode());
+            rst.put("CompanyTypeName", info.getEmail());
+
+            ret.put("result", rst);
+        }
+        else {
+            ret.put("code", "104");
+            ret.put("message", "접근권한 없음");
+        }
+
+
         return ret;
     }
 
@@ -268,18 +285,21 @@ public class UserController {
     //  비밀번호 찾기
     @RequestMapping(value = "/findPw", method = RequestMethod.POST)
     public Map<String, Object> findPw(@ModelAttribute User user) throws Exception {
-        Map<String, Object> rst = new HashMap();
-        if (user.getEmail() == null) {
-            rst.put("code", 101);
-            rst.put("message", "아이디 없음");
-            return rst;
+        Map<String, Object> ret = new HashMap();
+        ret.put("code", 200);
+        ret.put("message", "인증 정상 처리");
+        if (isNull(user.getEmail())) {
+            ret.put("code", 100);
+            ret.put("message", "필수 변수값 없음");
+            return ret;
         }
         int chkNo = userService.findUserNo(user);
+        System.out.println(chkNo);
         PwSec pwSec = new PwSec();
         pwSec.setUserNo(chkNo);
         pwSec.setSecCode(pwSecService.findCode(pwSec.getUserNo()));
         String codeBuf = "";
-        if (pwSec.getSecCode() == null || pwSec.getSecCode() == "") {
+        if (isNull(pwSec.getSecCode())) {
             Random rnd = new Random(); // 랜덤코드를 씌우기 위해서
             StringBuffer buf = new StringBuffer();// 보안코드 값을
             for (int i = 0; i < 8; i++) {
@@ -323,9 +343,7 @@ public class UserController {
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(body, true);
         javaMailSender.send(message);
-        rst.put("code", 200);
-        rst.put("message", "인증 정상 처리");
-        return rst;
+        return ret;
     }
 
     //비밀번호 재설정

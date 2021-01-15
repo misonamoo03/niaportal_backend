@@ -66,11 +66,40 @@ public class CommonUtil {
      * @return
      */
     public static String setEncryptPass(String word, String salt) { //비밀번호를 암호화해서 저장
-        System.out.println(salt);
         String encWord;
         encWord = SHA256Util.getEncrypt(word, salt);
 
         return encWord;
+    }
+
+    /**
+     * 슈퍼유저로 로그인 되어있을 때 true값 반환
+     * @param request
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static boolean isSuperUser(HttpServletRequest request) throws UnsupportedEncodingException {
+        String userGbCodeVal = getCookieValue(request, "userGbCode");
+        System.out.println(userGbCodeVal);
+        if (userGbCodeVal.equals("CD002002")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 로그인이 되어있는 상태일 때 true값 반환
+     * @param request
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static boolean isLoginNow(HttpServletRequest request) throws UnsupportedEncodingException {
+        if (isNull(getCookieValue(request, "email"))) {  // email의 쿠키 값이 널이면 false
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

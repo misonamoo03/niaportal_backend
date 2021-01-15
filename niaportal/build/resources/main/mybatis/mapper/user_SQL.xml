@@ -60,6 +60,13 @@
 		);
 	</insert>
 
+	<!-- 내 정보 조회 -->
+	<select id="inquiry" parameterType="user" resultType="user">
+		SELECT USER_NAME as userName, TEL as tel, AGENCY as agency, COMPANY_TYPE_CODE as CompanyTypeCode
+		FROM bizmiso.AI_USER
+		WHERE EMAIL = #{email};
+	</select>
+
 	<!-- 회원 삭제 -->
 	<delete id="delete" parameterType="user">
 		DELETE FROM bizmiso.AI_USER
@@ -94,27 +101,6 @@
 		WHERE EMAIL = #{email};
 	</update>
 
-	<!-- 회원 정보 수정(비밀번호 포함) -->
-	<!--	<update id="editPassword" parameterType="user">-->
-	<!--		UPDATE bizmiso.AI_USER-->
-	<!--		<trim prefix="SET" suffixOverrides=",">-->
-	<!--			<if test='password != null and password != "null" and password != ""'>-->
-	<!--				PASSWORD = #{password},-->
-	<!--			</if>-->
-	<!--			<if test='tel != null and tel != "null" and tel != ""'>-->
-	<!--				TEL = #{tel},-->
-	<!--			</if>-->
-	<!--			<if test='agency != null and agency != "null" and agency != ""'>-->
-	<!--				AGENCY = #{agency},-->
-	<!--			</if>-->
-	<!--			<if test='companyTypeCode != null and companyTypeCode != "null" and companyTypeCode != ""'>-->
-	<!--				COMPANY_TYPE_CODE = #{companyTypeCode},-->
-	<!--			</if>-->
-	<!--			UPD_DATE = NOW(),-->
-	<!--		</trim>-->
-	<!--		WHERE EMAIL = #{email};-->
-	<!--	</update>-->
-
 	<!-- 이메일 & 비밀번호 확인 -->
 	<select id="checkEmailPass" parameterType="user" resultType="int">
 		SELECT count(*)
@@ -124,7 +110,7 @@
 
 	<!--이메일로 회원번호 가져오는 쿼리-->
 	<select id="findUserNo" parameterType="user" resultType="int">
-		 SELECT USER_NO FROM AI_USER WHERE EMAIL = #{email}
+		 SELECT USER_NO as userNo FROM AI_USER WHERE EMAIL = #{email}
 	</select>
 
 	<!-- 회원의 탈퇴 여부 -->

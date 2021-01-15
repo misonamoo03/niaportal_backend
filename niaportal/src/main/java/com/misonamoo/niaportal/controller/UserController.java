@@ -67,6 +67,17 @@ public class UserController {
         return ret;
     }
 
+    //회원 조회
+    @GetMapping(value = "/inquiry")
+    public Map<String, Object> delete(@ModelAttribute User user) throws Exception {
+        Map<String, Object> ret = new HashMap();
+        ret.put("code", 200);
+        ret.put("message", "회원조회 정상 처리");
+
+        
+        return ret;
+    }
+
 
     //회원삭제
     @PostMapping(value = "/delete")

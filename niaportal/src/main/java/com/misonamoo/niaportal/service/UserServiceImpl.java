@@ -77,4 +77,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.deletedUser(user);
     }
 
+    @Override
+    public User inquiry(User user) {
+        return userMapper.inquiry(user);
+    }
+
 }

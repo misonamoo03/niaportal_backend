@@ -19,4 +19,5 @@ public interface UserService {
     public int findUserNo(User user);
 
     public int deletedUser(User user);
+    public User inquiry(User user);
 }

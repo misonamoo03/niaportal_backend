@@ -60,6 +60,12 @@
 		);
 	</insert>
 
+	<select id="inquiry" parameterType="user" resultType="user">
+		SELECT USER_NAME, TEL, AGENCY, COMPANY_TYPE_CODE
+		FROM bizmiso.AI_USER
+		WHERE EMAIL = #{email};
+	</select>
+
 	<!-- 회원 삭제 -->
 	<delete id="delete" parameterType="user">
 		DELETE FROM bizmiso.AI_USER

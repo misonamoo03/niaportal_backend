@@ -1,0 +1,40 @@
+package com.misonamoo.niaportal.controller;
+
+
+import com.misonamoo.niaportal.common.ErrorCode;
+import com.misonamoo.niaportal.domain.DwReq;
+import com.misonamoo.niaportal.service.DwReqService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.misonamoo.niaportal.common.CommonUtil.*;
+
+public class BaseController {
+
+
+    public Map<String, Object> returnMap(Map<String, Object> ret){
+
+        if(ret == null){
+            ret.put("code", 600);
+        }
+
+        //errorCode Message 생성
+        String errorMessage = "지정하지 않은 오류";
+        for (ErrorCode error : ErrorCode.values()) {
+            if(error.getCode() == (int)ret.get("code")){
+                errorMessage = error.getMessage();
+            }
+        }
+        ret.put("message",errorMessage);
+        return ret;
+
+
+    }
+
+}

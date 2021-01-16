@@ -1,15 +1,13 @@
 package com.misonamoo.niaportal.service;
 
-import com.misonamoo.niaportal.domain.DwReqVO;
-import com.misonamoo.niaportal.domain.User;
+import com.misonamoo.niaportal.domain.DwReq;
 import com.misonamoo.niaportal.mapper.DwReqMapper;
-import com.misonamoo.niaportal.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static com.misonamoo.niaportal.common.CommonUtil.isNull;
-import static com.misonamoo.niaportal.common.CommonUtil.setEncryptPass;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DwReqServiceImpl implements DwReqService{
@@ -19,10 +17,22 @@ public class DwReqServiceImpl implements DwReqService{
 
 
     @Override
-    public DwReqVO getDwReqInfo(DwReqVO dwReq) { return dwReqMapper.getDwReqInfo(dwReq); }
+    public DwReq getDwReqInfo(DwReq dwReq) { return dwReqMapper.getDwReqInfo(dwReq); }
 
     @Override
-    public void insertReq(DwReqVO dwReq) {
+    public void insertReq(DwReq dwReq) {
         dwReqMapper.insertReq(dwReq);
+    }
+
+    @Override
+    public Map<String, Object> listDwReqInfoPage(DwReq dwReq) {
+        Map<String,Object> result = new HashMap<String,Object>();
+        List<Map<String, Object>> list = dwReqMapper.listDwReqInfo(dwReq);
+        int totalCnt = dwReqMapper.getDwReqTotalCnt(dwReq);
+        result.put("totalCnt",totalCnt);
+        result.put("list", list);
+
+        return result;
+
     }
 }

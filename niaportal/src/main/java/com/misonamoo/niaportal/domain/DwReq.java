@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class DwReqVO {
+public class DwReq extends BasePaging {
     private long userNo;
     private String email;
     private String userName;
@@ -26,9 +26,6 @@ public class DwReqVO {
     private Date regDate;
     private Date confirmDate;
 
-    public DwReqVO() {
-
-    }
 
 
 }

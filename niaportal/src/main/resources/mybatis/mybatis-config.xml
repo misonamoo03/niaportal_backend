@@ -10,7 +10,7 @@
         <typeAlias alias="BoardParameter" type="com.misonamoo.niaportal.domain.BoardParameter" />
         <typeAlias alias="user" type="com.misonamoo.niaportal.domain.User" />
         <typeAlias alias="pwsec" type="com.misonamoo.niaportal.domain.PwSec" />
-        <typeAlias alias="DwReqVO" type="com.misonamoo.niaportal.domain.DwReqVO" />
+        <typeAlias alias="DwReq" type="com.misonamoo.niaportal.domain.DwReq" />
         <typeAlias alias="hashMap" type="java.util.HashMap" />
     </typeAliases>
 </configuration>

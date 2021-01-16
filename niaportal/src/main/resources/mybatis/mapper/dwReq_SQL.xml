@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.misonamoo.niaportal.mapper.DwReqMapper">
 
-	<!-- 이메일 중복 체크 -->
-	<select id="getDwReqInfo" parameterType="DwReqVO" resultType="DwReqVO">
+	<!-- 다운로드 요청 상세 정보 조회 -->
+	<select id="getDwReqInfo" parameterType="DwReq" resultType="DwReq">
 		SELECT
 		    B.USER_NO as userNo,
 			B.EMAIL as email,
@@ -23,8 +23,8 @@
 		FROM bizmiso.AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO where A.USER_NO=#{userNo};
 	</select>
 
-	<!-- 회원 등록 -->
-	<insert id="insertReq" parameterType="DwReqVO">
+	<!-- 다운로드 요청 등록 / 수정-->
+	<insert id="insertReq" parameterType="DwReq">
 		INSERT INTO bizmiso.AI_DW_REQ (
 			USER_NO,
 			REQ_CODE,
@@ -51,4 +51,38 @@
 		;
 	</insert>
 
+	<!-- 다운로드 요청 상세 정보 조회 -->
+	<select id="listDwReqInfo" parameterType="DwReq" resultType="HashMap">
+		SELECT
+			B.USER_NO as userNo,
+			B.EMAIL as email,
+			B.USER_NAME as userName,
+			B.TEL as tel,
+			B.AGENCY as agency,
+			B.COMPANY_TYPE_CODE as companyTypeCode,
+			(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = B.COMPANY_TYPE_CODE) AS companyTypeName ,
+			A.REQ_CODE as reqCode,
+			(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.REQ_CODE) AS reqName,
+			A.REQ_COMMENT as reqComment,
+			A.CONFIRM_STATE_CODE as confirmStateCode,
+			(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.CONFIRM_STATE_CODE) AS conformStateName,
+			A.CONFIRM_MESSAGE as confirmMessage,
+			A.REG_DATE as regDate,
+			A.CONFIRM_DATE as confirmDate
+		FROM bizmiso.AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO
+		ORDER BY A.REG_DATE DESC
+		LIMIT #{pagePerRow} offset #{startRow}
+			;
+	</select>
+
+	<!-- 다운로드 요청 상세 정보 조회 -->
+	<select id="getDwReqTotalCnt" parameterType="DwReq" resultType="int">
+		SELECT
+			COUNt(*)
+		FROM bizmiso.AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO
+		;
+	</select>
+
 </mapper>
+
+

@@ -21,16 +21,28 @@ public class BaseController {
     public Map<String, Object> returnMap(Map<String, Object> ret){
 
         if(ret == null){
-            ret.put("code", 600);
+            ret.put("status", 500);
         }
 
         //errorCode Message 생성
         String errorMessage = "지정하지 않은 오류";
-        for (ErrorCode error : ErrorCode.values()) {
-            if(error.getCode() == (int)ret.get("code")){
-                errorMessage = error.getMessage();
+        try{
+            if(ret.get("status") != null) {
+                for (ErrorCode error : ErrorCode.values()) {
+                    if (error.getCode() == (int) ret.get("status")) {
+                        errorMessage = error.getMessage();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            ret.put("status", 500);
+            for (ErrorCode error : ErrorCode.values()) {
+                if (error.getCode() == (int) ret.get("status")) {
+                    errorMessage = error.getMessage();
+                }
             }
         }
+
         ret.put("message",errorMessage);
         return ret;
 

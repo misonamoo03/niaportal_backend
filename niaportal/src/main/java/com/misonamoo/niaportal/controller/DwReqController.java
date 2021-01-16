@@ -144,7 +144,7 @@ public class DwReqController extends BaseController{
             if(dwReqInfo == null){
                 ret.put("code", "105");
                 ret.put("message", "요청정보 없음");
-                return ret;
+                return returnMap(ret);
             }else{
                 ret.put("data",dwReqInfo);
             }
@@ -154,7 +154,7 @@ public class DwReqController extends BaseController{
             ret.put("message", "접근권한 없음");
             return ret;
         }
-        return ret;
+        return returnMap(ret);
     }
 
     //승인요청
@@ -170,7 +170,7 @@ public class DwReqController extends BaseController{
 
             ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
-            return ret;
+            return returnMap(ret);
         }
 
         if(isLoginNow(request)) {
@@ -184,23 +184,23 @@ public class DwReqController extends BaseController{
                 }else{
                     ret.put("code", "105");
                     ret.put("message", "요청정보 없음");
-                    return ret;
+                    return returnMap(ret);
                 }
 
             }else {//일반유저의 경우 - 자기자신 정보만 조회 가능하다.
 
                 ret.put("code", "104");
                 ret.put("message", "접근권한 없음");
-                return ret;
+                return returnMap(ret);
             }
 
         }
         else {
             ret.put("code", "104");
             ret.put("message", "접근권한 없음");
-            return ret;
+            return returnMap(ret);
         }
-        return ret;
+        return returnMap(ret);
     }
 
 
@@ -227,14 +227,14 @@ public class DwReqController extends BaseController{
 
                 ret.put("code", "104");
                 ret.put("message", "접근권한 없음");
-                return ret;
+                return returnMap(ret);
             }
 
         }
         else {
             ret.put("code", "104");
             ret.put("message", "접근권한 없음");
-            return ret;
+            return returnMap(ret);
         }
         return returnMap(ret);
     }

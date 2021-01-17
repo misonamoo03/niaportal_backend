@@ -118,6 +118,7 @@ public class DwReqController extends BaseController{
     @GetMapping(value = "/dwDetailInfo")
     public Map<String, Object> dwDetailInfo(@ModelAttribute DwReq dwReq, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap<String,Object>();
+        Map<String, Object> infoMap = new HashMap<String,Object>();
         ret.put("status", 200);
         ret.put("message", "다운로드 요청 정보 상세 조회 정상 처리");
 
@@ -146,7 +147,8 @@ public class DwReqController extends BaseController{
                 ret.put("message", "요청정보 없음");
                 return returnMap(ret);
             }else{
-                ret.put("data",dwReqInfo);
+                infoMap.put("info",dwReqInfo);
+                ret.put("data",infoMap);
             }
         }
         else {
@@ -157,7 +159,7 @@ public class DwReqController extends BaseController{
         return returnMap(ret);
     }
 
-    //승인요청
+    //승인 상태 변경 처리
     @PostMapping(value = "/setConfirm")
     public Map<String, Object> setConfirm(@ModelAttribute DwReq dwReq, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap<String,Object>();

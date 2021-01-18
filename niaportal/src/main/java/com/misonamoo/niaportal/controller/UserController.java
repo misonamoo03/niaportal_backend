@@ -374,7 +374,7 @@ public class UserController {
     }
 
     //비밀번호 재설정
-    @RequestMapping(value = "/pwSet", method = RequestMethod.POST)
+    @RequestMapping(value = "/setPw", method = RequestMethod.POST)
     public Map<String, Object> setPw(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("code", 200);

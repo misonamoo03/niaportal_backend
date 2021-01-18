@@ -5,7 +5,7 @@
 	<!-- 로그인 -->
 	<select id="login" parameterType="user" resultType="user">
 		SELECT EMAIL as email,
-				PASSWORD as password,
+				USER_GB_CODE as userGbCode,
 				USER_NAME as userName,
 				USER_NO as userNo
 		FROM

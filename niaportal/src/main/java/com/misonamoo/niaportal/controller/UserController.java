@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
 import static com.misonamoo.niaportal.common.CommonUtil.*;
 
 @RestController
@@ -47,20 +48,18 @@ public class UserController {
         ret.put("message", "회원가입 정상 처리");
         int emailCnt = userService.dupEmail(user);  // 0이면 이메일 중복 x, 1이면 이메일 중복
         if (isNull(user.getEmail()) ||    // 필수 변수값 없음
-            isNull(user.getPassword()) ||
-            isNull(user.getUserName())||
-            isNull(user.getTel()) ||
-            isNull(user.getAgency()) ||
-            isNull(user.getCompanyTypeCode())) {
+                isNull(user.getPassword()) ||
+                isNull(user.getUserName()) ||
+                isNull(user.getTel()) ||
+                isNull(user.getAgency()) ||
+                isNull(user.getCompanyTypeCode())) {
 
             ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
-        }
-        else if (emailCnt > 0) {
+        } else if (emailCnt > 0) {
             ret.put("code", 101);
             ret.put("message", "중복된 ID");
-        }
-        else {
+        } else {
             // 회원가입처리
             userService.register(user);
         }
@@ -74,7 +73,7 @@ public class UserController {
         ret.put("code", 200);
         ret.put("message", "회원조회 정상 처리");
 
-        if(user.getEmail().equals(getCookieValue(request,"email"))) {
+        if (user.getEmail().equals(getCookieValue(request, "email"))) {
             User info = userService.inquiry(user);
             Map<String, Object> rst = new HashMap();
             rst.put("email", user.getEmail());
@@ -85,8 +84,7 @@ public class UserController {
             rst.put("CompanyTypeName", info.getEmail());
 
             ret.put("result", rst);
-        }
-        else {
+        } else {
             ret.put("code", "104");
             ret.put("message", "접근권한 없음");
         }
@@ -109,18 +107,16 @@ public class UserController {
         }
         int emailCnt = userService.dupEmail(user);
         if (emailCnt > 0) {
-            if(user.getEmail().equals(getCookieValue(request,"email"))) {
+            if (user.getEmail().equals(getCookieValue(request, "email"))) {
                 //회원삭제처리
                 userService.delete(user);
                 //회원삭제가 제대로 처리 되면 쿠키를 삭제한다.
                 setLogout(request, response);
-            }
-            else {
+            } else {
                 ret.put("code", 104);
                 ret.put("message", "접근권한 없음");
             }
-        }
-        else {
+        } else {
             ret.put("code", 102);
             ret.put("message", "아이디 없음");
         }
@@ -140,20 +136,18 @@ public class UserController {
         }
         int emailCnt = userService.dupEmail(user);
         if (emailCnt > 0) {
-            if(user.getEmail().equals(getCookieValue(request,"email"))) {
+            if (user.getEmail().equals(getCookieValue(request, "email"))) {
                 //회원탈퇴처리
                 userService.withdraw(user);
                 //회원탈퇴가 제대로 처리 되면 쿠키를 삭제한다.
                 setLogout(request, response);
-            }
-            else {
+            } else {
                 ret.put("code", 104);
                 ret.put("message", "접근권한 없음");
             }
-        }
-        else {
-                ret.put("code", 102);
-                ret.put("message", "아이디 없음");
+        } else {
+            ret.put("code", 102);
+            ret.put("message", "아이디 없음");
         }
         return ret;
     }
@@ -164,19 +158,19 @@ public class UserController {
         Map<String, Object> ret = new HashMap();
         ret.put("code", 200);
         ret.put("message", "회원정보 수정 정상 처리");
-        if(isNull(user.getEmail()) ||    // 필수 변수값 없음
-            isNull(user.getPassword()) ||
-            isNull(user.getUserName()) ||
-            isNull(user.getTel()) ||
-            isNull(user.getAgency()) ||
-            isNull(user.getCompanyTypeCode())) {
+        if (isNull(user.getEmail()) ||    // 필수 변수값 없음
+                isNull(user.getPassword()) ||
+                isNull(user.getUserName()) ||
+                isNull(user.getTel()) ||
+                isNull(user.getAgency()) ||
+                isNull(user.getCompanyTypeCode())) {
             ret.put("code", 100);
             ret.put("message", "필수 변수값 없음");
             return ret;
         }
         int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
         if (emailPassCnt > 0) {
-            if (user.getEmail().equals(getCookieValue(request,"email"))) {
+            if (user.getEmail().equals(getCookieValue(request, "email"))) {
                 if (isNull(user.getNewPassword())) {
                     //회원정보 수정처리
                     user.setUpdStyle("ONLYINFO");
@@ -213,8 +207,8 @@ public class UserController {
         Map<String, Object> rst = new HashMap();
         String memberYn = (emailCnt == 1) ? "Y" : "N";
         rst.put("memberYn", memberYn);
-        if(deletedUser == 0) {
-            ret.put("result",  rst);
+        if (deletedUser == 0) {
+            ret.put("result", rst);
         } else {
             ret.put("code", 105);
             ret.put("message", "탈퇴한 회원 아이디");
@@ -255,7 +249,7 @@ public class UserController {
             User login = userService.login(user);
             Cookie[] loginCookies = new Cookie[4];   // 쿠키 설정
             loginCookies[0] = new Cookie("email", URLEncoder.encode(login.getEmail(), "UTF-8")); //UTF-8로 인코딩
-            loginCookies[1] = new Cookie("userNo",URLEncoder.encode(login.getUserNo() + "", "UTF-8"));
+            loginCookies[1] = new Cookie("userNo", URLEncoder.encode(login.getUserNo() + "", "UTF-8"));
             loginCookies[2] = new Cookie("userGbCode", URLEncoder.encode(login.getUserGbCode(), "UTF-8"));
             loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
             for (Cookie c : loginCookies) {
@@ -294,7 +288,11 @@ public class UserController {
             return ret;
         }
         int chkNo = userService.findUserNo(user);
-        System.out.println(chkNo);
+        if (chkNo == 0) {
+            ret.put("code", 101);
+            ret.put("message", "아이디 없음");
+            return ret;
+        }
         PwSec pwSec = new PwSec();
         pwSec.setUserNo(chkNo);
         pwSec.setSecCode(pwSecService.findCode(pwSec.getUserNo()));
@@ -332,7 +330,7 @@ public class UserController {
         }
 //      메일 발송 부분
         String to = user.getEmail(); //받는 사람
-        String from = ""; //보내는 사람
+        String from = "misonamoo03@gmail.com"; //보내는 사람
         String subject = "이 프로젝트의 비밀번호 찾기 메일입니다."; //제목
         String body = "내용@@" + pwSec.getSecCode(); //내용
         //        StringBuilder body = new StringBuilder();

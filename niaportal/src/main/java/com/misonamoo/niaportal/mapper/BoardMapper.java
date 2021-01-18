@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * 게시판 Mapper
+ *
  * @author Yohan
  */
 @Repository
@@ -24,7 +25,6 @@ public interface BoardMapper {
     Long updateBoard(BoardParameter param);
 
     void deleteBoard(Long boardNo);
-
 
 
 }

@@ -9,9 +9,9 @@ import java.util.Map;
 public interface DwReqService {
 
 
-   public DwReq getDwReqInfo(DwReq dwReq);
+    public DwReq getDwReqInfo(DwReq dwReq);
 
-   public void insertReq(DwReq dwReq);
+    public void insertReq(DwReq dwReq);
 
     public Map<String, Object> listDwReqInfoPage(DwReq dwReq);
 }

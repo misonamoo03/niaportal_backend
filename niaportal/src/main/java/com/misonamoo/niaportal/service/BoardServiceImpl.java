@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * 게시판 서비스
+ *
  * @author Yohan
  */
 @Service
@@ -22,6 +23,7 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * 목록 리턴.
+     *
      * @return
      */
     public List<Board> getBoardList() {
@@ -30,6 +32,7 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * 상세 정보 리턴.
+     *
      * @param boardSeq
      * @return
      */
@@ -39,6 +42,7 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * 등록/수정 처리.
+     *
      * @param param
      */
     public Long saveBoard(BoardParameter param) {
@@ -54,6 +58,7 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * 삭제 처리.
+     *
      * @param boardSeq
      */
     public void deleteBoard(Long boardSeq) {

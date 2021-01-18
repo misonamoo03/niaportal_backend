@@ -29,7 +29,7 @@ import static com.misonamoo.niaportal.common.CommonUtil.*;
 
 @RestController
 @RequestMapping("/User")
-public class UserController {
+public class UserController extends BaseController{
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -46,8 +46,7 @@ public class UserController {
     @PostMapping(value = "/register")
     public Map<String, Object> register(@RequestBody User user) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "회원가입 정상 처리");
+        ret.put("status", 200);
         int emailCnt = userService.dupEmail(user);  // 0이면 이메일 중복 x, 1이면 이메일 중복
         if (isNull(user.getEmail()) ||    // 필수 변수값 없음
                 isNull(user.getPassword()) ||
@@ -55,25 +54,21 @@ public class UserController {
                 isNull(user.getTel()) ||
                 isNull(user.getAgency()) ||
                 isNull(user.getCompanyTypeCode())) {
-
-            ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
+            ret.put("status", 100);
         } else if (emailCnt > 0) {
-            ret.put("code", 101);
-            ret.put("message", "중복된 ID");
+            ret.put("status", 101);
         } else {
             // 회원가입처리
             userService.register(user);
         }
-        return ret;
+        return returnMap(ret);
     }
 
     //회원 조회
     @GetMapping(value = "/inquiry")
     public Map<String, Object> delete(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "회원조회 정상 처리");
+        ret.put("status", 200);
 
         if (user.getEmail().equals(getCookieValue(request, "email"))) {
             User info = userService.inquiry(user);
@@ -85,14 +80,11 @@ public class UserController {
             rst.put("CompanyTypeCode", info.getCompanyTypeCode());
             rst.put("CompanyTypeName", info.getEmail());
 
-            ret.put("result", rst);
+            ret.put("data", rst);
         } else {
-            ret.put("code", "104");
-            ret.put("message", "접근권한 없음");
+            ret.put("status", 104);
         }
-
-
-        return ret;
+        return returnMap(ret);
     }
 
 
@@ -100,12 +92,10 @@ public class UserController {
     @PostMapping(value = "/delete")
     public Map<String, Object> delete(@ModelAttribute User user, HttpServletResponse response, HttpServletRequest request) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "회원삭제 정상 처리");
+        ret.put("status", 200);
         if (CommonUtil.isNull(user.getEmail())) {
-            ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            ret.put("status", 100);
+            return returnMap(ret);
         }
         int emailCnt = userService.dupEmail(user);
         if (emailCnt > 0) {
@@ -115,26 +105,23 @@ public class UserController {
                 //회원삭제가 제대로 처리 되면 쿠키를 삭제한다.
                 setLogout(request, response);
             } else {
-                ret.put("code", 104);
-                ret.put("message", "접근권한 없음");
+                ret.put("status", 104);
             }
         } else {
-            ret.put("code", 102);
+            ret.put("status", 105);
             ret.put("message", "아이디 없음");
         }
-        return ret;
+        return returnMap(ret);
     }
 
     //회원탈퇴
     @PostMapping(value = "/withdraw")
     public Map<String, Object> withdraw(@ModelAttribute User user, HttpServletResponse response, HttpServletRequest request) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "회원탈퇴 정상 처리");
+        ret.put("status", 200);
         if (isNull(user.getEmail())) {
-            ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            ret.put("status", 100);
+            return returnMap(ret);
         }
         int emailCnt = userService.dupEmail(user);
         if (emailCnt > 0) {
@@ -144,22 +131,20 @@ public class UserController {
                 //회원탈퇴가 제대로 처리 되면 쿠키를 삭제한다.
                 setLogout(request, response);
             } else {
-                ret.put("code", 104);
-                ret.put("message", "접근권한 없음");
+                ret.put("status", 104);
             }
         } else {
-            ret.put("code", 102);
+            ret.put("status", 105);
             ret.put("message", "아이디 없음");
         }
-        return ret;
+        return returnMap(ret);
     }
 
     //회원 정보 수정
     @PostMapping(value = "/edit")
     public Map<String, Object> edit(@RequestBody User user, HttpServletResponse response, HttpServletRequest request) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "회원정보 수정 정상 처리");
+        ret.put("status", 200);
         if (isNull(user.getEmail()) ||    // 필수 변수값 없음
                 isNull(user.getPassword()) ||
                 isNull(user.getUserName()) ||
@@ -167,8 +152,7 @@ public class UserController {
                 isNull(user.getAgency()) ||
                 isNull(user.getCompanyTypeCode())) {
             ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            return returnMap(ret);
         }
         int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
         if (emailPassCnt > 0) {
@@ -176,33 +160,28 @@ public class UserController {
                 if (isNull(user.getNewPassword())) {
                     //회원정보 수정처리
                     user.setUpdStyle("ONLYINFO");
-                    userService.edit(user);
                 } else { // 비밀번호 변경처리
                     //userService.editPassword(user);
                     user.setUpdStyle("WITHPASS");
-                    userService.edit(user);
                 }
+                userService.edit(user);
             } else { // 받아온 user의 email과 쿠키에 담겨있는 user의 email정보가 다른 경우
                 ret.put("code", 104);
-                ret.put("message", "접근권한 없음");
             }
         } else {
-            ret.put("code", 103);
-            ret.put("message", "비밀번호 불일치");
+            ret.put("status", 102);
         }
-        return ret;
+        return returnMap(ret);
     }
 
     //중복가입 확인
     @PostMapping(value = "/same")
     public Map<String, Object> same(@ModelAttribute User user) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "중복가입 확인 정상 처리");
+        ret.put("status", 200);
         if (isNull(user.getEmail())) {
-            ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            ret.put("status", 100);
+            return returnMap(ret);
         }
         int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
         int emailCnt = userService.dupEmail(user);
@@ -210,12 +189,11 @@ public class UserController {
         String memberYn = (emailCnt == 1) ? "Y" : "N";
         rst.put("memberYn", memberYn);
         if (deletedUser == 0) {
-            ret.put("result", rst);
+            ret.put("data", rst);
         } else {
-            ret.put("code", 105);
-            ret.put("message", "탈퇴한 회원 아이디");
+            ret.put("status", 103);
         }
-        return ret;
+        return returnMap(ret);
     }
 
 
@@ -223,29 +201,24 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Map login(@ModelAttribute User user, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "로그인 정상 처리");
+        ret.put("status", 200);
         if (isNull(user.getEmail()) || isNull(user.getPassword())) {
-            ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            ret.put("status", 100);
+            return returnMap(ret);
         }
         int emailCnt = userService.dupEmail(user);  //1이면 아이디 존재, 0이면 아이디 없음
         if (emailCnt == 0) {
-            ret.put("code", 102);
-            ret.put("message", "아이디 없음");
-            return ret;
+            ret.put("code", 105);
+            return returnMap(ret);
         }
         int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
         if (emailPassCnt == 0) {
-            ret.put("code", 103);
-            ret.put("message", "비밀번호 불일치");
-            return ret;
+            ret.put("status", 102);
+            return returnMap(ret);
         }
         int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
         if (deletedUser > 0) {
-            ret.put("code", 105);
-            ret.put("message", "탈퇴한 회원 ID");
+            ret.put("status", 103);
         } else {
             // login
             User login = userService.login(user);
@@ -260,47 +233,47 @@ public class UserController {
                 response.addCookie(c);
             }
         }
-        return ret;
+        return returnMap(ret);
     }
 
     //로그아웃
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public Map logout(@ModelAttribute User user, HttpServletResponse response, HttpServletRequest request) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "로그아웃 정상 처리");
+        ret.put("status", 200);
         setLogout(request, response);
 
-        return ret;
+        return returnMap(ret);
     }
 
     @Autowired
     private JavaMailSender javaMailSender;
 
 
-    //  비밀번호 찾기
+    // 비밀번호 찾기 요청
     @RequestMapping(value = "/findPw", method = RequestMethod.POST)
     public Map<String, Object> findPw(@ModelAttribute User user) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "인증 정상 처리");
+        ret.put("status", 200);
         if (isNull(user.getEmail())) {
-            ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            ret.put("status", 100);
+            return returnMap(ret);
         }
         int emailCnt = userService.dupEmail(user);  //1이면 아이디 존재, 0이면 아이디 없음
         if (emailCnt == 0) {
-            ret.put("code", 102);
-            ret.put("message", "아이디 없음");
-            return ret;
+            ret.put("status", 105);
+            return returnMap(ret);
         }
         int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
         if (deletedUser > 0) {
-            ret.put("code", 105);
-            ret.put("message", "탈퇴한 회원 ID");
-            return ret;
+            ret.put("status", 103);
+            return returnMap(ret);
         }
+
+        Map<String, Object> rst = new HashMap();
+        rst.put("email", user.getEmail());
+        ret.put("data", rst);
+
         int chkNo = userService.findUserNo(user);
         PwSec pwSec = new PwSec();
         pwSec.setUserNo(chkNo);
@@ -337,52 +310,49 @@ public class UserController {
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(body, true);
         javaMailSender.send(message);
-        return ret;
+        return returnMap(ret);
     }
 
     //인증요청
     @RequestMapping(value = "/validate", method = RequestMethod.POST)
     public Map<String, Object> validate(@ModelAttribute User user, @ModelAttribute PwSec pwSec, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "인증 정상 처리");
+        ret.put("status", 200);
         if (isNull(user.getEmail()) || isNull(pwSec.getSecCode())) {
             ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            return returnMap(ret);
         }
         int chkNo = userService.findUserNo(user); // 회원 번호를 저장
-        String secCode = pwSecService.findCode(chkNo); // DB에 저장된 회원의 인증 코드를 가져옴
-        if (!pwSec.getSecCode().equals(secCode)) {
-            ret.put("code", 106);
-            ret.put("message", "인증 코드 불일치");
-            return ret;
-        }
         String endTime = pwSecService.getEndTime(chkNo);
         Date endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endTime);
         Date now = new Date();
         if (now.after(endDate)) {
-            ret.put("code", 107);
+            ret.put("status", 106);
             ret.put("message", "인증 기간 만료");
+            return returnMap(ret);
+        }
+        String secCode = pwSecService.findCode(chkNo); // DB에 저장된 회원의 인증 코드를 가져옴
+        if (!pwSec.getSecCode().equals(secCode)) {
+            ret.put("status", 107);
+            ret.put("message", "인증 코드 불일치");
+            return returnMap(ret);
         } else {
             Cookie secCodeCookie = new Cookie("secCode", URLEncoder.encode("재설정 권한 부여", "UTF-8"));
             secCodeCookie.setPath("/");
-            secCodeCookie.setMaxAge(-1);
+            secCodeCookie.setMaxAge(60 * 10); //쿠키 유효시간 10분으로 설정
             response.addCookie(secCodeCookie);
         }
-        return ret;
+        return returnMap(ret);
     }
 
     //비밀번호 재설정
     @RequestMapping(value = "/setPw", method = RequestMethod.POST)
     public Map<String, Object> setPw(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
-        ret.put("code", 200);
-        ret.put("message", "비밀번호 변경 정상 처리");
+        ret.put("status", 200);
         if (isNull(user.getEmail()) || isNull(user.getPassword())) {
-            ret.put("code", 100);
-            ret.put("message", "필수 변수값 없음");
-            return ret;
+            ret.put("status", 100);
+            return returnMap(ret);
         }
         if("재설정 권한 부여".equals(getCookieValue(request, "secCode"))){
             String password = user.getPassword();
@@ -391,9 +361,9 @@ public class UserController {
             userService.setPw(user);
             setLogout(request, response);
         } else {
-            ret.put("code", 104);
-            ret.put("message", "접근권한 없음");
+            ret.put("status", 108);
+            ret.put("message", "비밀번호 재설정 유효기간 만료");
         }
-        return ret;
+        return returnMap(ret);
     }
 }

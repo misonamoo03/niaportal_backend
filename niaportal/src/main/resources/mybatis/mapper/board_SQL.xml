@@ -2,52 +2,162 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.misonamoo.niaportal.mapper.BoardMapper">
 
-    <resultMap id="BoardMap" type="Board">
-        <result property="boardSeq" column="BOARD_SEQ" />
-        <result property="boardTitle" column="BOARD_TITLE" />
-        <result property="boardContent" column="BOARD_CONTENT" />
-        <result property="boardRegistDate" column="BOARD_REGIST_DATE" />
-    </resultMap>
-
-    <select id="getBoardList" resultMap="BoardMap">
-            SELECT *
-              FROM bizmiso.POSTER_BOARD
+    <select id="getBoardList" parameterType="Board" resultType="HashMap">
+            SELECT
+                    A.BOARD_CONTENT_NO AS boardContentNo,
+                    A.ORG_BOARD_CONTENT_NO AS orgBoardContentNo,
+                    A.TITLE AS title,
+                    A.CONTENT AS content,
+                    A.SEC_YN AS secYn,
+                    A.USER_NO AS userNo,
+                    B.USER_NAME AS userName,
+                    A.VIEW_CNT AS viewCnt,
+                    A.REG_DATE AS regDdate,
+        IF((SELECT count(BOARD_CONTENT_NO) FROM bizmiso.AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn
+              FROM bizmiso.AI_BOARD_CONTENT A
+             INNER JOIN bizmiso.AI_USER B
+               ON A.USER_NO = B.USER_NO
+             INNER JOIN bizmiso.AI_BOARD C
+               ON A.BOARD_NO = C.BOARD_NO
+            WHERE 1=1
+             <if test='boardNo > 0'>
+               AND A.BOARD_NO = #{boardNo}
+             </if>
+             <if test='sportsBoardCode != null and sportsBoardCode != "null" and sportsBoardCode != ""'>
+               AND C.SPORTS_BOARD_CODE = #{sportsBoardCode}
+             </if>
+             ORDER BY A.CONTENT_GROUP DESC, A.REG_DATE ASC
+             LIMIT #{pagePerRow} offset #{startRow}
     </select>
 
-<!--    <select id="getBoard" parameterType="BOARDVO" resultType="com.misonamoo.niaportal.domain.Board">
-        select BOARD_SEQ as boardSeq
-              ,BOARD_TITLE as boardTitle
-              ,BOARD_CONTENT as boardContent
-              ,BOARD_REGIST_DATE as boardRegistDate
-         from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}
-    </select>-->
+    <select id="getBoardTotalCnt" resultType="Integer">
+        SELECT
+        COUNT(*)
+        FROM bizmiso.AI_BOARD_CONTENT A
+        INNER JOIN bizmiso.AI_USER B
+        ON A.USER_NO = B.USER_NO
+        INNER JOIN bizmiso.AI_BOARD C
+        ON A.BOARD_NO = C.BOARD_NO
+        WHERE 1=1
+        <if test='boardNo > 0'>
+            AND A.BOARD_NO = #{boardNo}
+        </if>
+        <if test='sportsBoardCode != null and sportsBoardCode != "null" and sportsBoardCode != ""'>
+            AND C.SPORTS_BOARD_CODE = #{sportsBoardCode}
+        </if>
+    </select>
+<!--&lt;!&ndash;    <select id="getBoard" parameterType="BOARDVO" resultType="com.misonamoo.niaportal.domain.BoardContent">-->
+<!--        select BOARD_SEQ as boardSeq-->
+<!--              ,BOARD_TITLE as boardTitle-->
+<!--              ,BOARD_CONTENT as boardContent-->
+<!--              ,BOARD_REGIST_DATE as boardRegistDate-->
+<!--         from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}-->
+<!--    </select>&ndash;&gt;-->
 
-    <select id="getBoard" parameterType="Board" resultMap="BoardMap">
-        select * from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}
+    <select id="getBoard" parameterType="Board" resultType="Board">
+        select
+        BOARD_NO as boardNo,
+        NAME as name,
+        BOARD_TYPE_CODE as boardTypeCode,
+        SPORTS_BOARD_CODE as sportsBoardCode,
+        REG_DATE as regDate,
+        REG_USER_NO as regUserNo,
+        UPD_DATE as updDate,
+        UPD_USER_NO as updUserNo
+         from bizmiso.AI_BOARD where BOARD_NO = #{boardNo}
     </select>
 
-    <insert id="saveBoard" parameterType="BoardParameter">
-        <selectKey resultType="Long" keyProperty="boardSeq" order="BEFORE">
-            select MAX(BOARD_SEQ) + 1 as SEQUENCE_NUMBER FROM bizmiso.POSTER_BOARD
+    <insert id="insertBoard" parameterType="Board">
+        <selectKey resultType="Long" keyProperty="boardContentNo" order="BEFORE">
+            select MAX(BOARD_CONTENT_NO) + 1 as SEQUENCE_NUMBER FROM bizmiso.AI_BOARD_CONTENT
         </selectKey>
-        insert into bizmiso.POSTER_BOARD values(#{boardSeq},#{boardTitle},#{boardContent},sysdate())
+        INSERT INTO bizmiso.AI_BOARD_CONTENT
+        (
+            BOARD_CONTENT_NO,
+            USER_NO,
+            BOARD_NO,
+            ORG_BOARD_CONTENT_NO,
+            TITLE,
+            CONTENT,
+            SEC_YN,
+            VIEW_CNT,
+            REG_DATE,
+            UPD_DATE,
+            REPLY_YN,
+            CONTENT_GROUP
+        )
+        VALUES (
+        #{boardContentNo},
+        #{userNo},
+        #{boardNo},
+        #{orgBoardContentNo},
+        #{title},
+        #{content},
+        #{secYn},
+        0,
+        now(),
+        now(),
+        'N',
+        <if test="orgBoardContentNo != null and orgBoardContentNo != '' and orgBoardContentNo != 'null'">
+            #{orgBoardContentNo}
+        </if>
+        <if test="orgBoardContentNo == null or orgBoardContentNo == '' or orgBoardContentNo == 'null'">
+            #{boardContentNo}
+        </if>
+        )
     </insert>
 
-    <update id="updateBoard" parameterType="BoardParameter">
-        UPDATE bizmiso.POSTER_BOARD
-        <trim prefix="SET" suffixOverrides=",">
-            <if test='boardTitle != null and boardTitle != "null" and boardTitle != ""'>
-                BOARD_TITLE = #{boardTitle},
-            </if>
-            <if test='boardContent != null and boardContent != "null" and boardContent != ""'>
-                BOARD_CONTENT = #{boardContent},
-            </if>
-        </trim>
-        WHERE BOARD_SEQ = #{boardSeq}
+    <update id="updateBoardContent" parameterType="BoardContent">
+        UPDATE bizmiso.AI_BOARD_CONTENT
+           SET
+        <if test="boardNo != null and boardNo != '' and boardNo != 'null'">
+               BOARD_NO = #{boardNo},
+        </if>
+        <if test="orgBoardContentNo != null and orgBoardContentNo != '' and orgBoardContentNo != 'null'">
+               ORG_BOARD_CONTENT_NO = #{orgBoardContentNo},
+        </if>
+        <if test="title != null and title != '' and title != 'null'">
+               TITLE = #{title},
+        </if>
+        <if test="content != null and content != '' and content != 'null'">
+               CONTENT = #{content},
+        </if>
+        <if test="secYn != null and secYn != '' and secYn != 'null'">
+               SEC_YN = #{secYn},
+        </if>
+        <if test="viewCnt != null and viewCnt != '' and viewCnt != 'null'">
+               VIEW_CNT = #{viewCnt},
+        </if>
+        <if test="replyYn != null and replyYn != '' and replyYn != 'null'">
+               REPLY_YN = #{replyYn},
+        </if>
+        UPD_DATE = now()
+         WHERE BOARD_CONTENT_NO = #{boardContentNo}
     </update>
 
-    <delete id="deleteBoard" parameterType="Long">
-        delete from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}
+    <select id="getBoardContent" parameterType="BoardContent" resultType="BoardContent">
+        SELECT
+                BOARD_CONTENT_NO AS boardContentNo,
+                USER_NO AS userNo,
+                BOARD_NO AS boardNo,
+                ORG_BOARD_CONTENT_NO AS orgBoardContentNo,
+                TITLE AS title,
+                CONTENT AS content,
+                SEC_YN AS secYn,
+                VIEW_CNT AS viewCnt,
+                REG_DATE AS regDate,
+                UPD_DATE AS updDate,
+                IF((SELECT count(BOARD_CONTENT_NO) FROM bizmiso.AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn,
+                CONTENT_GROUP AS contentGroup
+          FROM AI_BOARD_CONTENT A
+         WHERE BOARD_CONTENT_NO = #{boardContentNo}
+    </select>
+    <delete id="deleteContentGroup" parameterType="String">
+        delete from AI_BOARD_CONTENT where CONTENT_GROUP = #{contentGroup}
+    </delete>
+    <delete id="deleteBoardContent" parameterType="String">
+        delete from AI_BOARD_CONTENT where BOARD_CONTENT_NO = #{boardContentNo}
     </delete>
 
 </mapper>
+

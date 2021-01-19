@@ -7,7 +7,7 @@
 
     <typeAliases>
         <typeAlias alias="Board" type="com.misonamoo.niaportal.domain.Board" />
-        <typeAlias alias="BoardParameter" type="com.misonamoo.niaportal.domain.BoardParameter" />
+        <typeAlias alias="BoardContent" type="com.misonamoo.niaportal.domain.BoardContent" />
         <typeAlias alias="user" type="com.misonamoo.niaportal.domain.User" />
         <typeAlias alias="pwsec" type="com.misonamoo.niaportal.domain.PwSec" />
         <typeAlias alias="DwReq" type="com.misonamoo.niaportal.domain.DwReq" />

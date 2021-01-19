@@ -28,7 +28,7 @@ public class User {
     private String updStyle;
 
     public User() {
-        userGbCode = "CD002001";
+        userGbCode = "CD002002";
         dwConfirmYn = "N";
         delYn = "N";
     }

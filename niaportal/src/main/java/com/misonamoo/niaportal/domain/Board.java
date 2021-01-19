@@ -2,17 +2,31 @@ package com.misonamoo.niaportal.domain;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
- * Response 용도로 분리
- * @author Yohan
+ * @author
  */
 @Data
-public class Board {
+public class Board extends BasePaging {
+    private Long boardNo;
+    private Long userNo;
+    private String userName;
+    private String title;
+    private String content;
+    private Long boardContentNo;
+    private String orgBoardContentNo;
+    private String name;
+    private String boardTypeCode;
+    private String sportsBoardCode;
+    private LocalDateTime regDate;
+    private Long regUserNo;
+    private LocalDateTime updDate;
+    private Long updUserNo;
+    private String secYn;
+    private Long contentGroup;
+    public Board() {
+        boardNo = 0L;
 
-    private Long boardSeq;
-    private String boardTitle;
-    private String boardContent;
-    private Date boardRegistDate;
+    }
 }

@@ -48,4 +48,15 @@ public class DwReqServiceImpl implements DwReqService {
     public int dupFileNo(DwBase db) {
         return dwReqMapper.dupFileNo(db);
     }
+
+    @Override
+    public Map<String, Object> dwList(DwBase dwBase) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<Map<String, Object>> list = dwReqMapper.dwList(dwBase);
+        int totalCnt = dwReqMapper.getDwBaseTotalCnt(dwBase);
+        result.put("totalCnt", totalCnt);
+        result.put("list", list);
+
+        return result;
+    }
 }

@@ -19,4 +19,6 @@ public interface DwReqService {
     public Map<String, Object> listDwReqInfoPage(DwReq dwReq);
 
     public int dupFileNo(DwBase db);
+
+    public Map<String, Object> dwList(DwBase dwBase);
 }

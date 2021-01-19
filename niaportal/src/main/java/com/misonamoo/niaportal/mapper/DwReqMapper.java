@@ -24,4 +24,8 @@ public interface DwReqMapper {
     public void dwInsert(DwBase db);
 
     public int dupFileNo(DwBase db);
+
+    public List<Map<String, Object>> dwList(DwBase dwBase);
+
+    public int getDwBaseTotalCnt(DwBase dwBase);
 }

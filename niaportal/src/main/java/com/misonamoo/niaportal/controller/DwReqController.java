@@ -61,12 +61,24 @@ public class DwReqController extends BaseController{
 
     //다운로드 목록 조회
     @GetMapping(value = "/dwList")
-    public Map<String, Object> dwListInfo(@ModelAttribute DwBase dwBase) throws Exception{
+    public Map<String, Object> dwList(@ModelAttribute DwBase dwBase, HttpServletRequest request) throws Exception{
         Map<String, Object> ret = new HashMap<String,Object>();
         Map<String, Object> data = new HashMap<String, Object>();
         ret.put("status", 200);
-       
 
+        if(isLoginNow(request)) {
+            DwReq dwReqInfo = null;
+            Map<String, Object> dwList = dwReqService.dwList(dwBase);
+            data.put("currentPage", dwBase.getCurrentpage());
+            data.put("pagePerRow", dwBase.getPagePerRow());
+            data.put("totalCnt", dwList.get("totalCnt"));
+            data.put("list", dwList.get("list"));
+            ret.put("data", data);
+        }
+        else {
+            ret.put("status", "104");
+            return returnMap(ret);
+        }
         return returnMap(ret);
     }
 

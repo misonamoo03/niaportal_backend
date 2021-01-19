@@ -8,8 +8,7 @@
 				USER_GB_CODE as userGbCode,
 				USER_NAME as userName,
 				USER_NO as userNo
-		FROM
-			AI_USER
+		FROM AI_USER
 		WHERE EMAIL = #{email}
 		AND PASSWORD = #{password}
 	</select>

@@ -72,15 +72,16 @@ public class UserController extends BaseController{
 
         if (user.getEmail().equals(getCookieValue(request, "email"))) {
             User info = userService.inquiry(user);
-            Map<String, Object> rst = new HashMap();
-            rst.put("email", user.getEmail());
-            rst.put("userName", info.getUserName());
-            rst.put("tel", info.getTel());
-            rst.put("agency", info.getAgency());
-            rst.put("CompanyTypeCode", info.getCompanyTypeCode());
-            rst.put("CompanyTypeName", info.getCompanyTypeName());
-
-            ret.put("data", rst);
+            Map<String, Object> data = new HashMap();
+            Map<String, Object> memberInfo = new HashMap();
+            memberInfo.put("email", user.getEmail());
+            memberInfo.put("userName", info.getUserName());
+            memberInfo.put("tel", info.getTel());
+            memberInfo.put("agency", info.getAgency());
+            memberInfo.put("CompanyTypeCode", info.getCompanyTypeCode());
+            memberInfo.put("CompanyTypeName", info.getCompanyTypeName());
+            data.put("memberInfo", memberInfo);
+            ret.put("data", data);
         } else {
             ret.put("status", 104);
         }
@@ -108,8 +109,7 @@ public class UserController extends BaseController{
                 ret.put("status", 104);
             }
         } else {
-            ret.put("status", 105);
-            ret.put("message", "아이디 없음");
+            ret.put("status", 109);
         }
         return returnMap(ret);
     }
@@ -134,8 +134,7 @@ public class UserController extends BaseController{
                 ret.put("status", 104);
             }
         } else {
-            ret.put("status", 105);
-            ret.put("message", "아이디 없음");
+            ret.put("status", 109);
         }
         return returnMap(ret);
     }
@@ -151,7 +150,7 @@ public class UserController extends BaseController{
                 isNull(user.getTel()) ||
                 isNull(user.getAgency()) ||
                 isNull(user.getCompanyTypeCode())) {
-            ret.put("code", 100);
+            ret.put("status", 100);
             return returnMap(ret);
         }
         int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
@@ -166,7 +165,7 @@ public class UserController extends BaseController{
                 }
                 userService.edit(user);
             } else { // 받아온 user의 email과 쿠키에 담겨있는 user의 email정보가 다른 경우
-                ret.put("code", 104);
+                ret.put("status", 104);
             }
         } else {
             ret.put("status", 102);
@@ -175,7 +174,7 @@ public class UserController extends BaseController{
     }
 
     //중복가입 확인
-    @PostMapping(value = "/same")
+    @GetMapping(value = "/same")
     public Map<String, Object> same(@ModelAttribute User user) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
@@ -185,11 +184,11 @@ public class UserController extends BaseController{
         }
         int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
         int emailCnt = userService.dupEmail(user);
-        Map<String, Object> rst = new HashMap();
+        Map<String, Object> data = new HashMap();
         String memberYn = (emailCnt == 1) ? "Y" : "N";
-        rst.put("memberYn", memberYn);
+        data.put("memberYn", memberYn);
         if (deletedUser == 0) {
-            ret.put("data", rst);
+            ret.put("data", data);
         } else {
             ret.put("status", 103);
         }
@@ -208,7 +207,7 @@ public class UserController extends BaseController{
         }
         int emailCnt = userService.dupEmail(user);  //1이면 아이디 존재, 0이면 아이디 없음
         if (emailCnt == 0) {
-            ret.put("code", 105);
+            ret.put("status", 109);
             return returnMap(ret);
         }
         int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
@@ -261,7 +260,7 @@ public class UserController extends BaseController{
         }
         int emailCnt = userService.dupEmail(user);  //1이면 아이디 존재, 0이면 아이디 없음
         if (emailCnt == 0) {
-            ret.put("status", 105);
+            ret.put("status", 109);
             return returnMap(ret);
         }
         int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
@@ -270,9 +269,9 @@ public class UserController extends BaseController{
             return returnMap(ret);
         }
 
-        Map<String, Object> rst = new HashMap();
-        rst.put("email", user.getEmail());
-        ret.put("data", rst);
+        Map<String, Object> data = new HashMap();
+        data.put("email", user.getEmail());
+        ret.put("data", data);
 
         int chkNo = userService.findUserNo(user);
         PwSec pwSec = new PwSec();
@@ -319,7 +318,7 @@ public class UserController extends BaseController{
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
         if (isNull(user.getEmail()) || isNull(pwSec.getSecCode())) {
-            ret.put("code", 100);
+            ret.put("status", 100);
             return returnMap(ret);
         }
         int chkNo = userService.findUserNo(user); // 회원 번호를 저장
@@ -328,13 +327,11 @@ public class UserController extends BaseController{
         Date now = new Date();
         if (now.after(endDate)) {
             ret.put("status", 106);
-            ret.put("message", "인증 기간 만료");
             return returnMap(ret);
         }
         String secCode = pwSecService.findCode(chkNo); // DB에 저장된 회원의 인증 코드를 가져옴
         if (!pwSec.getSecCode().equals(secCode)) {
             ret.put("status", 107);
-            ret.put("message", "인증 코드 불일치");
             return returnMap(ret);
         } else {
             Cookie secCodeCookie = new Cookie("secCode", URLEncoder.encode("재설정 권한 부여", "UTF-8"));
@@ -362,7 +359,6 @@ public class UserController extends BaseController{
             setLogout(request, response);
         } else {
             ret.put("status", 108);
-            ret.put("message", "비밀번호 재설정 유효기간 만료");
         }
         return returnMap(ret);
     }

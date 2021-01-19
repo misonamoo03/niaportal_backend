@@ -62,8 +62,12 @@
 
 	<!-- 내 정보 조회 -->
 	<select id="inquiry" parameterType="user" resultType="user">
-		SELECT USER_NAME as userName, TEL as tel, AGENCY as agency, COMPANY_TYPE_CODE as CompanyTypeCode
-		FROM bizmiso.AI_USER
+		SELECT USER_NAME as userName,
+		TEL as tel,
+		AGENCY as agency,
+		COMPANY_TYPE_CODE as companyTypeCode,
+		(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.COMPANY_TYPE_CODE ) as companyTypeName
+		FROM AI_USER A
 		WHERE EMAIL = #{email};
 	</select>
 

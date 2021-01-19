@@ -78,7 +78,7 @@ public class UserController extends BaseController{
             rst.put("tel", info.getTel());
             rst.put("agency", info.getAgency());
             rst.put("CompanyTypeCode", info.getCompanyTypeCode());
-            rst.put("CompanyTypeName", info.getEmail());
+            rst.put("CompanyTypeName", info.getCompanyTypeName());
 
             ret.put("data", rst);
         } else {

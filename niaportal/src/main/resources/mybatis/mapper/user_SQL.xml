@@ -17,8 +17,9 @@
 
 	<!-- 비밀번호 재설정 -->
 	<update id="setPw">
- 	update AI_USER set
-	   PASSWORD = #{password}
+ 	update AI_USER
+ 	set
+	PASSWORD = #{password}
  	where EMAIL = #{email}
  	</update>
 
@@ -31,19 +32,19 @@
 
 	<!-- 회원 등록 -->
 	<insert id="register" parameterType="user">
-		INSERT INTO bizmiso.AI_USER (
+		INSERT INTO AI_USER (
 			USER_NO,
 			EMAIL,
 			USER_GB_CODE,
-			 PASSWORD,
-			 USER_NAME,
-			 TEL,
-			 AGENCY,
-			 COMPANY_TYPE_CODE,
-			 DW_CONFIRM_YN,
-			 DEL_YN,
-			 REG_DATE,
-			 UPD_DATE)
+			PASSWORD,
+			USER_NAME,
+			TEL,
+			AGENCY,
+			COMPANY_TYPE_CODE,
+			DW_CONFIRM_YN,
+			DEL_YN,
+			REG_DATE,
+			UPD_DATE)
 		VALUES (
 			ai_get_seq('userNo'),
 			#{email},
@@ -62,27 +63,31 @@
 
 	<!-- 내 정보 조회 -->
 	<select id="inquiry" parameterType="user" resultType="user">
-		SELECT USER_NAME as userName, TEL as tel, AGENCY as agency, COMPANY_TYPE_CODE as CompanyTypeCode
-		FROM bizmiso.AI_USER
+		SELECT USER_NAME as userName,
+		TEL as tel,
+		AGENCY as agency,
+		COMPANY_TYPE_CODE as companyTypeCode,
+		(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.COMPANY_TYPE_CODE ) as companyTypeName
+		FROM AI_USER A
 		WHERE EMAIL = #{email};
 	</select>
 
 	<!-- 회원 삭제 -->
 	<delete id="delete" parameterType="user">
-		DELETE FROM bizmiso.AI_USER
+		DELETE FROM AI_USER
 		WHERE email = #{email};
 	</delete>
 
 	<!-- 회원 탈퇴 -->
 	<update id="withdraw" parameterType="user">
-		UPDATE bizmiso.AI_USER
+		UPDATE AI_USER
 		SET DEL_YN = 'Y'
 		WHERE EMAIL = #{email};
 	</update>
 
 	<!-- 회원 정보 수정 -->
 	<update id="edit" parameterType="user">
-		UPDATE bizmiso.AI_USER
+		UPDATE AI_USER
 		<trim prefix="SET" suffixOverrides=",">
 			<if test='updStyle == "WITHPASS" and password != "null" and password != ""'>
 				PASSWORD = #{password},
@@ -110,11 +115,15 @@
 
 	<!--이메일로 회원번호 가져오는 쿼리-->
 	<select id="findUserNo" parameterType="user" resultType="int">
-		 SELECT USER_NO as userNo FROM AI_USER WHERE EMAIL = #{email}
+		 SELECT USER_NO as userNo
+		 FROM AI_USER
+		 WHERE EMAIL = #{email}
 	</select>
 
 	<!-- 회원의 탈퇴 여부 -->
 	<select id="deletedUser" parameterType="user" resultType="int">
-		SELECT count(*) FROM AI_USER WHERE EMAIL = #{email} AND DEL_YN = 'Y'
+		SELECT count(*)
+		FROM AI_USER
+		WHERE EMAIL = #{email} AND DEL_YN = 'Y'
 	</select>
 </mapper>

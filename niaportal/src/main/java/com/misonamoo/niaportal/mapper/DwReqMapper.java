@@ -1,6 +1,7 @@
 package com.misonamoo.niaportal.mapper;
 
 
+import com.misonamoo.niaportal.domain.DwBase;
 import com.misonamoo.niaportal.domain.DwReq;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,8 @@ public interface DwReqMapper {
     public List<Map<String, Object>> listDwReqInfo(DwReq dwReq);
 
     public int getDwReqTotalCnt(DwReq dwReq);
+
+    public void dwInsert(DwBase db);
+
+    public int dupFileNo(DwBase db);
 }

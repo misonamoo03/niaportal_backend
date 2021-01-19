@@ -1,6 +1,7 @@
 package com.misonamoo.niaportal.controller;
 
 
+import com.misonamoo.niaportal.domain.DwBase;
 import com.misonamoo.niaportal.domain.DwReq;
 import com.misonamoo.niaportal.service.DwReqService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.misonamoo.niaportal.common.CommonUtil.*;
-import static com.misonamoo.niaportal.common.CommonUtil.isNull;
 
 @RestController
 @RequestMapping("/DwReq")
@@ -30,6 +30,45 @@ public class DwReqController extends BaseController{
     private String dwReqCodeDwReqFail;    // 다운로드 승인 반려
     @Value("${dwReqCode.reReq}")
     private String dwReqCodeReReq;    // 다운로드 재요청 가능 상태
+
+    //다운로드
+    @PostMapping(value = "/dwInsert")
+    public Map<String, Object> dwInsert(@RequestBody Map<String, List<DwBase>> dwListMap, HttpServletRequest request, HttpServletResponse response) throws Exception{
+        Map<String, Object> ret = new HashMap();
+        ret.put("status", 200);
+        List<DwBase> dwBase = dwListMap.get("list");
+        if (!isLoginNow(request)) {
+            ret.put("status", 104);
+            return returnMap(ret);
+        }
+        for (DwBase db : dwBase) {
+            if (isNull(db.getSportsGbCode()) ||
+                    isNull(db.getFileNo() + "") ||
+                    isNull(db.getFileName()) ||
+                    isNull(db.getFileUrl())) {
+                continue;
+            }else {
+                db.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
+                if (dwReqService.dupFileNo(db) == 0) {  //회원이 요청한 다운로드가 이전에 요청하지 않았을 경우에만 새로 DB에 삽입
+                    dwReqService.dwInsert(db);
+                } else {
+                    continue;
+                }
+            }
+        }
+        return returnMap(ret);
+    }
+
+    //다운로드 목록 조회
+    @GetMapping(value = "/dwList")
+    public Map<String, Object> dwListInfo(@ModelAttribute DwBase dwBase) throws Exception{
+        Map<String, Object> ret = new HashMap<String,Object>();
+        Map<String, Object> data = new HashMap<String, Object>();
+        ret.put("status", 200);
+       
+
+        return returnMap(ret);
+    }
 
     //다운로드 요청 가능 상태 조회
     @GetMapping(value = "/dwState")

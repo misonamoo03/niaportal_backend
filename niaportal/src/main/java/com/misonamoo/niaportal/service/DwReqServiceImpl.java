@@ -1,5 +1,6 @@
 package com.misonamoo.niaportal.service;
 
+import com.misonamoo.niaportal.domain.DwBase;
 import com.misonamoo.niaportal.domain.DwReq;
 import com.misonamoo.niaportal.mapper.DwReqMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,11 @@ public class DwReqServiceImpl implements DwReqService {
     @Autowired
     DwReqMapper dwReqMapper;
 
+
+    @Override
+    public void dwInsert(DwBase db) {
+        dwReqMapper.dwInsert(db);
+    }
 
     @Override
     public DwReq getDwReqInfo(DwReq dwReq) {
@@ -36,5 +42,10 @@ public class DwReqServiceImpl implements DwReqService {
 
         return result;
 
+    }
+
+    @Override
+    public int dupFileNo(DwBase db) {
+        return dwReqMapper.dupFileNo(db);
     }
 }

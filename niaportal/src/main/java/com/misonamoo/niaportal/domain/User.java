@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @ToString
 public class User {
-    private int userNo;
+    private long userNo;
     private String email;
     private String userGbCode;
     private String password;

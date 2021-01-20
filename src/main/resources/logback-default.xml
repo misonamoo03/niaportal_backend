@@ -30,7 +30,7 @@
         <level value="ERROR"/>
     </logger>
     <logger name="org.apache">
-        <level value="ERROR"/>
+        <level value="INFO"/>
     </logger>
     <logger name="org.apache.http.impl.conn">
         <level value="ERROR"/>

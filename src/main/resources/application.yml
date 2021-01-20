@@ -12,11 +12,13 @@ spring:
           auth: true
           starttls:
             enable: true
-  profiles:
-    active: local
 
 ---
+
 #local 환경
+server:
+  port: 8080
+
 spring:
   profiles: local
   datasource:
@@ -37,6 +39,7 @@ logging:
   config: classpath:logback-default.xml
 
 ---
+
 #dev 환경
 spring:
   profiles: dev
@@ -47,6 +50,7 @@ spring:
     password:
 
 ---
+
 #prod 환경
 spring:
   profiles: prod

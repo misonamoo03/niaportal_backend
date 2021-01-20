@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface CommonService {
 
-    List<Map<String, Object>> listCommonCode(Map<String,String> paramMap);
+    List<Map<String, Object>> listCommonCode(Map<String, String> paramMap);
 
     Map<String, Object> getCommonCode(String code);
 }

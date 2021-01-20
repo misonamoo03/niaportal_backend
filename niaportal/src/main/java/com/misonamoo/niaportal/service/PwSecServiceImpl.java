@@ -26,4 +26,9 @@ public class PwSecServiceImpl implements PwSecService {
     public void updateCode(PwSec pwSec) {
         pwSecMapper.updateCode(pwSec);
     }
+
+    @Override
+    public String getEndTime(int userNo) {
+        return pwSecMapper.getEndTime(userNo);
+    }
 }

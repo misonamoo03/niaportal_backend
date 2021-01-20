@@ -18,10 +18,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     BoardMapper boardMapper;
 
-    /**
-     * @param board
-     * @return
-     */
     public Map<String, Object> getBoardList(Board board) {
         Map<String, Object> result = new HashMap<>();
         List<Map<String, Object>> list = boardMapper.getBoardList(board);
@@ -32,35 +28,20 @@ public class BoardServiceImpl implements BoardService {
         return result;
     }
 
-    /**
-     * @param boardNo
-     * @return
-     */
     public Board getBoard(Long boardNo) {
         return boardMapper.getBoard(boardNo);
     }
 
-    /**
-     * @param board
-     * @return
-     */
     public Long insertBoard(Board board) {
         // 조회하여 리턴된 정보
             boardMapper.insertBoard(board);
         return board.getBoardContentNo();
     }
 
-    /**
-     * @param boardContent
-     */
     public void updateBoardContent(BoardContent boardContent) {
         boardMapper.updateBoardContent(boardContent);
     }
 
-    /**
-     * @param boardContent
-     * @return
-     */
     public BoardContent getBoardContent(BoardContent boardContent) {
             return boardMapper.getBoardContent(boardContent);
 

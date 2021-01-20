@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * 게시판 Mapper
+ *
  * @author Yohan
  */
 @Repository
@@ -31,4 +32,5 @@ public interface BoardMapper {
     void deleteContentGroup(String contentGroup);
 
     void deleteBoardContent(String boardContentNo);
+
 }

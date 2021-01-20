@@ -2,6 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.misonamoo.niaportal.mapper.DwReqMapper">
 
+	<!-- 다운로드 -->
+	<insert id="dwInsert" parameterType="DwBase">
+		INSERT INTO AI_DW_BASE (
+			DW_NO,
+			USER_NO,
+			FILE_NO,
+			SPORTS_GB_CODE,
+			FILE_URL,
+			FILE_NAME,
+			REG_DATE)
+		VALUES (
+			ai_get_seq('dwNo'),
+			#{userNo},
+			#{fileNo},
+			#{sportsGbCode},
+			#{fileUrl},
+			#{fileName},
+			NOW()
+		)
+	</insert>
+
+	<!-- 다운로드 목록 조회 -->
+	<select id="dwList" parameterType="DwBase" resultType="HashMap">
+		SELECT
+			DW_NO as dwNo,
+			SPORTS_GB_CODE as sportGbCode,
+			FILE_NO as fileNo,
+			FILE_URL as fileUrl,
+			FILE_NAME as fileName,
+			REG_DATE as regDate
+		FROM AI_DW_BASE
+		WHERE USER_NO = #{userNo}
+		ORDER BY REG_DATE DESC
+		LIMIT #{pagePerRow} offset #{startRow}
+			;
+	</select>
+
+	<!-- 다운로드 요청 상세 정보 조회 -->
+	<select id="getDwBaseTotalCnt" parameterType="DwBase" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM AI_DW_BASE
+		WHERE USER_NO = #{userNo}
+		;
+	</select>
+
+	<!-- 동일한 회원이 이미 받은 파일 다운로드 요청 수 반환 -->
+	<select id="dupFileNo" parameterType="DwBase" resultType="int">
+		SELECT count(*)
+		FROM AI_DW_BASE
+		WHERE USER_NO = #{userNo} AND FILE_NO = #{fileNo};
+	</select>
+
 	<!-- 다운로드 요청 상세 정보 조회 -->
 	<select id="getDwReqInfo" parameterType="DwReq" resultType="DwReq">
 		SELECT
@@ -36,7 +89,7 @@
 			   #{userNo},
 			   #{reqCode},
 			   #{reqComment},
-		        #{confirmStateCode},
+		    	#{confirmStateCode},
 			   NOW(),
 			   NOW()
 		)ON DUPLICATE KEY UPDATE

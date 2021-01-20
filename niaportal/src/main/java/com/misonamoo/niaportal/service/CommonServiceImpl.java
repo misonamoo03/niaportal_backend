@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class CommonServiceImpl implements CommonService{
+public class CommonServiceImpl implements CommonService {
 
     @Autowired
     CommonMapper commonMapper;
 
     @Override
-    public List<Map<String, Object>> listCommonCode(Map<String,String> paramMap) {
+    public List<Map<String, Object>> listCommonCode(Map<String, String> paramMap) {
         return commonMapper.listCommonCode(paramMap);
     }
 

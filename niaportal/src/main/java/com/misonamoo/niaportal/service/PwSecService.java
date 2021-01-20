@@ -8,4 +8,6 @@ public interface PwSecService {
     public void setCode(PwSec pwSec);
 
     public void updateCode(PwSec pwSec);
+
+    public String getEndTime(int userNo);
 }

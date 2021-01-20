@@ -16,12 +16,22 @@
 			#{userNo},
 			#{secCode},
 			NOW(),
-			#{endDt}
-		)
+			DATE_ADD(NOW(), INTERVAL 3 MINUTE)
+		);
 	</insert>
 
     <update id="updateCode" parameterType="pwSec">
-		UPDATE AI_PW_SEC SET SEC_CODE = #{secCode}
+		UPDATE AI_PW_SEC
+		SET
+		SEC_CODE = #{secCode},
+		START_DT = NOW(),
+		END_DT = DATE_ADD(NOW(), INTERVAL 3 MINUTE)
 		WHERE USER_NO = #{userNo}
 	</update>
+
+	<select id="getEndTime" parameterType="int" resultType="String">
+		SELECT END_DT endTime
+		FROM AI_PW_SEC
+		WHERE USER_NO = #{userNo}
+	</select>
 </mapper>

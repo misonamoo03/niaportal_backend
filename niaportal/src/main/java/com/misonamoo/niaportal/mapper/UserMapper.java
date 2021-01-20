@@ -36,6 +36,7 @@ public interface UserMapper {
     public void edit(User user);
 
     public int checkEmailPass(User user);
+
     public int findUserNo(User user);
 
     public int deletedUser(User user);

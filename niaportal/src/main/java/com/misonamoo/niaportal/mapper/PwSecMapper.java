@@ -36,4 +36,6 @@ public interface PwSecMapper {
      * @throws Exception
      */
     public void updateCode(PwSec pwSec);
+
+    public String getEndTime(int userNo);
 }

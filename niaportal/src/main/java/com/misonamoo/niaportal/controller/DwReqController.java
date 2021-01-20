@@ -1,6 +1,7 @@
 package com.misonamoo.niaportal.controller;
 
 
+import com.misonamoo.niaportal.domain.DwBase;
 import com.misonamoo.niaportal.domain.DwReq;
 import com.misonamoo.niaportal.service.DwReqService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.misonamoo.niaportal.common.CommonUtil.*;
-import static com.misonamoo.niaportal.common.CommonUtil.isNull;
 
 @RestController
 @RequestMapping("/DwReq")
@@ -30,6 +30,58 @@ public class DwReqController extends BaseController{
     private String dwReqCodeDwReqFail;    // 다운로드 승인 반려
     @Value("${dwReqCode.reReq}")
     private String dwReqCodeReReq;    // 다운로드 재요청 가능 상태
+
+    //다운로드
+    @PostMapping(value = "/dwInsert")
+    public Map<String, Object> dwInsert(@RequestBody Map<String, List<DwBase>> dwListMap, HttpServletRequest request, HttpServletResponse response) throws Exception{
+        Map<String, Object> ret = new HashMap();
+        ret.put("status", 200);
+        List<DwBase> dwBase = dwListMap.get("list");
+        if (!isLoginNow(request)) {
+            ret.put("status", 104);
+            return returnMap(ret);
+        }
+        for (DwBase db : dwBase) {
+            if (isNull(db.getSportsGbCode()) ||
+                    isNull(db.getFileNo() + "") ||
+                    isNull(db.getFileName()) ||
+                    isNull(db.getFileUrl())) {
+                continue;
+            }else {
+                db.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
+                if (dwReqService.dupFileNo(db) == 0) {  //회원이 요청한 다운로드가 이전에 요청하지 않았을 경우에만 새로 DB에 삽입
+                    dwReqService.dwInsert(db);
+                } else {
+                    continue;
+                }
+            }
+        }
+        return returnMap(ret);
+    }
+
+    //다운로드 목록 조회
+    @GetMapping(value = "/dwList")
+    public Map<String, Object> dwList(@ModelAttribute DwBase dwBase, HttpServletRequest request) throws Exception{
+        Map<String, Object> ret = new HashMap<String,Object>();
+        Map<String, Object> data = new HashMap<String, Object>();
+        ret.put("status", 200);
+
+        if(isLoginNow(request)) {
+            dwBase.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
+
+            Map<String, Object> dwList = dwReqService.dwList(dwBase);
+            data.put("currentPage", dwBase.getCurrentPage());
+            data.put("pagePerRow", dwBase.getPagePerRow());
+            data.put("totalCnt", dwList.get("totalCnt"));
+            data.put("list", dwList.get("list"));
+            ret.put("data", data);
+        }
+        else {
+            ret.put("status", "104");
+            return returnMap(ret);
+        }
+        return returnMap(ret);
+    }
 
     //다운로드 요청 가능 상태 조회
     @GetMapping(value = "/dwState")
@@ -219,7 +271,7 @@ public class DwReqController extends BaseController{
             DwReq dwReqInfo =null;
             if(isSuperUser(request)){// 슈퍼유저인경우- 모든 회원정보를 조회 할 수 있다.
                 Map<String, Object> listDwReqInfo = dwReqService.listDwReqInfoPage(dwReq);
-                data.put("currentPage",dwReq.getCurrentpage());
+                data.put("currentPage",dwReq.getCurrentPage());
                 data.put("pagePerRow", dwReq.getPagePerRow());
                 data.put("totalCnt",listDwReqInfo.get("totalCnt"));
                 data.put("list",listDwReqInfo.get("list"));

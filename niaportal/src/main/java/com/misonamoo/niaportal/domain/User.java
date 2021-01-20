@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @ToString
 public class User {
-    private int userNo;
+    private long userNo;
     private String email;
     private String userGbCode;
     private String password;
@@ -21,6 +21,7 @@ public class User {
     private String tel;
     private String agency;
     private String companyTypeCode;
+    private String companyTypeName;
     private String dwConfirmYn;
     private String delYn;
     private Date regDate;

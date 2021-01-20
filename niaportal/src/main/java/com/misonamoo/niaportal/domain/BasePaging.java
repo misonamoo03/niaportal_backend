@@ -9,17 +9,17 @@ import lombok.ToString;
 @Setter
 public class BasePaging {
 
-    private int currentpage;
+    private int currentPage;
     private int pagePerRow;
     private int startRow;
     public BasePaging() {
-        currentpage = 1;
+        currentPage = 1;
         pagePerRow = 10;
 
     }
 
     public int getStartRow() {
-        return startRow = (currentpage-1)*pagePerRow;
+        return startRow = (currentPage-1)*pagePerRow;
     }
 
 }

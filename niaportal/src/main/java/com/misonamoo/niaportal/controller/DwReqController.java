@@ -70,7 +70,7 @@ public class DwReqController extends BaseController{
             dwBase.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
 
             Map<String, Object> dwList = dwReqService.dwList(dwBase);
-            data.put("currentPage", dwBase.getCurrentpage());
+            data.put("currentPage", dwBase.getCurrentPage());
             data.put("pagePerRow", dwBase.getPagePerRow());
             data.put("totalCnt", dwList.get("totalCnt"));
             data.put("list", dwList.get("list"));
@@ -271,7 +271,7 @@ public class DwReqController extends BaseController{
             DwReq dwReqInfo =null;
             if(isSuperUser(request)){// 슈퍼유저인경우- 모든 회원정보를 조회 할 수 있다.
                 Map<String, Object> listDwReqInfo = dwReqService.listDwReqInfoPage(dwReq);
-                data.put("currentPage",dwReq.getCurrentpage());
+                data.put("currentPage",dwReq.getCurrentPage());
                 data.put("pagePerRow", dwReq.getPagePerRow());
                 data.put("totalCnt",listDwReqInfo.get("totalCnt"));
                 data.put("list",listDwReqInfo.get("list"));

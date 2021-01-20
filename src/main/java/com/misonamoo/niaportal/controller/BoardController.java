@@ -46,7 +46,7 @@ public class BoardController extends BaseController {
         }
 
         Map<String, Object> result = boardService.getBoardList(board);
-        data.put("currentPage",board.getCurrentpage());
+        data.put("currentPage",board.getCurrentPage());
         data.put("pagePerRow", board.getPagePerRow());
         data.put("totalCnt",result.get("totalCnt"));
         data.put("list",result.get("list"));

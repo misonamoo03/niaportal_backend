@@ -11,10 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 게시판 서비스
- * @author Yohan
- */
 @Service
 @Transactional
 public class BoardServiceImpl implements BoardService {
@@ -23,7 +19,7 @@ public class BoardServiceImpl implements BoardService {
     BoardMapper boardMapper;
 
     /**
-     * 목록 리턴.
+     * @param board
      * @return
      */
     public Map<String, Object> getBoardList(Board board) {
@@ -35,43 +31,44 @@ public class BoardServiceImpl implements BoardService {
 
         return result;
     }
+
     /**
-     * 상세 정보 리턴.
+     * @param boardNo
      * @return
      */
     public Board getBoard(Long boardNo) {
         return boardMapper.getBoard(boardNo);
     }
 
-
     /**
-     * 등록/수정 처리.
+     * @param board
+     * @return
      */
     public Long insertBoard(Board board) {
         // 조회하여 리턴된 정보
             boardMapper.insertBoard(board);
-        return board.getBoardNo();
+        return board.getBoardContentNo();
     }
 
     /**
-     * 삭제 처리.
+     * @param boardContent
      */
-    public void deleteBoard(Long boardSeq) {
-        boardMapper.deleteBoard(boardSeq);
-    }
-
-    @Override
     public void updateBoardContent(BoardContent boardContent) {
         boardMapper.updateBoardContent(boardContent);
     }
 
-    @Override
+    /**
+     * @param boardContent
+     * @return
+     */
     public BoardContent getBoardContent(BoardContent boardContent) {
             return boardMapper.getBoardContent(boardContent);
 
     }
 
-    @Override
+    /**
+     * @param boardContent
+     */
     public void deleteBoardContent(BoardContent boardContent) {
         if(boardContent.getBoardContentNo().equals(boardContent.getContentGroup())){ // 원글
             boardMapper.deleteContentGroup(boardContent.getContentGroup());

@@ -8,10 +8,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Interceptor 구현
- * @author Yohan
- */
 public class BaseHandlerInterceptor implements HandlerInterceptor {
 
     Logger logger = LoggerFactory.getLogger(getClass());

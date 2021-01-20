@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class CommonUtil {
+
     /**
      * 텍스트가 널이거나 비어있는지 확인
      * @param val 확인할 텍스트
@@ -101,5 +102,4 @@ public class CommonUtil {
             return true;
         }
     }
-
 }

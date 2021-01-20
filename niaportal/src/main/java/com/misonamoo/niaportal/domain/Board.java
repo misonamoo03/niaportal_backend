@@ -4,9 +4,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * @author
- */
 @Data
 public class Board extends BasePaging {
     private Long boardNo;

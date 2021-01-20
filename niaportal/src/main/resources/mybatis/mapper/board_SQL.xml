@@ -13,11 +13,11 @@
                     B.USER_NAME AS userName,
                     A.VIEW_CNT AS viewCnt,
                     A.REG_DATE AS regDdate,
-        IF((SELECT count(BOARD_CONTENT_NO) FROM bizmiso.AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn
-              FROM bizmiso.AI_BOARD_CONTENT A
-             INNER JOIN bizmiso.AI_USER B
+        IF((SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn
+              FROM AI_BOARD_CONTENT A
+             INNER JOIN AI_USER B
                ON A.USER_NO = B.USER_NO
-             INNER JOIN bizmiso.AI_BOARD C
+             INNER JOIN AI_BOARD C
                ON A.BOARD_NO = C.BOARD_NO
             WHERE 1=1
              <if test='boardNo > 0'>
@@ -33,10 +33,10 @@
     <select id="getBoardTotalCnt" resultType="Integer">
         SELECT
         COUNT(*)
-        FROM bizmiso.AI_BOARD_CONTENT A
-        INNER JOIN bizmiso.AI_USER B
+        FROM AI_BOARD_CONTENT A
+        INNER JOIN AI_USER B
         ON A.USER_NO = B.USER_NO
-        INNER JOIN bizmiso.AI_BOARD C
+        INNER JOIN AI_BOARD C
         ON A.BOARD_NO = C.BOARD_NO
         WHERE 1=1
         <if test='boardNo > 0'>
@@ -46,13 +46,6 @@
             AND C.SPORTS_BOARD_CODE = #{sportsBoardCode}
         </if>
     </select>
-<!--&lt;!&ndash;    <select id="getBoard" parameterType="BOARDVO" resultType="com.misonamoo.niaportal.domain.BoardContent">-->
-<!--        select BOARD_SEQ as boardSeq-->
-<!--              ,BOARD_TITLE as boardTitle-->
-<!--              ,BOARD_CONTENT as boardContent-->
-<!--              ,BOARD_REGIST_DATE as boardRegistDate-->
-<!--         from bizmiso.POSTER_BOARD where BOARD_SEQ = #{boardSeq}-->
-<!--    </select>&ndash;&gt;-->
 
     <select id="getBoard" parameterType="Board" resultType="Board">
         select
@@ -64,14 +57,14 @@
         REG_USER_NO as regUserNo,
         UPD_DATE as updDate,
         UPD_USER_NO as updUserNo
-         from bizmiso.AI_BOARD where BOARD_NO = #{boardNo}
+         from AI_BOARD where BOARD_NO = #{boardNo}
     </select>
 
     <insert id="insertBoard" parameterType="Board">
         <selectKey resultType="Long" keyProperty="boardContentNo" order="BEFORE">
-            select MAX(BOARD_CONTENT_NO) + 1 as SEQUENCE_NUMBER FROM bizmiso.AI_BOARD_CONTENT
+            select MAX(BOARD_CONTENT_NO) + 1 as SEQUENCE_NUMBER FROM AI_BOARD_CONTENT
         </selectKey>
-        INSERT INTO bizmiso.AI_BOARD_CONTENT
+        INSERT INTO AI_BOARD_CONTENT
         (
             BOARD_CONTENT_NO,
             USER_NO,
@@ -108,7 +101,7 @@
     </insert>
 
     <update id="updateBoardContent" parameterType="BoardContent">
-        UPDATE bizmiso.AI_BOARD_CONTENT
+        UPDATE AI_BOARD_CONTENT
            SET
         <if test="boardNo != null and boardNo != '' and boardNo != 'null'">
                BOARD_NO = #{boardNo},
@@ -128,9 +121,6 @@
         <if test="viewCnt != null and viewCnt != '' and viewCnt != 'null'">
                VIEW_CNT = #{viewCnt},
         </if>
-        <if test="replyYn != null and replyYn != '' and replyYn != 'null'">
-               REPLY_YN = #{replyYn},
-        </if>
         UPD_DATE = now()
          WHERE BOARD_CONTENT_NO = #{boardContentNo}
     </update>
@@ -147,7 +137,7 @@
                 VIEW_CNT AS viewCnt,
                 REG_DATE AS regDate,
                 UPD_DATE AS updDate,
-                IF((SELECT count(BOARD_CONTENT_NO) FROM bizmiso.AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn,
+                IF((SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn,
                 CONTENT_GROUP AS contentGroup
           FROM AI_BOARD_CONTENT A
          WHERE BOARD_CONTENT_NO = #{boardContentNo}

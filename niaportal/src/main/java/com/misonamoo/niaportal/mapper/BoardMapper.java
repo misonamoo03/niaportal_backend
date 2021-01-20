@@ -22,11 +22,6 @@ public interface BoardMapper {
 
     Long insertBoard(Board board);
 
-    Long updateBoard(Board board);
-
-    void deleteBoard(Long boardNo);
-
-
     void updateBoardContent(BoardContent boardContent);
 
     int getBoardTotalCnt(Board board);

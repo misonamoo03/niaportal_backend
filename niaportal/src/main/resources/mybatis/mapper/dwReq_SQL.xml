@@ -20,12 +20,12 @@
 			A.CONFIRM_MESSAGE as confirmMessage,
 			A.REG_DATE as regDate,
 		    A.CONFIRM_DATE as confirmDate
-		FROM bizmiso.AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO where A.USER_NO=#{userNo};
+		FROM "".AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO where A.USER_NO=#{userNo};
 	</select>
 
 	<!-- 다운로드 요청 등록 / 수정-->
 	<insert id="insertReq" parameterType="DwReq">
-		INSERT INTO bizmiso.AI_DW_REQ (
+		INSERT INTO "".AI_DW_REQ (
 			USER_NO,
 			REQ_CODE,
 			REQ_COMMENT,
@@ -69,7 +69,7 @@
 			A.CONFIRM_MESSAGE as confirmMessage,
 			A.REG_DATE as regDate,
 			A.CONFIRM_DATE as confirmDate
-		FROM bizmiso.AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO
+		FROM "".AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO
 		ORDER BY A.REG_DATE DESC
 		LIMIT #{pagePerRow} offset #{startRow}
 			;
@@ -79,7 +79,7 @@
 	<select id="getDwReqTotalCnt" parameterType="DwReq" resultType="int">
 		SELECT
 			COUNt(*)
-		FROM bizmiso.AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO
+		FROM "".AI_DW_REQ A inner join AI_USER B ON A.USER_NO = B.USER_NO
 		;
 	</select>
 

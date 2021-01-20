@@ -33,6 +33,7 @@
 			FILE_NAME as fileName,
 			REG_DATE as regDate
 		FROM AI_DW_BASE
+		WHERE USER_NO = #{userNo}
 		ORDER BY REG_DATE DESC
 		LIMIT #{pagePerRow} offset #{startRow}
 			;
@@ -43,6 +44,7 @@
 		SELECT
 			COUNT(*)
 		FROM AI_DW_BASE
+		WHERE USER_NO = #{userNo}
 		;
 	</select>
 

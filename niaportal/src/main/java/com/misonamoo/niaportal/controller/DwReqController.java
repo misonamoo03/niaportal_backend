@@ -67,7 +67,8 @@ public class DwReqController extends BaseController{
         ret.put("status", 200);
 
         if(isLoginNow(request)) {
-            DwReq dwReqInfo = null;
+            dwBase.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
+
             Map<String, Object> dwList = dwReqService.dwList(dwBase);
             data.put("currentPage", dwBase.getCurrentpage());
             data.put("pagePerRow", dwBase.getPagePerRow());

@@ -62,7 +62,7 @@
 
     <insert id="insertBoard" parameterType="Board">
         <selectKey resultType="Long" keyProperty="boardContentNo" order="BEFORE">
-            select MAX(BOARD_CONTENT_NO) + 1 as SEQUENCE_NUMBER FROM AI_BOARD_CONTENT
+            select ai_get_seq('boardContentNo') FROM DUAL
         </selectKey>
         INSERT INTO AI_BOARD_CONTENT
         (
@@ -76,7 +76,6 @@
             VIEW_CNT,
             REG_DATE,
             UPD_DATE,
-            REPLY_YN,
             CONTENT_GROUP
         )
         VALUES (
@@ -90,7 +89,6 @@
         0,
         now(),
         now(),
-        'N',
         <if test="orgBoardContentNo != null and orgBoardContentNo != '' and orgBoardContentNo != 'null'">
             #{orgBoardContentNo}
         </if>

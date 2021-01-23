@@ -69,7 +69,6 @@ public class UserController extends BaseController{
     public Map<String, Object> delete(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
-
         if (user.getEmail().equals(getCookieValue(request, "email"))) {
             User info = userService.inquiry(user);
             Map<String, Object> data = new HashMap();
@@ -198,7 +197,7 @@ public class UserController extends BaseController{
 
     // 로그인
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Map login(@ModelAttribute User user, HttpServletResponse response) throws Exception {
+    public Map login(@ModelAttribute User user, HttpServletRequest request ,HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
         if (isNull(user.getEmail()) || isNull(user.getPassword())) {
@@ -231,6 +230,18 @@ public class UserController extends BaseController{
                 c.setMaxAge(-1);
                 response.addCookie(c);
             }
+
+            User info = userService.inquiry(user);
+            Map<String, Object> data = new HashMap();
+            Map<String, Object> memberInfo = new HashMap();
+            memberInfo.put("email", user.getEmail());
+            memberInfo.put("userName", info.getUserName());
+            memberInfo.put("tel", info.getTel());
+            memberInfo.put("agency", info.getAgency());
+            memberInfo.put("CompanyTypeCode", info.getCompanyTypeCode());
+            memberInfo.put("CompanyTypeName", info.getCompanyTypeName());
+            data.put("memberInfo", memberInfo);
+            ret.put("data", data);
         }
         return returnMap(ret);
     }

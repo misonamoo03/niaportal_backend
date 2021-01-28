@@ -205,44 +205,37 @@ public class UserController extends BaseController{
             return returnMap(ret);
         }
         int emailCnt = userService.dupEmail(user);  //1이면 아이디 존재, 0이면 아이디 없음
-        if (emailCnt == 0) {
-            ret.put("status", 109);
-            return returnMap(ret);
-        }
         int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
-        if (emailPassCnt == 0) {
+        int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
+        if ((emailCnt == 0) || (emailPassCnt == 0) || (deletedUser > 0)) {
             ret.put("status", 102);
             return returnMap(ret);
         }
-        int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
-        if (deletedUser > 0) {
-            ret.put("status", 103);
-        } else {
-            // login
-            User login = userService.login(user);
-            Cookie[] loginCookies = new Cookie[4];   // 쿠키 설정
-            loginCookies[0] = new Cookie("email", URLEncoder.encode(login.getEmail(), "UTF-8")); //UTF-8로 인코딩
-            loginCookies[1] = new Cookie("userNo", URLEncoder.encode(login.getUserNo() + "", "UTF-8"));
-            loginCookies[2] = new Cookie("userGbCode", URLEncoder.encode(login.getUserGbCode(), "UTF-8"));
-            loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
-            for (Cookie c : loginCookies) {
-                c.setPath("/");
-                c.setMaxAge(-1);
-                response.addCookie(c);
-            }
-
-            User info = userService.inquiry(user);
-            Map<String, Object> data = new HashMap();
-            Map<String, Object> memberInfo = new HashMap();
-            memberInfo.put("email", user.getEmail());
-            memberInfo.put("userName", info.getUserName());
-            memberInfo.put("tel", info.getTel());
-            memberInfo.put("agency", info.getAgency());
-            memberInfo.put("CompanyTypeCode", info.getCompanyTypeCode());
-            memberInfo.put("CompanyTypeName", info.getCompanyTypeName());
-            data.put("memberInfo", memberInfo);
-            ret.put("data", data);
+        // login
+        User login = userService.login(user);
+        Cookie[] loginCookies = new Cookie[4];   // 쿠키 설정
+        loginCookies[0] = new Cookie("email", URLEncoder.encode(login.getEmail(), "UTF-8")); //UTF-8로 인코딩
+        loginCookies[1] = new Cookie("userNo", URLEncoder.encode(login.getUserNo() + "", "UTF-8"));
+        loginCookies[2] = new Cookie("userGbCode", URLEncoder.encode(login.getUserGbCode(), "UTF-8"));
+        loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
+        for (Cookie c : loginCookies) {
+            c.setPath("/");
+            c.setMaxAge(-1);
+            response.addCookie(c);
         }
+
+        User info = userService.inquiry(user);
+        Map<String, Object> data = new HashMap();
+        Map<String, Object> memberInfo = new HashMap();
+        memberInfo.put("email", user.getEmail());
+        memberInfo.put("userName", info.getUserName());
+        memberInfo.put("tel", info.getTel());
+        memberInfo.put("agency", info.getAgency());
+        memberInfo.put("CompanyTypeCode", info.getCompanyTypeCode());
+        memberInfo.put("CompanyTypeName", info.getCompanyTypeName());
+        data.put("memberInfo", memberInfo);
+        ret.put("data", data);
+
         return returnMap(ret);
     }
 

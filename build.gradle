@@ -2,11 +2,17 @@ plugins {
 	id 'org.springframework.boot' version '2.4.1'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+	id 'war'
 }
 
 group = 'com.misonamoo'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+apply plugin: 'war'
+war {
+	baseName = 'market2'
+}
 
 configurations {
 	compileOnly {
@@ -30,6 +36,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 
 	test {
 		useJUnitPlatform()

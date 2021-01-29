@@ -27,8 +27,6 @@ logging:
 server:
   port: 8080
 
-profiles:
-  active: local
 ---
 
 #local 환경

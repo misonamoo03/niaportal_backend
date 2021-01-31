@@ -57,13 +57,11 @@ spring:
 #prod 환경
 spring:
   profiles: prod
-  datasource: #TODO : prod용으로 변경 필요
-    url:
-    hikari:
-      username:
-      password:
-server:
-  port: 9090
+  datasource:
+    url: jdbc:log4jdbc:mysql://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com?characterEncoding=UTF-8&serverTimezone=UTC
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    username: niaporta
+    password: 2JPE5X7LW3Q
 
 ---
 #salt 키

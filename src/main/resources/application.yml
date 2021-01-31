@@ -45,7 +45,7 @@ spring:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:log4jdbc:mariadb://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com:3306/niaportal_dev?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+    url: jdbc:mariadb://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com:3306/niaportal_dev?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: niaportal_dev
     password: 1MNL3QLY7SA

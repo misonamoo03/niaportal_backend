@@ -41,6 +41,7 @@ dependencies {
 
 	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
 
+	compile group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4', version: '1.16'
 
 	test {
 		useJUnitPlatform()

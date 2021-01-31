@@ -26,6 +26,8 @@ repositories {
 
 
 dependencies {
+
+	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.6.2'
 	compile("org.springframework.boot:spring-boot-starter-mail")
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -41,7 +43,7 @@ dependencies {
 
 	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
 
-	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.2.1'
+
 
 
 	test {

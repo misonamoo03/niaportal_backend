@@ -57,4 +57,11 @@ public class BoardServiceImpl implements BoardService {
             boardMapper.deleteBoardContent(boardContent.getBoardContentNo());
         }
     }
+
+    @Override
+    public List<Map<String, Object>> getSportsList(Map<String, String> sportsMap) {
+
+
+        return boardMapper.getSportsList(sportsMap);
+    }
 }

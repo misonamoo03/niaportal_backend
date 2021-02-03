@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,7 +40,7 @@ public class BoardController extends BaseController {
         Map<String, Object> data = new LinkedHashMap<>();
         ret.put("status", 200);
 
-        if (board.getBoardNo() == 0 && isNull(board.getSportsBoardCode())) {
+        if (board.getBoardNo() == 0 ) {
             // 필수 변수값 없음
             ret.put("status", 100);
             ret.put("message", "필수 변수값 없음");
@@ -114,7 +116,10 @@ public class BoardController extends BaseController {
      * @throws Exception
      */
     @PostMapping("/insert")
-    public Map<String,Object> insertBoard(Board board, HttpServletRequest request) throws Exception {
+    public Map<String,Object> insertBoard(@RequestBody Board board, HttpServletRequest request) throws Exception {
+
+        Cookie[] cookies = request.getCookies();
+        log.info(String.valueOf(cookies));
         Map<String, Object> ret = new HashMap<String,Object>();
         Map<String, Object> data = new HashMap<String, Object>();
         long insertKey=0;

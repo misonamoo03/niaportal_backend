@@ -10,59 +10,60 @@
                     A.CONTENT AS content,
                     A.SEC_YN AS secYn,
                     A.USER_NO AS userNo,
-                    B.USER_NAME AS userName,
                     A.VIEW_CNT AS viewCnt,
-                    A.REG_DATE AS regDdate,
-        IF((SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn
+                    A.REG_DATE AS regDate,
+                    A.BOARD_NO AS boardNo,
+                    B.USER_NAME AS userName,
+                    C.BOARD_TYPE_CODE AS boardTypeCode,
+                    IF((SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn
               FROM AI_BOARD_CONTENT A
              INNER JOIN AI_USER B
-               ON A.USER_NO = B.USER_NO
+                ON A.USER_NO = B.USER_NO
              INNER JOIN AI_BOARD C
-               ON A.BOARD_NO = C.BOARD_NO
-            WHERE 1=1
+                ON A.BOARD_NO = C.BOARD_NO
+             WHERE 1=1
              <if test='boardNo > 0'>
                AND A.BOARD_NO = #{boardNo}
              </if>
-             <if test='sportsBoardCode != null and sportsBoardCode != "null" and sportsBoardCode != ""'>
-               AND C.SPORTS_BOARD_CODE = #{sportsBoardCode}
+             <if test='boardTypeCode == "CD006001"'>
+               AND C.BOARD_TYPE_CODE = 'CD006001'
+             </if>
+             <if test='boardTypeCode == "CD006002"'>
+               AND C.BOARD_TYPE_CODE = 'CD006002'
              </if>
              ORDER BY A.CONTENT_GROUP DESC, A.REG_DATE ASC
              LIMIT #{pagePerRow} offset #{startRow}
     </select>
 
     <select id="getBoardTotalCnt" resultType="Integer">
-        SELECT
-        COUNT(*)
-        FROM AI_BOARD_CONTENT A
-        INNER JOIN AI_USER B
-        ON A.USER_NO = B.USER_NO
-        INNER JOIN AI_BOARD C
-        ON A.BOARD_NO = C.BOARD_NO
-        WHERE 1=1
+        SELECT COUNT(*)
+          FROM AI_BOARD_CONTENT A
+         INNER JOIN AI_USER B
+            ON A.USER_NO = B.USER_NO
+         INNER JOIN AI_BOARD C
+            ON A.BOARD_NO = C.BOARD_NO
+         WHERE 1=1
         <if test='boardNo > 0'>
-            AND A.BOARD_NO = #{boardNo}
-        </if>
-        <if test='sportsBoardCode != null and sportsBoardCode != "null" and sportsBoardCode != ""'>
-            AND C.SPORTS_BOARD_CODE = #{sportsBoardCode}
+           AND A.BOARD_NO = #{boardNo}
         </if>
     </select>
 
     <select id="getBoard" parameterType="Board" resultType="Board">
-        select
-        BOARD_NO as boardNo,
-        NAME as name,
-        BOARD_TYPE_CODE as boardTypeCode,
-        SPORTS_BOARD_CODE as sportsBoardCode,
-        REG_DATE as regDate,
-        REG_USER_NO as regUserNo,
-        UPD_DATE as updDate,
-        UPD_USER_NO as updUserNo
-         from AI_BOARD where BOARD_NO = #{boardNo}
+        SELECT
+                BOARD_NO as boardNo,
+                NAME as name,
+                BOARD_TYPE_CODE as boardTypeCode,
+                REG_DATE as regDate,
+                REG_USER_NO as regUserNo,
+                UPD_DATE as updDate,
+                UPD_USER_NO as updUserNo
+          FROM AI_BOARD
+         WHERE BOARD_NO = #{boardNo}
     </select>
 
     <insert id="insertBoard" parameterType="Board">
         <selectKey resultType="Long" keyProperty="boardContentNo" order="BEFORE">
-            select ai_get_seq('boardContentNo') FROM DUAL
+            SELECT ai_get_seq('boardContentNo') FROM DUAL
         </selectKey>
         INSERT INTO AI_BOARD_CONTENT
         (
@@ -141,11 +142,29 @@
          WHERE BOARD_CONTENT_NO = #{boardContentNo}
     </select>
     <delete id="deleteContentGroup" parameterType="String">
-        delete from AI_BOARD_CONTENT where CONTENT_GROUP = #{contentGroup}
+        DELETE FROM AI_BOARD_CONTENT WHERE CONTENT_GROUP = #{contentGroup}
     </delete>
     <delete id="deleteBoardContent" parameterType="String">
-        delete from AI_BOARD_CONTENT where BOARD_CONTENT_NO = #{boardContentNo}
+        DELETE FROM AI_BOARD_CONTENT WHERE BOARD_CONTENT_NO = #{boardContentNo}
     </delete>
 
+    <select id="getSportsList" parameterType="Map" resultType="Map">
+        SELECT A.DATA_NO as dataNo,
+               B.CODE_NAME as codeName,
+               A.SPORTS_TYPE_CODE as sportsTypeCode,
+               A.ACT_CODE as actCode,
+               A.FILE_URL as fileUrl,
+               A.FILE_NAME as fileName,
+               A.THUM_IMG_URL as thumImgUrl,
+               A.PLAY_TIME as playTime,
+               A.REG_DATE as regDate,
+               A.UPD_DATE as updDate
+          FROM AI_SPORTS_DATA A
+         INNER JOIN AI_COMMONCODE B
+            ON A.SPORTS_TYPE_CODE = B.CODE
+         WHERE A.SPORTS_TYPE_CODE = #{sportsTypeCode}
+           AND A.ACT_CODE = #{actCode}
+         ORDER BY A.DATA_NO DESC
+    </select>
 </mapper>
 

@@ -22,6 +22,11 @@ public class Board extends BasePaging {
     private Long updUserNo;
     private String secYn;
     private Long contentGroup;
+    
+    // 파라미터로 온 변수
+    private String email;
+    private String userGbCode;
+
     public Board() {
         boardNo = 0L;
 

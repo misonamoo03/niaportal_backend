@@ -3,6 +3,7 @@ package com.misonamoo.niaportal.service;
 import com.misonamoo.niaportal.domain.Board;
 import com.misonamoo.niaportal.domain.BoardContent;
 
+import java.util.List;
 import java.util.Map;
 
 public interface BoardService {
@@ -18,4 +19,6 @@ public interface BoardService {
     BoardContent getBoardContent(BoardContent boardContent);
 
     void deleteBoardContent(BoardContent boardContent);
+
+    List<Map<String, Object>> getSportsList(Map<String, String> sportsMap);
 }

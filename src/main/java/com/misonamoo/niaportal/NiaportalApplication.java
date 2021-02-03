@@ -12,6 +12,7 @@ public class NiaportalApplication extends SpringBootServletInitializer {
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(NiaportalApplication.class);
 	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(NiaportalApplication.class, args);
 	}

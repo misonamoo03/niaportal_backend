@@ -65,10 +65,14 @@ public class UserController extends BaseController{
     }
 
     //회원 조회
-    @GetMapping(value = "/inquiry")
+    @PostMapping(value = "/inquiry")
     public Map<String, Object> delete(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
+        if (isNull(user.getEmail())) {
+            ret.put("status", 100);
+            return returnMap(ret);
+        }
         if (user.getEmail().equals(getCookieValue(request, "email"))) {
             User info = userService.inquiry(user);
             Map<String, Object> data = new HashMap();
@@ -77,8 +81,8 @@ public class UserController extends BaseController{
             memberInfo.put("userName", info.getUserName());
             memberInfo.put("tel", info.getTel());
             memberInfo.put("agency", info.getAgency());
-            memberInfo.put("CompanyTypeCode", info.getCompanyTypeCode());
-            memberInfo.put("CompanyTypeName", info.getCompanyTypeName());
+            memberInfo.put("companyTypeCode", info.getCompanyTypeCode());
+            memberInfo.put("companyTypeName", info.getCompanyTypeName());
             data.put("memberInfo", memberInfo);
             ret.put("data", data);
         } else {
@@ -205,44 +209,37 @@ public class UserController extends BaseController{
             return returnMap(ret);
         }
         int emailCnt = userService.dupEmail(user);  //1이면 아이디 존재, 0이면 아이디 없음
-        if (emailCnt == 0) {
-            ret.put("status", 109);
-            return returnMap(ret);
-        }
         int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
-        if (emailPassCnt == 0) {
+        int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
+        if ((emailCnt == 0) || (emailPassCnt == 0) || (deletedUser > 0)) {
             ret.put("status", 102);
             return returnMap(ret);
         }
-        int deletedUser = userService.deletedUser(user); // 1: 탈퇴한 유저 , 0: 탈퇴하지 않은 유저
-        if (deletedUser > 0) {
-            ret.put("status", 103);
-        } else {
-            // login
-            User login = userService.login(user);
-            Cookie[] loginCookies = new Cookie[4];   // 쿠키 설정
-            loginCookies[0] = new Cookie("email", URLEncoder.encode(login.getEmail(), "UTF-8")); //UTF-8로 인코딩
-            loginCookies[1] = new Cookie("userNo", URLEncoder.encode(login.getUserNo() + "", "UTF-8"));
-            loginCookies[2] = new Cookie("userGbCode", URLEncoder.encode(login.getUserGbCode(), "UTF-8"));
-            loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
-            for (Cookie c : loginCookies) {
-                c.setPath("/");
-                c.setMaxAge(-1);
-                response.addCookie(c);
-            }
-
-            User info = userService.inquiry(user);
-            Map<String, Object> data = new HashMap();
-            Map<String, Object> memberInfo = new HashMap();
-            memberInfo.put("email", user.getEmail());
-            memberInfo.put("userName", info.getUserName());
-            memberInfo.put("tel", info.getTel());
-            memberInfo.put("agency", info.getAgency());
-            memberInfo.put("CompanyTypeCode", info.getCompanyTypeCode());
-            memberInfo.put("CompanyTypeName", info.getCompanyTypeName());
-            data.put("memberInfo", memberInfo);
-            ret.put("data", data);
+        // login
+        User login = userService.login(user);
+        Cookie[] loginCookies = new Cookie[4];   // 쿠키 설정
+        loginCookies[0] = new Cookie("email", URLEncoder.encode(login.getEmail(), "UTF-8")); //UTF-8로 인코딩
+        loginCookies[1] = new Cookie("userNo", URLEncoder.encode(login.getUserNo() + "", "UTF-8"));
+        loginCookies[2] = new Cookie("userGbCode", URLEncoder.encode(login.getUserGbCode(), "UTF-8"));
+        loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
+        for (Cookie c : loginCookies) {
+            c.setPath("/");
+            c.setMaxAge(60 * 60); // 쿠키 지속시간 1시
+            response.addCookie(c);
         }
+
+        User info = userService.inquiry(user);
+        Map<String, Object> data = new HashMap();
+        Map<String, Object> memberInfo = new HashMap();
+        memberInfo.put("email", user.getEmail());
+        memberInfo.put("userName", info.getUserName());
+        memberInfo.put("tel", info.getTel());
+        memberInfo.put("agency", info.getAgency());
+        memberInfo.put("CompanyTypeCode", info.getCompanyTypeCode());
+        memberInfo.put("CompanyTypeName", info.getCompanyTypeName());
+        data.put("memberInfo", memberInfo);
+        ret.put("data", data);
+
         return returnMap(ret);
     }
 
@@ -301,17 +298,49 @@ public class UserController extends BaseController{
             }
             codeBuf = buf.toString();
         }
-            pwSec.setSecCode(codeBuf);
         if (isNull(pwSec.getSecCode())) {
+            pwSec.setSecCode(codeBuf);
             pwSecService.setCode(pwSec);
         } else {
+            pwSec.setSecCode(codeBuf);
             pwSecService.updateCode(pwSec);
         }
 //      메일 발송 부분
         String to = user.getEmail(); //받는 사람
         String from = "misonamoo03@gmail.com"; //보내는 사람
         String subject = "이 프로젝트의 비밀번호 찾기 메일입니다."; //제목
-        String body = pwSec.getSecCode(); //내용
+        String body =
+                    "<!DOCTYPE html>\n" +
+                            "<html lang=\"ko\" style=\"margin:0;padding:0;width:100%;\">\n" +
+                            "<head>\n" +
+                            "<meta charset=\"utf-8\">\n" +
+                            "<title>메</title>\n" +
+                            "</head>\n" +
+                            "<body style=\"margin:0;padding:0;width:100%;background:#fff;min-width:320px;-webkit-text-size-adjust:none;word-wrap:break-word;word-break:keep-all;letter-spacing:-.5px;border:none;font-size:16px;font-family:'Noto Sans KR', sans-serif;color:#000;\">\n" +
+                            "\t\t<div id=\"mail_wrap\" style=\"margin:0 auto;padding:0;width:800px;border:1px solid #ddd;font-size:15px;border-top:4px solid #000;\"> \n" +
+                            "\t\t\t<div id=\"mail_header\" style='margin:0;padding:60px 0 0 35px;height:232px;background-image:url(\"images/mail_topbg.jpg\");background-position:top center;background-repeat:no-repeat;border-bottom:1px solid #ddd;'> \n" +
+                            "\t\t\t\t<img src=\"http://sportsaihub.com:3000/_nuxt/assets/images/mail_logo.png\" alt=\"mail_logo\" style=\"border:0;vertical-align:middle;margin-bottom:20px;\"><h1 style=\"margin:0;padding:0;font-size:32px;\">비밀번호 재설정 요청</h1>\n" +
+                            "\t\t\t</div>\n" +
+                            "\t\t\t<div id=\"mail_contents\" style=\"margin:0;padding:50px 45px;background-color:#f1f2f7;text-align:center;line-height:1.6;\"> \n" +
+                            "\t\t\t\t<p style=\"margin:0;padding:0;\">\n" +
+                            "\t\t\t\t\t누군가(귀하이길 바랍니다) 귀하의 sportsaihub 계정 비밀번호 재설정을 요청했습니다.<br>\n" +
+                            "\t\t\t\t\t아래 버튼을 클릭하여 인증번호를 입력 후 비밀번호를 재설정해주세요.<br>\n" +
+                            "\t\t\t\t\t귀하께서 비밀번호 재설정을 요청하지 않았으면 본 이메일을 무시하세요<br></p>\n" +
+                            "\t\t\t\t<div class=\"mail_numbox\" style=\"margin:0;padding:30px 0;width:100%;background-color:#fff;margin-top:30px;\">\n" +
+                            "\t\t\t\t\t<p class=\"mail_num\" style=\"margin:0;padding:0;font-size:25px;font-weight:bold;margin-bottom:10px;\">인증번호 : " + pwSec.getSecCode() + "</p>\n" +
+                            "\t\t\t\t\t<p style=\"margin:0;padding:0;\">※ 인증번호 유효시간은 1시간 입니다.</p>\n" +
+                            "\t\t\t\t</div>\n" +
+                            " \n" +
+                            "\t\t\t\t<div class=\"btn_area\" style=\"margin:0;padding:0;margin-top:30px;\">\n" +
+                            "\t\t\t\t\t\t<a href= 'http://sportsaihub.com:3000/member/verification/" + user.getEmail() + "' id=\"btnlogin\" class=\"btn_type btn_primary\" style=\"text-decoration:none; margin:0;padding:0;border:none;font-size:18px;font-family:'Noto Sans KR', sans-serif;color:#fff;vertical-align:middle;display:block;width:100%;text-align:center;cursor:pointer;line-height:55px;border-radius:100px;background-color:#2046b3;\"><span>비밀번호 재설정하기</span></button>\n" +
+                            "\t\t\t\t\t</div>\n" +
+                            "\t\t\t</div> \n" +
+                            "\t\t\t<div id=\"mail_footer\" style=\"margin:0;padding:30px 0;text-align:center;\"> \n" +
+                            "\t\t\t\t본 메일은 발신전용 메일입니다.\n" +
+                            "\t\t\t</div> \n" +
+                            "\t\t</div> \n" +
+                            "\t</body>\n" +
+                            "</html>";
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
@@ -345,9 +374,9 @@ public class UserController extends BaseController{
             ret.put("status", 107);
             return returnMap(ret);
         } else {
-            Cookie secCodeCookie = new Cookie("secCode", URLEncoder.encode("재설정 권한 부여", "UTF-8"));
+            Cookie secCodeCookie = new Cookie("secCode", URLEncoder.encode("right", "UTF-8"));
             secCodeCookie.setPath("/");
-            secCodeCookie.setMaxAge(60 * 10); //쿠키 유효시간 10분으로 설정
+            secCodeCookie.setMaxAge(60 * 60); // 인증 후 비밀번호 재설정 유효시간 1시간
             response.addCookie(secCodeCookie);
         }
         return returnMap(ret);
@@ -362,7 +391,8 @@ public class UserController extends BaseController{
             ret.put("status", 100);
             return returnMap(ret);
         }
-        if("재설정 권한 부여".equals(getCookieValue(request, "secCode"))){
+        System.out.println(request.getCookies());
+        if("right".equals(getCookieValue(request, "secCode"))){
             String password = user.getPassword();
             password = SHA256Util.getEncrypt(password, salt);
             user.setPassword(password);

@@ -16,7 +16,7 @@
 			#{userNo},
 			#{secCode},
 			NOW(),
-			DATE_ADD(NOW(), INTERVAL 3 MINUTE)
+			DATE_ADD(NOW(), INTERVAL 1 HOUR)
 		);
 	</insert>
 
@@ -25,7 +25,7 @@
 		SET
 		SEC_CODE = #{secCode},
 		START_DT = NOW(),
-		END_DT = DATE_ADD(NOW(), INTERVAL 3 MINUTE)
+		END_DT = DATE_ADD(NOW(), INTERVAL 1 HOUR)
 		WHERE USER_NO = #{userNo}
 	</update>
 

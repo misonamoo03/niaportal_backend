@@ -224,7 +224,7 @@ public class UserController extends BaseController{
         loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
         for (Cookie c : loginCookies) {
             c.setPath("/");
-            c.setMaxAge(60 * 60); // 쿠키 지속시간 1시
+            c.setMaxAge(60 * 60 * 24); // 쿠키 지속시간 하루
             response.addCookie(c);
         }
 

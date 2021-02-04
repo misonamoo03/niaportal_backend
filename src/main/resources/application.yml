@@ -33,8 +33,8 @@ server:
 spring:
   profiles: local
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://smileway.co.kr:3306/bizmiso?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://smileway.co.kr:3306/bizmiso?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
     username: bizmiso
     password: Miso@7531
 

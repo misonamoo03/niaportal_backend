@@ -129,6 +129,7 @@ public class BoardController extends BaseController {
         ret.put("message", "다운로드 요청 정상 처리");
 
         if(isLoginNow(request)) {
+            // boardNo가 없을 경우 처리
             Board newBoard = boardService.getBoard(board.getBoardNo());
             board.setUserNo(Long.parseLong(getCookieValue(request,"userNo")));
             log.info("=============newBoard===============" + newBoard.toString());
@@ -181,7 +182,7 @@ public class BoardController extends BaseController {
      * @throws Exception
      */
     @PostMapping("/update")
-    public Map<String,Object> updateBoard(BoardContent boardContent, HttpServletRequest request) throws Exception {
+    public Map<String,Object> updateBoard(@RequestBody BoardContent boardContent, HttpServletRequest request) throws Exception {
         Map<String, Object> ret = new HashMap<String,Object>();
         Map<String, Object> data = new HashMap<String, Object>();
         ret.put("status", 200);
@@ -234,7 +235,6 @@ public class BoardController extends BaseController {
         }
 
         if (isLoginNow(request)) {
-            //boardContent.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
             BoardContent info = boardService.getBoardContent(boardContent);
             if(info != null) {
                 if (!isSuperUser(request)) { // 일반유저

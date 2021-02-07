@@ -64,4 +64,11 @@ public class BoardServiceImpl implements BoardService {
 
         return boardMapper.getSportsList(sportsMap);
     }
+
+    @Override
+    public List<BoardContent> getReplyList(BoardContent boardContent) {
+        Map<String, Object> result = new HashMap<>();
+        return boardMapper.getReplyList(boardContent);
+
+    }
 }

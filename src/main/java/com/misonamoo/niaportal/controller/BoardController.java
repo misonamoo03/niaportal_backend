@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.misonamoo.niaportal.common.CommonUtil.*;
@@ -96,6 +97,90 @@ public class BoardController extends BaseController {
                     return returnMap(ret);
                 }
             }
+            data.put("info", info);
+            ret.put("data",data);
+
+        }else{
+            ret.put("status", 105);
+            ret.put("message", "요청정보 없음");
+            return returnMap(ret);
+        }
+
+        return returnMap(ret);
+    }
+
+    /**
+     * 게시물 상세 조회
+     * @param boardContent
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/detailBoardGroup")
+    public Map<String, Object> getBoardGroup(BoardContent boardContent, HttpServletRequest request) throws Exception {
+        Map<String, Object> ret = new HashMap<String,Object>();
+        Map<String, Object> data = new HashMap<String, Object>();
+        boolean isMyOriginalContent = false;
+        ret.put("status", 200);
+
+        if (isNull(boardContent.getBoardContentNo())) {
+            // 필수 변수값 없음
+            ret.put("status", 100);
+            ret.put("message", "필수 변수값 없음");
+            return returnMap(ret);
+        }
+        BoardContent info = boardService.getBoardContent(boardContent);//글정보 조회
+        if(!isNull(info.getOrgBoardContentNo())){ // 다글인경우 원글을 조회한다.
+            boardContent.setBoardContentNo(info.getOrgBoardContentNo());
+            BoardContent  orgInfo = boardService.getBoardContent(boardContent);
+            if(orgInfo != null){
+                info = orgInfo;
+            }else{
+                ret.put("status", 105);
+                return returnMap(ret);
+            }
+        }
+        if(info != null) {
+            if(isLoginNow(request)) { //로그인
+                if (!isSuperUser(request)) { // 일반유저
+
+                    //자신의 글이 아니면서 비밀글인 경우
+                    if (info.getUserNo() != Long.parseLong(getCookieValue(request, "userNo")) && info.getSecYn().equals("Y")) {//본인글
+
+                        ret.put("status", 104);
+                        ret.put("message", "접근권한 없음");
+                        return returnMap(ret);
+
+                    }else{
+                        isMyOriginalContent = true;
+                    }
+
+
+                }
+            }else{
+                if(info.getSecYn().equals("Y")){
+                    ret.put("status", 104);
+                    ret.put("message", "접근권한 없음");
+                    return returnMap(ret);
+                }
+            }
+
+
+            List<BoardContent> replyList = boardService.getReplyList(boardContent);
+            if(!isMyOriginalContent &&  !isSuperUser(request)){ //본인이 작성한 글이 아닐 경우 && 슈퍼유저가 아닐경우
+
+                int size = replyList.size();
+                for(int i = 0; i < size; i++) {
+                    BoardContent content = replyList.get(i);
+                    if(content.getSecYn().equals("Y")){ //보안글일경우
+                        replyList.remove(content);
+                        size--;
+                        i--;
+                    }
+                }
+
+            }
+            info.setReplyList(replyList);
             data.put("info", info);
             ret.put("data",data);
 

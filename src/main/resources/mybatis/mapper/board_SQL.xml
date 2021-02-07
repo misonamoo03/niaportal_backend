@@ -132,7 +132,7 @@
                ORG_BOARD_CONTENT_NO                                                    AS orgBoardContentNo,
                TITLE                                                                   AS title,
                CONTENT                                                                 AS content,
-               SEC_YN                                                                  AS secYn,
+               IFNULL(SEC_YN ,'N')                                                     AS secYn,
                VIEW_CNT                                                                AS viewCnt,
                REG_DATE                                                                AS regDate,
                UPD_DATE                                                                AS updDate,
@@ -172,5 +172,25 @@
           AND A.ACT_CODE = #{actCode}
         ORDER BY A.DATA_NO DESC
     </select>
+    <select id="getReplyList" parameterType="BoardContent" resultType="BoardContent">
+        SELECT BOARD_CONTENT_NO                                                        AS boardContentNo,
+               USER_NO                                                                 AS userNo,
+               BOARD_NO                                                                AS boardNo,
+               ORG_BOARD_CONTENT_NO                                                    AS orgBoardContentNo,
+               TITLE                                                                   AS title,
+               CONTENT                                                                 AS content,
+               IFNULL(SEC_YN ,'N')                                                     AS secYn,
+               VIEW_CNT                                                                AS viewCnt,
+               REG_DATE                                                                AS regDate,
+               UPD_DATE                                                                AS updDate,
+               IF((SELECT count(BOARD_CONTENT_NO)
+                   FROM AI_BOARD_CONTENT ABC
+                   WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0, 'N', 'Y') AS replyYn,
+               CONTENT_GROUP                                                           AS contentGroup
+        FROM AI_BOARD_CONTENT A
+        WHERE ORG_BOARD_CONTENT_NO = #{boardContentNo}
+    </select>
+
+
 </mapper>
 

@@ -21,4 +21,6 @@ public interface BoardService {
     void deleteBoardContent(BoardContent boardContent);
 
     List<Map<String, Object>> getSportsList(Map<String, String> sportsMap);
+
+    List<BoardContent> getReplyList(BoardContent boardContent);
 }

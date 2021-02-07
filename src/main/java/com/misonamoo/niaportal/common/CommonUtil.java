@@ -82,7 +82,7 @@ public class CommonUtil {
     public static boolean isSuperUser(HttpServletRequest request) throws UnsupportedEncodingException {
         String userGbCodeVal = getCookieValue(request, "userGbCode");
         System.out.println(userGbCodeVal);
-        if (userGbCodeVal.equals("CD002002")) {
+        if (userGbCodeVal != null && userGbCodeVal.equals("CD002002")) {
             return true;
         } else {
             return false;

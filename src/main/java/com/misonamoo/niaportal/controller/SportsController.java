@@ -42,6 +42,7 @@ public class SportsController extends BaseController {
         paramMap.put("prtCode",sportsTypeCode);
         paramMap.put("codeType", "");
         List<Map<String,Object>> list  = commonService.listCommonCode(paramMap);
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%"+list.toString());
         //2 서브 공통 코드를 루프 돌면서 데이타 조회
         for(Map<String,Object> code : list){
             //데이타 조회
@@ -60,6 +61,7 @@ public class SportsController extends BaseController {
         }
         data.put("list",resultSportsList);
         ret.put("data",data);
+        System.out.println("////////////////////////"+ret.toString());
         return returnMap(ret);
     }
 }

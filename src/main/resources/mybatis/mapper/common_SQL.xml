@@ -36,4 +36,59 @@
 
 	</select>
 
+	<select id="listSearch" parameterType="Search" resultType="HashMap">
+		SELECT * FROM (
+			  SELECT FIELD(AB.BOARD_TYPE_CODE,'CD020','CD021','CD022','CD006001','CD006002') AS typeNo,
+			         AB.BOARD_TYPE_CODE AS typeCode,
+			         (SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = AB.BOARD_TYPE_CODE) AS typeName,
+					BOARD_CONTENT_NO AS contentNo,
+			        TITLE AS title,
+			        CONTENT AS content,
+					DATE_FORMAT(ABC.REG_DATE, '%Y%m%d%H%i%S')  AS regDate
+			  FROM AI_BOARD_CONTENT ABC
+			      INNER JOIN AI_BOARD AB
+			          ON ABC.BOARD_NO = AB.BOARD_NO
+			  UNION ALL
+			  SELECT FIELD(SPORTS_TYPE_CODE,'CD020','CD021','CD022','CD006001','CD006002') AS typeNo,
+			         SPORTS_TYPE_CODE AS typeCode,
+			         (SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = ASD.SPORTS_TYPE_CODE) AS typeName,
+					DATA_NO AS contentNo,
+			         FILE_NAME AS title,
+			         '' AS content,
+					DATE_FORMAT(REG_DATE, '%Y%m%d%H%i%S')  AS regDate
+			  FROM AI_SPORTS_DATA ASD
+		  ) a
+		WHERE (a.title like CONCAT('%', #{query}, '%') OR a.content like CONCAT('%', #{query}, '%'))
+		<if test='type != null and type != "null" and type != ""'>
+			AND a.type = #{type}
+		</if>
+		ORDER BY typeNo asc, regDate desc
+		LIMIT #{pagePerRow} offset #{startRow}
+	</select>
+	<select id="listSearchTotalCnt" resultType="Integer">
+		SELECT COUNT(*) FROM (
+			SELECT AB.BOARD_TYPE_CODE AS type,
+				(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = AB.BOARD_TYPE_CODE) AS typeName,
+				BOARD_CONTENT_NO AS contentNo,
+				TITLE AS title,
+				CONTENT AS content
+			FROM AI_BOARD_CONTENT ABC
+			INNER JOIN AI_BOARD AB
+			ON ABC.BOARD_NO = AB.BOARD_NO
+		UNION ALL
+			SELECT SPORTS_TYPE_CODE AS type,
+				(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = ASD.SPORTS_TYPE_CODE) AS typeName,
+				DATA_NO AS contentNo,
+				FILE_NAME AS title,
+				'' AS content
+			FROM AI_SPORTS_DATA ASD
+		) a
+		WHERE
+		      (a.title like CONCAT('%', #{query}, '%') OR a.content like CONCAT('%', #{query}, '%'))
+		<if test='type != null and type != "null" and type != ""'>
+			AND a.type = #{type}
+		</if>
+	</select>
+
+
 </mapper>

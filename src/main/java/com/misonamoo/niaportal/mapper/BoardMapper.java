@@ -34,4 +34,6 @@ public interface BoardMapper {
     void deleteBoardContent(String boardContentNo);
 
     List<Map<String, Object>> getSportsList(Map<String, String> sportsMap);
+
+    List<BoardContent> getReplyList(BoardContent boardContent);
 }

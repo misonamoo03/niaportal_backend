@@ -2,6 +2,7 @@ package com.misonamoo.niaportal.controller;
 
 
 import com.misonamoo.niaportal.domain.DwReq;
+import com.misonamoo.niaportal.domain.Search;
 import com.misonamoo.niaportal.service.CommonService;
 import com.misonamoo.niaportal.service.DwReqService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CommonController extends BaseController{
 
     //다운로드 요청 회원 정보 목록 조회
     @GetMapping(value = "/listCommonCode")
-    public Map<String, Object> listDwReqUser(@RequestParam(value="prtCode", required = false, defaultValue="000") String prtCode,
+    public Map<String, Object> listCommonCode(@RequestParam(value="prtCode", required = false, defaultValue="000") String prtCode,
                                              @RequestParam(value="codeType", required = false) String codeType,
                                              HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap<String,Object>();
@@ -74,6 +75,38 @@ public class CommonController extends BaseController{
 
         return returnMap(ret);
     }
+
+    //다운로드 요청 회원 정보 목록 조회
+    @GetMapping(value = "/listSearch")
+    public Map<String, Object> listSearch(Search search,
+                                             HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> ret = new HashMap<String,Object>();
+        Map<String, Object> data = new HashMap<String, Object>();
+        ret.put("status", 200);
+
+        if (isNull(search.getQuery())) {
+
+            ret.put("status", 100);
+            return returnMap(ret);
+        }
+
+        //commonCode 조회
+        Map<String,Object> resultMap  = commonService.listSearch(search);
+        resultMap.put("currentPage",search.getCurrentPage());
+        resultMap.put("pagePerRow", search.getPagePerRow());
+        resultMap.put("type",search.getType());
+        resultMap.put("query",search.getQuery());
+        if(resultMap != null){
+            ret.put("data", resultMap);
+        }else{
+            ret.put("status", "105");
+            ret.put("message", "요청정보 없음");
+            return returnMap(ret);
+        }
+
+        return returnMap(ret);
+    }
+
 
 
 }

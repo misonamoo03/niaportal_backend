@@ -172,6 +172,7 @@
           AND A.ACT_CODE = #{actCode}
         ORDER BY A.DATA_NO DESC
     </select>
+
     <select id="getReplyList" parameterType="BoardContent" resultType="BoardContent">
         SELECT BOARD_CONTENT_NO                                                        AS boardContentNo,
                USER_NO                                                                 AS userNo,

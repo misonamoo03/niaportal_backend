@@ -60,7 +60,7 @@
 		  ) a
 		WHERE (a.title like CONCAT('%', #{query}, '%') OR a.content like CONCAT('%', #{query}, '%'))
 		<if test='type != null and type != "null" and type != ""'>
-			AND a.type = #{type}
+			AND a.typeCode = #{type}
 		</if>
 		ORDER BY typeNo asc, regDate desc
 		LIMIT #{pagePerRow} offset #{startRow}

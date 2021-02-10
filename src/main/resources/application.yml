@@ -58,9 +58,9 @@ spring:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:log4jdbc:mysql://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:log4jdbc:mysql://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com:3306/niaportal?characterEncoding=UTF-8&serverTimezone=UTC
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    username: niaporta
+    username: niaportal
     password: 2JPE5X7LW3Q
 
 ---

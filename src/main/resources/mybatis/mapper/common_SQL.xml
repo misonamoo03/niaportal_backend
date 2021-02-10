@@ -62,7 +62,7 @@
 		<if test='type != null and type != "null" and type != ""'>
 			AND a.typeCode = #{type}
 		</if>
-		ORDER BY typeNo asc, regDate desc
+		ORDER BY typeNo desc, regDate desc
 		LIMIT #{pagePerRow} offset #{startRow}
 	</select>
 	<select id="listSearchTotalCnt" resultType="Integer">

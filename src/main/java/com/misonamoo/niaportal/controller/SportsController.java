@@ -50,7 +50,7 @@ public class SportsController extends BaseController {
             sportsMap.put("sportsTypeCode",sportsTypeCode);
             sportsMap.put("actCode", code.get("code").toString());
             List<Map<String,Object>> sportsList = boardService.getSportsList(sportsMap);
-            if(sportsList != null){
+            if(sportsList != null && sportsList.size()>0){
                 Map<String,Object> obj = new LinkedHashMap<String,Object>();
                 obj.put("actName",code.get("codeName"));
                 obj.put("actCode",code.get("code"));

@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // 모든 uri에 대해 http://localhost:8080, http://localhost:3000 접근을 허용한다.
         registry.addMapping("/**")
-                .allowedOrigins("http://sportsaihub.com:8080", "http://sportsaihub.com:3000", "http://sportsaihub.com")
+                .allowedOrigins("http://sportsaihub.com:8080", "http://sportsaihub.com:3000", "http://sportsaihub.com","http://www.sportsaihub.com:8080", "http://www.sportsaihub.com:3000", "http://www.sportsaihub.com")
                 .allowCredentials(true);
     }
 }

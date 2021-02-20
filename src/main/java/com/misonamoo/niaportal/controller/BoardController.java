@@ -131,14 +131,16 @@ public class BoardController extends BaseController {
             return returnMap(ret);
         }
         BoardContent info = boardService.getBoardContent(boardContent);//글정보 조회
-        if(!isNull(info.getOrgBoardContentNo())){ // 다글인경우 원글을 조회한다.
-            boardContent.setBoardContentNo(info.getOrgBoardContentNo());
-            BoardContent  orgInfo = boardService.getBoardContent(boardContent);
-            if(orgInfo != null){
-                info = orgInfo;
-            }else{
-                ret.put("status", 105);
-                return returnMap(ret);
+        if(info != null && !isNull(info.getOrgBoardContentNo())){ // 다글인경우 원글을 조회한다.
+            if(info.getOrgBoardContentNo()!=null && Integer.parseInt(info.getOrgBoardContentNo())>0) {
+                boardContent.setBoardContentNo(info.getOrgBoardContentNo());
+                BoardContent orgInfo = boardService.getBoardContent(boardContent);
+                if (orgInfo != null) {
+                    info = orgInfo;
+                } else {
+                    ret.put("status", 105);
+                    return returnMap(ret);
+                }
             }
         }
         if(info != null) {

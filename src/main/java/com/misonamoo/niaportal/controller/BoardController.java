@@ -97,6 +97,7 @@ public class BoardController extends BaseController {
                     return returnMap(ret);
                 }
             }
+            boardService.updateBoardContenViewCnt(boardContent.getBoardContentNo());
             data.put("info", info);
             ret.put("data",data);
 
@@ -298,6 +299,33 @@ public class BoardController extends BaseController {
         }
         return returnMap(ret);
     }
+
+
+    /**
+     * 게시물 수정
+     * @param boardContentNo
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/updateViewCnt")
+    public Map<String,Object> updateViewCnt(@RequestParam(value="boardContentNo", required = true) String boardContentNo, HttpServletRequest request) throws Exception {
+        Map<String, Object> ret = new HashMap<String,Object>();
+        ret.put("status", 200);
+
+        if (isNull(boardContentNo)) {
+
+            ret.put("status", 100);
+            ret.put("message", "필수 변수값 없음");
+            return returnMap(ret);
+        }
+
+        //update 처리
+        boardService.updateBoardContenViewCnt(boardContentNo);
+
+        return returnMap(ret);
+    }
+
 
     /**
      * 게시물 삭제

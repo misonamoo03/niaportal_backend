@@ -71,4 +71,9 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.getReplyList(boardContent);
 
     }
+
+    @Override
+    public void updateBoardContenViewCnt(String boardContentNo) {
+        boardMapper.updateBoardContenViewCnt(boardContentNo);
+    }
 }

@@ -36,4 +36,6 @@ public interface BoardMapper {
     List<Map<String, Object>> getSportsList(Map<String, String> sportsMap);
 
     List<BoardContent> getReplyList(BoardContent boardContent);
+
+    void updateBoardContenViewCnt(String boardContentNo);
 }

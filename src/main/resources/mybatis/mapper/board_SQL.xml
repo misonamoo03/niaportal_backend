@@ -15,8 +15,8 @@
         A.BOARD_NO AS boardNo,
         B.USER_NAME AS userName,
         C.BOARD_TYPE_CODE AS boardTypeCode,
-        IF((SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO =
-        A.BOARD_CONTENT_NO) = 0,'N','Y') AS replyYn
+        (SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO =
+        A.BOARD_CONTENT_NO) AS replyCnt
         FROM AI_BOARD_CONTENT A
         INNER JOIN AI_USER B
         ON A.USER_NO = B.USER_NO
@@ -118,10 +118,15 @@
         <if test="secYn != null and secYn != '' and secYn != 'null'">
             SEC_YN = #{secYn},
         </if>
-        <if test="viewCnt != null and viewCnt != '' and viewCnt != 'null'">
-            VIEW_CNT = #{viewCnt},
-        </if>
         UPD_DATE = now()
+        WHERE BOARD_CONTENT_NO = #{boardContentNo}
+    </update>
+
+
+    <update id="updateBoardContenViewCnt" parameterType="String">
+        UPDATE AI_BOARD_CONTENT
+        SET
+            VIEW_CNT = VIEW_CNT + 1
         WHERE BOARD_CONTENT_NO = #{boardContentNo}
     </update>
 

@@ -11,7 +11,7 @@
         A.SEC_YN AS secYn,
         A.USER_NO AS userNo,
         A.VIEW_CNT AS viewCnt,
-        A.REG_DATE AS regDate,
+        IF((DATE_FORMAT(A.REG_DATE,'%Y%m%d')=DATE_FORMAT(now(),'%Y%m%d')),DATE_FORMAT(A.REG_DATE,'%H:%i:%S'),DATE_FORMAT(A.REG_DATE,'%Y.%m.%d') ) AS regDate,
         A.BOARD_NO AS boardNo,
         B.USER_NAME AS userName,
         C.BOARD_TYPE_CODE AS boardTypeCode,
@@ -22,7 +22,7 @@
         ON A.USER_NO = B.USER_NO
         INNER JOIN AI_BOARD C
         ON A.BOARD_NO = C.BOARD_NO
-        WHERE 1=1
+        WHERE A.ORG_BOARD_CONTENT_NO is NULL
         <if test='boardNo > 0'>
             AND A.BOARD_NO = #{boardNo}
         </if>
@@ -139,7 +139,7 @@
                CONTENT                                                                 AS content,
                IFNULL(SEC_YN ,'N')                                                     AS secYn,
                VIEW_CNT                                                                AS viewCnt,
-               REG_DATE                                                                AS regDate,
+               IF((DATE_FORMAT(A.REG_DATE,'%Y%m%d')=DATE_FORMAT(now(),'%Y%m%d')),DATE_FORMAT(A.REG_DATE,'%H:%i:%S'),DATE_FORMAT(A.REG_DATE,'%Y.%m.%d') ) AS regDate,
                UPD_DATE                                                                AS updDate,
                (SELECT count(BOARD_CONTENT_NO)
                    FROM AI_BOARD_CONTENT ABC
@@ -187,7 +187,7 @@
                CONTENT                                                                 AS content,
                IFNULL(SEC_YN ,'N')                                                     AS secYn,
                VIEW_CNT                                                                AS viewCnt,
-               REG_DATE                                                                AS regDate,
+               IF((DATE_FORMAT(A.REG_DATE,'%Y%m%d')=DATE_FORMAT(now(),'%Y%m%d')),DATE_FORMAT(A.REG_DATE,'%H:%i:%S'),DATE_FORMAT(A.REG_DATE,'%Y.%m.%d') ) AS regDate,
                UPD_DATE                                                                AS updDate,
                (SELECT count(BOARD_CONTENT_NO)
                    FROM AI_BOARD_CONTENT ABC

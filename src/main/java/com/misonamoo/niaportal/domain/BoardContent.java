@@ -18,6 +18,7 @@ public class BoardContent extends BasePaging {
     private String content;
     private String secYn;
     private Long viewCnt;
+    private int replyCnt;
     private String contentGroup;
     private LocalDateTime regDate;
     private LocalDateTime updDate;

@@ -141,9 +141,9 @@
                VIEW_CNT                                                                AS viewCnt,
                REG_DATE                                                                AS regDate,
                UPD_DATE                                                                AS updDate,
-               IF((SELECT count(BOARD_CONTENT_NO)
+               (SELECT count(BOARD_CONTENT_NO)
                    FROM AI_BOARD_CONTENT ABC
-                   WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0, 'N', 'Y') AS replyYn,
+                   WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO)                AS replyCnt,
                CONTENT_GROUP                                                           AS contentGroup
         FROM AI_BOARD_CONTENT A
         WHERE BOARD_CONTENT_NO = #{boardContentNo}
@@ -189,9 +189,9 @@
                VIEW_CNT                                                                AS viewCnt,
                REG_DATE                                                                AS regDate,
                UPD_DATE                                                                AS updDate,
-               IF((SELECT count(BOARD_CONTENT_NO)
+               (SELECT count(BOARD_CONTENT_NO)
                    FROM AI_BOARD_CONTENT ABC
-                   WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO) = 0, 'N', 'Y') AS replyYn,
+                   WHERE ABC.ORG_BOARD_CONTENT_NO = A.BOARD_CONTENT_NO)                AS replyCnt,
                CONTENT_GROUP                                                           AS contentGroup
         FROM AI_BOARD_CONTENT A
         WHERE ORG_BOARD_CONTENT_NO = #{boardContentNo}

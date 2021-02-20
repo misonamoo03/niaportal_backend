@@ -181,6 +181,7 @@ public class BoardController extends BaseController {
                 }
 
             }
+            boardService.updateBoardContenViewCnt(boardContent.getBoardContentNo());//조회수 업데이트
             info.setReplyList(replyList);
             data.put("info", info);
             ret.put("data",data);

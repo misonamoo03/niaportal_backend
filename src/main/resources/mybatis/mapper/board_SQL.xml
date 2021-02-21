@@ -43,7 +43,7 @@
         ON A.USER_NO = B.USER_NO
         INNER JOIN AI_BOARD C
         ON A.BOARD_NO = C.BOARD_NO
-        WHERE 1=1
+        WHERE A.ORG_BOARD_CONTENT_NO is NULL
         <if test='boardNo > 0'>
             AND A.BOARD_NO = #{boardNo}
         </if>

@@ -40,6 +40,7 @@
 		SELECT * FROM (
 			  SELECT FIELD(AB.BOARD_TYPE_CODE,'CD020','CD021','CD022','CD006001','CD006002') AS typeNo,
 			         AB.BOARD_TYPE_CODE AS typeCode,
+			         AB.BOARD_NO 		AS subTypeCode,
 			         (SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = AB.BOARD_TYPE_CODE) AS typeName,
 					BOARD_CONTENT_NO AS contentNo,
 			        TITLE AS title,
@@ -51,6 +52,7 @@
 			  UNION ALL
 			  SELECT FIELD(SPORTS_TYPE_CODE,'CD020','CD021','CD022','CD006001','CD006002') AS typeNo,
 			         SPORTS_TYPE_CODE AS typeCode,
+			         ACT_CODE 			AS subTypeCode,
 			         (SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = ASD.SPORTS_TYPE_CODE) AS typeName,
 					DATA_NO AS contentNo,
 			         FILE_NAME AS title,

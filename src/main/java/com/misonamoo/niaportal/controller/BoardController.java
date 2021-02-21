@@ -90,12 +90,6 @@ public class BoardController extends BaseController {
 
                     }
                 }
-            }else{
-                if(info.getSecYn().equals("Y")){
-                    ret.put("status", 104);
-                    ret.put("message", "접근권한 없음");
-                    return returnMap(ret);
-                }
             }
             boardService.updateBoardContenViewCnt(boardContent.getBoardContentNo());
             data.put("info", info);

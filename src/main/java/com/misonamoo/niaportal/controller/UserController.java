@@ -332,7 +332,7 @@ public class UserController extends BaseController{
                             "\t\t\t\t</div>\n" +
                             " \n" +
                             "\t\t\t\t<div class=\"btn_area\" style=\"margin:0;padding:0;margin-top:30px;\">\n" +
-                            "\t\t\t\t\t\t<a href= 'http://sportsaihub.com/member/verification/" + user.getEmail() + "' id=\"btnlogin\" class=\"btn_type btn_primary\" style=\"text-decoration:none; margin:0;padding:0;border:none;font-size:18px;font-family:'Noto Sans KR', sans-serif;color:#fff;vertical-align:middle;display:block;width:100%;text-align:center;cursor:pointer;line-height:55px;border-radius:100px;background-color:#2046b3;\"><span>비밀번호 재설정하기</span></button>\n" +
+                            "\t\t\t\t\t\t<a href= 'http://sportsaihub.com/member/verification/" + URLEncoder.encode(user.getEmail()) + "' id=\"btnlogin\" class=\"btn_type btn_primary\" style=\"text-decoration:none; margin:0;padding:0;border:none;font-size:18px;font-family:'Noto Sans KR', sans-serif;color:#fff;vertical-align:middle;display:block;width:100%;text-align:center;cursor:pointer;line-height:55px;border-radius:100px;background-color:#2046b3;\"><span>비밀번호 재설정하기</span></button>\n" +
                             "\t\t\t\t\t</div>\n" +
                             "\t\t\t</div> \n" +
                             "\t\t\t<div id=\"mail_footer\" style=\"margin:0;padding:30px 0;text-align:center;\"> \n" +

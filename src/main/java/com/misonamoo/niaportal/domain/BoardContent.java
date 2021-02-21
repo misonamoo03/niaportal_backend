@@ -14,6 +14,7 @@ public class BoardContent extends BasePaging {
     private String orgBoardContentNo;
     private Long boardNo;
     private Long userNo;
+    private String userName;
     private String title;
     private String content;
     private String secYn;

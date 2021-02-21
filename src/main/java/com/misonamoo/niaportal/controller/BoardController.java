@@ -223,25 +223,6 @@ public class BoardController extends BaseController {
             board.setUserNo(Long.parseLong(getCookieValue(request,"userNo")));
             log.info("=============newBoard===============" + newBoard.toString());
             if (newBoard.getBoardTypeCode().equals("CD006001")) {
-                //문의 사항
-                // 원글 번호가 들어왔을 경우는 답글임
-                if (!isNull(board.getOrgBoardContentNo())) {
-                    //답글
-                    if (isSuperUser(request)) {
-                        // 문의 답변 글쓰기
-                        insertKey = boardService.insertBoard(board);
-
-                    } else {
-                        ret.put("status", 104);
-                        ret.put("message", "접근권한 없음");
-                        return returnMap(ret);
-                    }
-                } else {
-                    //원글
-                    insertKey = boardService.insertBoard(board);
-                }
-            }
-            if (newBoard.getBoardTypeCode().equals("CD006002")) {
                 // FAQ 게시판
                 // 관리자가 아니면 return; 관리자면 글 쓰기
                 if (isSuperUser(request)) {
@@ -251,6 +232,24 @@ public class BoardController extends BaseController {
                     ret.put("status", 104);
                     ret.put("message", "접근권한 없음");
                     return returnMap(ret);
+                }
+            }
+            if (newBoard.getBoardTypeCode().equals("CD006002")) {
+                //문의 사항
+                // 원글 번호가 들어왔을 경우는 답글임
+                if (!isNull(board.getOrgBoardContentNo())) {
+                    //답글
+                    if (isSuperUser(request)) {
+                        // 문의 답변 글쓰기
+                        insertKey = boardService.insertBoard(board);
+                    } else {
+                        ret.put("status", 104);
+                        ret.put("message", "접근권한 없음");
+                        return returnMap(ret);
+                    }
+                } else {
+                    //원글
+                    insertKey = boardService.insertBoard(board);
                 }
             }
         } else {

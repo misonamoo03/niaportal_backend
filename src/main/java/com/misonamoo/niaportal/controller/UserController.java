@@ -319,8 +319,8 @@ public class UserController extends BaseController{
                             "</head>\n" +
                             "<body style=\"margin:0;padding:0;width:100%;background:#fff;min-width:320px;-webkit-text-size-adjust:none;word-wrap:break-word;word-break:keep-all;letter-spacing:-.5px;border:none;font-size:16px;font-family:'Noto Sans KR', sans-serif;color:#000;\">\n" +
                             "\t\t<div id=\"mail_wrap\" style=\"margin:0 auto;padding:0;width:800px;border:1px solid #ddd;font-size:15px;border-top:4px solid #000;\"> \n" +
-                            "\t\t\t<div id=\"mail_header\" style='margin:0;padding:60px 0 0 35px;height:232px;background-image:url(\"images/mail_topbg.jpg\");background-position:top center;background-repeat:no-repeat;border-bottom:1px solid #ddd;'> \n" +
-                            "\t\t\t\t<img src=\"http://sportsaihub.com/_nuxt/assets/images/mail_logo.png\" alt=\"mail_logo\" style=\"border:0;vertical-align:middle;margin-bottom:20px;\"><h1 style=\"margin:0;padding:0;font-size:32px;\">비밀번호 재설정 요청</h1>\n" +
+                            "\t\t\t<div id=\"mail_header\" style='margin:0;padding:60px 0 0 35px;height:232px;background-image:url(\"mail_topbg.jpg\");background-position:top center;background-repeat:no-repeat;border-bottom:1px solid #ddd;'> \n" +
+                            "\t\t\t\t<img src=\"http://sportsaihub.com/_nuxt/mail_logo.png\" alt=\"mail_logo\" style=\"border:0;vertical-align:middle;margin-bottom:20px;\"><h1 style=\"margin:0;padding:0;font-size:32px;\">비밀번호 재설정 요청</h1>\n" +
                             "\t\t\t</div>\n" +
                             "\t\t\t<div id=\"mail_contents\" style=\"margin:0;padding:50px 45px;background-color:#f1f2f7;text-align:center;line-height:1.6;\"> \n" +
                             "\t\t\t\t<p style=\"margin:0;padding:0;\">\n" +

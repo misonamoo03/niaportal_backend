@@ -277,11 +277,11 @@ public class UserController extends BaseController{
             return returnMap(ret);
         }
 
+        int chkNo = userService.findUserNo(user);
         Map<String, Object> data = new HashMap();
-        data.put("email", user.getEmail());
+        data.put("userNo", chkNo);
         ret.put("data", data);
 
-        int chkNo = userService.findUserNo(user);
         PwSec pwSec = new PwSec();
         pwSec.setUserNo(chkNo);
         pwSec.setSecCode(pwSecService.findCode(pwSec.getUserNo()));
@@ -332,7 +332,7 @@ public class UserController extends BaseController{
                             "\t\t\t\t</div>\n" +
                             " \n" +
                             "\t\t\t\t<div class=\"btn_area\" style=\"margin:0;padding:0;margin-top:30px;\">\n" +
-                            "\t\t\t\t\t\t<a href= 'http://sportsaihub.com/member/verification/" + user.getEmail() + "' id=\"btnlogin\" class=\"btn_type btn_primary\" style=\"text-decoration:none; margin:0;padding:0;border:none;font-size:18px;font-family:'Noto Sans KR', sans-serif;color:#fff;vertical-align:middle;display:block;width:100%;text-align:center;cursor:pointer;line-height:55px;border-radius:100px;background-color:#2046b3;\"><span>비밀번호 재설정하기</span></button>\n" +
+                            "\t\t\t\t\t\t<a href= 'http://sportsaihub.com/member/verification/" + chkNo + "' id=\"btnlogin\" class=\"btn_type btn_primary\" style=\"text-decoration:none; margin:0;padding:0;border:none;font-size:18px;font-family:'Noto Sans KR', sans-serif;color:#fff;vertical-align:middle;display:block;width:100%;text-align:center;cursor:pointer;line-height:55px;border-radius:100px;background-color:#2046b3;\"><span>비밀번호 재설정하기</span></button>\n" +
                             "\t\t\t\t\t</div>\n" +
                             "\t\t\t</div> \n" +
                             "\t\t\t<div id=\"mail_footer\" style=\"margin:0;padding:30px 0;text-align:center;\"> \n" +
@@ -357,19 +357,18 @@ public class UserController extends BaseController{
     public Map<String, Object> validate(@ModelAttribute User user, @ModelAttribute PwSec pwSec, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
-        if (isNull(user.getEmail()) || isNull(pwSec.getSecCode())) {
+        if (isNull(String.valueOf(user.getUserNo())) || isNull(pwSec.getSecCode())) {
             ret.put("status", 100);
             return returnMap(ret);
         }
-        int chkNo = userService.findUserNo(user); // 회원 번호를 저장
-        String endTime = pwSecService.getEndTime(chkNo);
+        String endTime = pwSecService.getEndTime((int) user.getUserNo());
         Date endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endTime);
         Date now = new Date();
         if (now.after(endDate)) {
             ret.put("status", 106);
             return returnMap(ret);
         }
-        String secCode = pwSecService.findCode(chkNo); // DB에 저장된 회원의 인증 코드를 가져옴
+        String secCode = pwSecService.findCode((int) user.getUserNo()); // DB에 저장된 회원의 인증 코드를 가져옴
         if (!pwSec.getSecCode().equals(secCode)) {
             ret.put("status", 107);
             return returnMap(ret);
@@ -387,7 +386,7 @@ public class UserController extends BaseController{
     public Map<String, Object> setPw(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
-        if (isNull(user.getEmail()) || isNull(user.getPassword())) {
+        if (isNull(String.valueOf(user.getUserNo())) || isNull(user.getPassword())) {
             ret.put("status", 100);
             return returnMap(ret);
         }

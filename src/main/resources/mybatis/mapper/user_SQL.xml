@@ -19,7 +19,7 @@
  	update AI_USER
  	set
 	PASSWORD = #{password}
- 	where EMAIL = #{email}
+ 	where USER_NO = #{userNo}
  	</update>
 
 	<!-- 이메일 중복 체크 -->

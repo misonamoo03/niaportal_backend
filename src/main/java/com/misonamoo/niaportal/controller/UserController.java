@@ -224,6 +224,7 @@ public class UserController extends BaseController{
         loginCookies[3] = new Cookie("userName", URLEncoder.encode(login.getUserName(), "UTF-8"));
         for (Cookie c : loginCookies) {
             c.setPath("/");
+            c.setDomain("sportsaihub.com");
             c.setMaxAge(60 * 60 * 24); // 쿠키 지속시간 하루
             response.addCookie(c);
         }
@@ -374,6 +375,7 @@ public class UserController extends BaseController{
             return returnMap(ret);
         } else {
             Cookie secCodeCookie = new Cookie("secCode", URLEncoder.encode("right", "UTF-8"));
+            secCodeCookie.setDomain("sportsaihub.com");
             secCodeCookie.setPath("/");
             secCodeCookie.setMaxAge(60 * 60); // 인증 후 비밀번호 재설정 유효시간 1시간
             response.addCookie(secCodeCookie);

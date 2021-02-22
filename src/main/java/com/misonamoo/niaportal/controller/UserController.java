@@ -345,7 +345,7 @@ public class UserController extends BaseController{
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
-        mimeMessageHelper.setFrom(from, "수신자명");
+        mimeMessageHelper.setFrom(from, "ai sports 운영자");
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(body, true);

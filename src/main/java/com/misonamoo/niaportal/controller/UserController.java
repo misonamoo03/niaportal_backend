@@ -309,7 +309,7 @@ public class UserController extends BaseController{
 //      메일 발송 부분
         String to = user.getEmail(); //받는 사람
         String from = "misonamoo03@gmail.com"; //보내는 사람
-        String subject = "이 프로젝트의 비밀번호 찾기 메일입니다."; //제목
+        String subject = "비밀번호 재설정 메일입니다."; //제목
         String body =
                     "<!DOCTYPE html>\n" +
                             "<html lang=\"ko\" style=\"margin:0;padding:0;width:100%;\">\n" +

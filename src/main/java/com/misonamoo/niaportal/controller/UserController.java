@@ -148,7 +148,6 @@ public class UserController extends BaseController{
         Map<String, Object> ret = new HashMap();
         ret.put("status", 200);
         if (isNull(user.getEmail()) ||    // 필수 변수값 없음
-                isNull(user.getPassword()) ||
                 isNull(user.getUserName()) ||
                 isNull(user.getTel()) ||
                 isNull(user.getAgency()) ||
@@ -156,23 +155,25 @@ public class UserController extends BaseController{
             ret.put("status", 100);
             return returnMap(ret);
         }
-        int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
-        if (emailPassCnt > 0) {
-            if (user.getEmail().equals(getCookieValue(request, "email"))) {
-                if (isNull(user.getNewPassword())) {
-                    //회원정보 수정처리
-                    user.setUpdStyle("ONLYINFO");
-                } else { // 비밀번호 변경처리
-                    //userService.editPassword(user);
-                    user.setUpdStyle("WITHPASS");
-                }
-                userService.edit(user);
-            } else { // 받아온 user의 email과 쿠키에 담겨있는 user의 email정보가 다른 경우
-                ret.put("status", 104);
-            }
-        } else {
-            ret.put("status", 102);
+
+        if (!(user.getEmail().equals(getCookieValue(request, "email")))) {
+            ret.put("status", 104);
+            return returnMap(ret);
         }
+
+        if(isNull(user.getPassword())) {
+            //회원 정보만 수정
+            user.setUpdStyle("ONLYINFO");
+        } else {
+            int emailPassCnt = userService.checkEmailPass(user); //이메일과 비밀번호가 일치하면 1, 불일치하면 0 반환
+            if (emailPassCnt > 0) {
+                // 비밀번호 변경처리
+                user.setUpdStyle("WITHPASS");
+            } else {
+                ret.put("status", 102);
+            }
+        }
+        userService.edit(user);
         return returnMap(ret);
     }
 

@@ -21,6 +21,7 @@ public class User {
     private String tel;
     private String agency;
     private String companyTypeCode;
+    private String companyNo;
     private String companyTypeName;
     private String dwConfirmYn;
     private String delYn;

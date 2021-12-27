@@ -35,17 +35,32 @@ public class BoardController extends BaseController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/list")
-    public Map<String, Object> getBoardList(Board board, HttpServletRequest request) throws Exception {
+    @PostMapping("/list")
+    public Map<String, Object> getBoardList(@RequestBody Board board, HttpServletRequest request) throws Exception {
+
+        Cookie[] cookies = request.getCookies();
+        log.info(String.valueOf(cookies));
+
         Map<String, Object> ret = new HashMap<String,Object>();
         Map<String, Object> data = new LinkedHashMap<>();
         ret.put("status", 200);
 
-        if (board.getBoardNo() == 0 ) {
+        if (board.getBoardNo() == 0 && isNull(board.getBoardTypeCode()) && isNull(board.getSportsTypeCode())) {
             // 필수 변수값 없음
             ret.put("status", 100);
             ret.put("message", "필수 변수값 없음");
             return returnMap(ret);
+        }
+
+
+        if ("Y".equals(board.getMyContentYn())){
+            System.out.println(">>>>>>>>>>>><<<<<<<<<<<<<<<"+isLoginNow(request));
+            if(isLoginNow(request)) { //로그인
+                System.out.println(">>>>>>>>>>>>"+getCookieValue(request, "userNo"));
+                board.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
+
+            }
+
         }
 
         Map<String, Object> result = boardService.getBoardList(board);
@@ -205,38 +220,45 @@ public class BoardController extends BaseController {
 
         if(isLoginNow(request)) {
             // boardNo가 없을 경우 처리
-            Board newBoard = boardService.getBoard(board.getBoardNo());
-            board.setUserNo(Long.parseLong(getCookieValue(request,"userNo")));
-            log.info("=============newBoard===============" + newBoard.toString());
-            if (newBoard.getBoardTypeCode().equals("CD006001")) {
-                // FAQ 게시판
-                // 관리자가 아니면 return; 관리자면 글 쓰기
-                if (isSuperUser(request)) {
-                    // FAQ 글쓰기
-                    insertKey= boardService.insertBoard(board);
-                } else {
-                    ret.put("status", 104);
-                    ret.put("message", "접근권한 없음");
-                    return returnMap(ret);
-                }
-            }
-            if (newBoard.getBoardTypeCode().equals("CD006002")) {
-                //문의 사항
-                // 원글 번호가 들어왔을 경우는 답글임
-                if (!isNull(board.getOrgBoardContentNo())) {
-                    //답글
+            Board newBoard = boardService.getBoard(board);
+            if(newBoard != null ) {
+                board.setBoardNo(newBoard.getBoardNo());
+                board.setUserNo(Long.parseLong(getCookieValue(request, "userNo")));
+                log.info("=============newBoard===============" + newBoard.toString());
+                if (newBoard.getBoardTypeCode().equals("CD006001")) {
+                    // FAQ 게시판
+                    // 관리자가 아니면 return; 관리자면 글 쓰기
                     if (isSuperUser(request)) {
-                        // 문의 답변 글쓰기
+                        // FAQ 글쓰기
                         insertKey = boardService.insertBoard(board);
                     } else {
                         ret.put("status", 104);
                         ret.put("message", "접근권한 없음");
                         return returnMap(ret);
                     }
-                } else {
-                    //원글
-                    insertKey = boardService.insertBoard(board);
                 }
+                if (newBoard.getBoardTypeCode().equals("CD006002")) {
+                    //문의 사항
+                    // 원글 번호가 들어왔을 경우는 답글임
+                    if (!isNull(board.getOrgBoardContentNo())) {
+                        //답글
+                        if (isSuperUser(request)) {
+                            // 문의 답변 글쓰기
+                            insertKey = boardService.insertBoard(board);
+                        } else {
+                            ret.put("status", 104);
+                            ret.put("message", "접근권한 없음");
+                            return returnMap(ret);
+                        }
+                    } else {
+                        //원글
+                        insertKey = boardService.insertBoard(board);
+                    }
+                }
+            }else{
+                ret.put("status", 105);
+                ret.put("message", "요청정보 없음");
+                return returnMap(ret);
             }
         } else {
             ret.put("status", 104);

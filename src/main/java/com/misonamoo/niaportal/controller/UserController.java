@@ -53,7 +53,8 @@ public class UserController extends BaseController{
                 isNull(user.getUserName()) ||
                 isNull(user.getTel()) ||
                 isNull(user.getAgency()) ||
-                isNull(user.getCompanyTypeCode())) {
+                isNull(user.getCompanyTypeCode()) ||
+                isNull(user.getCompanyNo())) {
             ret.put("status", 100);
         } else if (emailCnt > 0) {
             ret.put("status", 101);
@@ -83,6 +84,7 @@ public class UserController extends BaseController{
             memberInfo.put("agency", info.getAgency());
             memberInfo.put("companyTypeCode", info.getCompanyTypeCode());
             memberInfo.put("companyTypeName", info.getCompanyTypeName());
+            memberInfo.put("companyNo", info.getCompanyNo());
             data.put("memberInfo", memberInfo);
             ret.put("data", data);
         } else {
@@ -151,7 +153,8 @@ public class UserController extends BaseController{
                 isNull(user.getUserName()) ||
                 isNull(user.getTel()) ||
                 isNull(user.getAgency()) ||
-                isNull(user.getCompanyTypeCode())) {
+                isNull(user.getCompanyTypeCode())||
+                isNull(user.getCompanyNo())) {
             ret.put("status", 100);
             return returnMap(ret);
         }

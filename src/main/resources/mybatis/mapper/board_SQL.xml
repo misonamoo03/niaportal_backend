@@ -3,18 +3,58 @@
 <mapper namespace="com.misonamoo.niaportal.mapper.BoardMapper">
 
     <select id="getBoardList" parameterType="Board" resultType="HashMap">
+        SELECT * FROM (
+            SELECT
+            A.BOARD_CONTENT_NO AS boardContentNo,
+            A.ORG_BOARD_CONTENT_NO AS orgBoardContentNo,
+            A.TITLE AS title,
+            A.CONTENT AS content,
+            A.SEC_YN AS secYn,
+            A.USER_NO AS userNo,
+            A.VIEW_CNT AS viewCnt,
+            IF((DATE_FORMAT(A.REG_DATE,'%Y%m%d')=DATE_FORMAT(now(),'%Y%m%d')),DATE_FORMAT(A.REG_DATE,'%H:%i:%S'),DATE_FORMAT(A.REG_DATE,'%Y.%m.%d') ) AS regDate,
+            A.BOARD_NO AS boardNo,
+            B.USER_NAME AS userName,
+            C.BOARD_TYPE_CODE AS boardTypeCode,
+            (SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO =
+            A.BOARD_CONTENT_NO) AS replyCnt,
+            A.CONTENT_GROUP AS contentGroup
+            FROM AI_BOARD_CONTENT A
+            INNER JOIN AI_USER B
+            ON A.USER_NO = B.USER_NO
+            INNER JOIN AI_BOARD C
+            ON A.BOARD_NO = C.BOARD_NO
+            WHERE A.ORG_BOARD_CONTENT_NO is NULL
+            <if test='boardNo > 0'>
+                AND A.BOARD_NO = #{boardNo}
+            </if>
+            <if test="boardTypeCode != null and boardTypeCode != '' ">
+                AND C.BOARD_TYPE_CODE = #{boardTypeCode}
+            </if>
+            <if test="sportsTypeCode != null and sportsTypeCode != ''">
+                AND C.SPORTS_TYPE_CODE = #{sportsTypeCode}
+            </if>
+            <if test="userNo != null and userNo >0">
+                AND A.USER_NO = #{userNo}
+            </if>
+            <if test="searchText != null and searchText != '' ">
+                AND (A.TITLE like CONCAT('%',#{searchText},'%') or A.CONTENT like CONCAT('%',#{searchText},'%'))
+            </if>
+        ) A
+        WHERE 1=1
+        <if test='replyYn != null and "Y" == replyYn'>
+            AND A.replyCnt &gt; 0
+        </if>
+        <if test='replyYn != null and "N" == replyYn'>
+            AND A.replyCnt = 0
+        </if>
+        ORDER BY A.contentGroup DESC, A.regDate ASC
+        LIMIT #{pagePerRow} offset #{startRow}
+    </select>
+
+    <select id="getBoardTotalCnt" resultType="Integer">
+        SELECT COUNT(*) FROM (
         SELECT
-        A.BOARD_CONTENT_NO AS boardContentNo,
-        A.ORG_BOARD_CONTENT_NO AS orgBoardContentNo,
-        A.TITLE AS title,
-        A.CONTENT AS content,
-        A.SEC_YN AS secYn,
-        A.USER_NO AS userNo,
-        A.VIEW_CNT AS viewCnt,
-        IF((DATE_FORMAT(A.REG_DATE,'%Y%m%d')=DATE_FORMAT(now(),'%Y%m%d')),DATE_FORMAT(A.REG_DATE,'%H:%i:%S'),DATE_FORMAT(A.REG_DATE,'%Y.%m.%d') ) AS regDate,
-        A.BOARD_NO AS boardNo,
-        B.USER_NAME AS userName,
-        C.BOARD_TYPE_CODE AS boardTypeCode,
         (SELECT count(BOARD_CONTENT_NO) FROM AI_BOARD_CONTENT ABC WHERE ABC.ORG_BOARD_CONTENT_NO =
         A.BOARD_CONTENT_NO) AS replyCnt
         FROM AI_BOARD_CONTENT A
@@ -26,26 +66,25 @@
         <if test='boardNo > 0'>
             AND A.BOARD_NO = #{boardNo}
         </if>
-        <if test='boardTypeCode == "CD006001"'>
-            AND C.BOARD_TYPE_CODE = 'CD006001'
+        <if test="boardTypeCode != null and boardTypeCode != '' and boardTypeCode != 'null'">
+            AND C.BOARD_TYPE_CODE = #{boardTypeCode}
         </if>
-        <if test='boardTypeCode == "CD006002"'>
-            AND C.BOARD_TYPE_CODE = 'CD006002'
+        <if test="sportsTypeCode != null and sportsTypeCode != '' and sportsTypeCode != 'null'">
+            AND C.SPORTS_TYPE_CODE = #{sportsTypeCode}
         </if>
-        ORDER BY A.CONTENT_GROUP DESC, A.REG_DATE ASC
-        LIMIT #{pagePerRow} offset #{startRow}
-    </select>
-
-    <select id="getBoardTotalCnt" resultType="Integer">
-        SELECT COUNT(*)
-        FROM AI_BOARD_CONTENT A
-        INNER JOIN AI_USER B
-        ON A.USER_NO = B.USER_NO
-        INNER JOIN AI_BOARD C
-        ON A.BOARD_NO = C.BOARD_NO
-        WHERE A.ORG_BOARD_CONTENT_NO is NULL
-        <if test='boardNo > 0'>
-            AND A.BOARD_NO = #{boardNo}
+        <if test="searchText != null and searchText != '' ">
+            AND (A.TITLE like CONCAT('%',#{searchText},'%') or A.CONTENT like CONCAT('%',#{searchText},'%'))
+        </if>
+        <if test="userNo != null and userNo >0">
+            AND A.USER_NO = #{userNo}
+        </if>
+        ) A
+        WHERE 1=1
+        <if test='replyYn != null and "Y" == replyYn'>
+            AND A.replyCnt &gt; 0
+        </if>
+        <if test='replyYn != null and "N" == replyYn'>
+            AND A.replyCnt = 0
         </if>
     </select>
 
@@ -59,7 +98,16 @@
         UPD_DATE as updDate,
         UPD_USER_NO as updUserNo
         FROM AI_BOARD
-        WHERE BOARD_NO = #{boardNo}
+        WHERE 1=1
+        <if test='boardNo > 0'>
+            AND BOARD_NO = #{boardNo}
+        </if>
+        <if test="boardTypeCode != null and boardTypeCode != '' and boardTypeCode != 'null'">
+            AND BOARD_TYPE_CODE = #{boardTypeCode}
+        </if>
+        <if test="sportsTypeCode != null and sportsTypeCode != '' and sportsTypeCode != 'null'">
+            AND SPORTS_TYPE_CODE = #{sportsTypeCode}
+        </if>
     </select>
 
     <insert id="insertBoard" parameterType="Board">

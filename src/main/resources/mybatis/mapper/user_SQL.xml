@@ -40,6 +40,7 @@
 			TEL,
 			AGENCY,
 			COMPANY_TYPE_CODE,
+		    COMPANY_NO,
 			DW_CONFIRM_YN,
 			DEL_YN,
 			REG_DATE,
@@ -53,6 +54,7 @@
 			#{tel},
 			#{agency},
 			#{companyTypeCode},
+			#{companyNo},
 			#{dwConfirmYn},
 			#{delYn},
 			NOW(),
@@ -66,7 +68,8 @@
 		TEL as tel,
 		AGENCY as agency,
 		COMPANY_TYPE_CODE as companyTypeCode,
-		(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.COMPANY_TYPE_CODE ) as companyTypeName
+		(SELECT CODE_NAME FROM AI_COMMONCODE WHERE CODE = A.COMPANY_TYPE_CODE ) as companyTypeName,
+		COMPANY_NO  as companyNo
 		FROM AI_USER A
 		WHERE EMAIL = #{email};
 	</select>
@@ -99,6 +102,9 @@
 			</if>
 			<if test='companyTypeCode != null and companyTypeCode != "null" and companyTypeCode != ""'>
 				COMPANY_TYPE_CODE = #{companyTypeCode},
+			</if>
+			<if test='companyNo != null and companyNo != "null" and companyNo != ""'>
+				COMPANY_NO = #{companyNo},
 			</if>
 			UPD_DATE = NOW(),
 		</trim>

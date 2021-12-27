@@ -28,8 +28,8 @@ public class BoardServiceImpl implements BoardService {
         return result;
     }
 
-    public Board getBoard(Long boardNo) {
-        return boardMapper.getBoard(boardNo);
+    public Board getBoard(Board board) {
+        return boardMapper.getBoard(board);
     }
 
     public Long insertBoard(Board board) {

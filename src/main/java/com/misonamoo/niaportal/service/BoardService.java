@@ -10,7 +10,7 @@ public interface BoardService {
 
     Map<String, Object> getBoardList(Board board);
 
-    Board getBoard(Long boardNo);
+    Board getBoard(Board board);
 
     Long insertBoard(Board board);
 

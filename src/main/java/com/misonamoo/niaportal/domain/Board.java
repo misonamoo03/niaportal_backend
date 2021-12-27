@@ -15,13 +15,16 @@ public class Board extends BasePaging {
     private String orgBoardContentNo;
     private String name;
     private String boardTypeCode;
-    private String sportsBoardCode;
+    private String sportsTypeCode;
     private LocalDateTime regDate;
     private Long regUserNo;
     private LocalDateTime updDate;
     private Long updUserNo;
     private String secYn;
     private Long contentGroup;
+    private String myContentYn;
+    private String replyYn;
+    private String searchText;
     
     // 파라미터로 온 변수
     private String email;

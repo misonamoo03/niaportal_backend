@@ -4,8 +4,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: support@flexer.co.kr
-    password: fyeanimyuaoprkgs
+    username: misonamoo03@gmail.com
+    password: odktdtqmxwkfrmvz
     properties:
       mail:
         smtp:
@@ -47,7 +47,7 @@ spring:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:log4jdbc:mysql://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com:3306/niaportal_dev?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:log4jdbc:mysql://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com:3306/niaportal_dev?characterEncoding=UTF-8&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: niaportal_dev
     password: 1MNL3QLY7SA
@@ -58,7 +58,7 @@ spring:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:log4jdbc:mysql://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com:3306/niaportal?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:log4jdbc:mysql://st-flexer.c7wbt5xofh6c.ap-northeast-2.rds.amazonaws.com:3306/niaportal?characterEncoding=UTF-8&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: niaportal
     password: 2JPE5X7LW3Q
